@@ -1,0 +1,6 @@
+﻿DROP DATABASE botc_roles;
+
+CREATE DATABASE botc_roles;
+USE botcRoles;
+
+CREATE TABLE Player ();
