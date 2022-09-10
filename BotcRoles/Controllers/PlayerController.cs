@@ -16,19 +16,34 @@ namespace BotcRoles.Controllers
             db = new ModelContext();
         }
 
-        [HttpGet(Name = "GetPlayers")]
+        [HttpGet]
+        [Route("")]
         public IEnumerable<Player> Get()
         {
             var players = db.Players;
-
             return players;
         }
 
-        [HttpPost(Name = "PostPlayer")]
-        public void Post(string playerName)
+        [HttpPost]
+        [Route("{playerName}")]
+        public IActionResult Post(string playerName)
         {
-            db.Add(new Player { Name = playerName });
-            db.SaveChanges();
+            try
+            {
+                if (db.Players.Any(p => p.Name == playerName))
+                {
+                    return BadRequest($"Le nom de joueur '{playerName}' existe déjà.");
+                }
+
+                db.Add(new Player(playerName));
+                db.SaveChanges();
+
+                return Created("Player", null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException);
+            }
         }
     }
 }

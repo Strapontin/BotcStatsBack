@@ -1,3 +1,4 @@
+using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,18 +17,34 @@ namespace BotcRoles.Controllers
             db = new ModelContext();
         }
 
-        [HttpGet(Name = "GetRoles")]
+        [HttpGet]
+        [Route("")]
         public IEnumerable<Role> Get()
         {
             var roles = db.Roles;
             return roles;
         }
 
-        [HttpPost(Name = "PostRole")]
-        public void Post(string roleName, Alignment alignment)
+        [HttpPost]
+        [Route("{roleName}/{defaultAlignment}/{type}")]
+        public IActionResult Post(string roleName, Enums.Type type, Alignment defaultAlignment)
         {
-            db.Add(new Role { Name = roleName, Alignment = alignment });
-            db.SaveChanges();
+            try
+            {
+                if (db.Roles.Any(p => p.Name == roleName))
+                {
+                    return BadRequest($"Le role '{roleName}' existe déjà.");
+                }
+
+                db.Add(new Role(roleName, type, defaultAlignment));
+                db.SaveChanges();
+
+                return Created("Role", null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException);
+            }
         }
     }
 }

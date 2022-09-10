@@ -3,6 +3,7 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,23 +11,24 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    partial class MainModelContextModelSnapshot : ModelSnapshot
+    [Migration("20220910163541_DeletePlayersInGame")]
+    partial class DeletePlayersInGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
                 {
-                    b.Property<long>("GameId")
+                    b.Property<int>("GameId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("ModuleId")
+                    b.Property<int>("ModuleId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
@@ -47,7 +49,7 @@ namespace BotcRoles.Migrations
 
             modelBuilder.Entity("BotcRoles.Models.Module", b =>
                 {
-                    b.Property<long>("ModuleId")
+                    b.Property<int>("ModuleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -56,6 +58,9 @@ namespace BotcRoles.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ModuleId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Modules");
                 });
@@ -72,19 +77,18 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("PlayerId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("BotcRoles.Models.PlayerRoleGame", b =>
+            modelBuilder.Entity("BotcRoles.Models.PlayerRole", b =>
                 {
-                    b.Property<long>("PlayerRoleGameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("FinalAlignment")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("GameId")
+                    b.Property<int>("GameId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("PlayerId")
@@ -92,8 +96,6 @@ namespace BotcRoles.Migrations
 
                     b.Property<long>("RoleId")
                         .HasColumnType("INTEGER");
-
-                    b.HasKey("PlayerRoleGameId");
 
                     b.HasIndex("GameId");
 
@@ -122,22 +124,19 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("RoleId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.RoleModule", b =>
                 {
-                    b.Property<long>("RoleModuleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("ModuleId")
+                    b.Property<int>("ModuleId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("RoleId")
                         .HasColumnType("INTEGER");
-
-                    b.HasKey("RoleModuleId");
 
                     b.HasIndex("ModuleId");
 
@@ -149,13 +148,13 @@ namespace BotcRoles.Migrations
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
                 {
                     b.HasOne("BotcRoles.Models.Module", "Module")
-                        .WithMany("Games")
+                        .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BotcRoles.Models.Player", "StoryTeller")
-                        .WithMany("GamesStoryTelling")
+                        .WithMany()
                         .HasForeignKey("StoryTellerPlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -165,22 +164,22 @@ namespace BotcRoles.Migrations
                     b.Navigation("StoryTeller");
                 });
 
-            modelBuilder.Entity("BotcRoles.Models.PlayerRoleGame", b =>
+            modelBuilder.Entity("BotcRoles.Models.PlayerRole", b =>
                 {
                     b.HasOne("BotcRoles.Models.Game", "Game")
-                        .WithMany("PlayerRoleGames")
+                        .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BotcRoles.Models.Player", "Player")
-                        .WithMany("PlayerRoleGames")
+                        .WithMany()
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BotcRoles.Models.Role", "Role")
-                        .WithMany("PlayerRoleGames")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -195,13 +194,13 @@ namespace BotcRoles.Migrations
             modelBuilder.Entity("BotcRoles.Models.RoleModule", b =>
                 {
                     b.HasOne("BotcRoles.Models.Module", "Module")
-                        .WithMany("RoleModules")
+                        .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BotcRoles.Models.Role", "Role")
-                        .WithMany("RoleModules")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -209,32 +208,6 @@ namespace BotcRoles.Migrations
                     b.Navigation("Module");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("BotcRoles.Models.Game", b =>
-                {
-                    b.Navigation("PlayerRoleGames");
-                });
-
-            modelBuilder.Entity("BotcRoles.Models.Module", b =>
-                {
-                    b.Navigation("Games");
-
-                    b.Navigation("RoleModules");
-                });
-
-            modelBuilder.Entity("BotcRoles.Models.Player", b =>
-                {
-                    b.Navigation("GamesStoryTelling");
-
-                    b.Navigation("PlayerRoleGames");
-                });
-
-            modelBuilder.Entity("BotcRoles.Models.Role", b =>
-                {
-                    b.Navigation("PlayerRoleGames");
-
-                    b.Navigation("RoleModules");
                 });
 #pragma warning restore 612, 618
         }
