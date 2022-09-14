@@ -9,19 +9,19 @@ namespace BotcRoles.Controllers
     public class RoleController : ControllerBase
     {
         private readonly ILogger<RoleController> _logger;
-        private ModelContext db;
+        private readonly ModelContext _db;
 
-        public RoleController(ILogger<RoleController> logger)
+        public RoleController(ILogger<RoleController> logger, ModelContext db)
         {
             _logger = logger;
-            db = new ModelContext();
+            _db = db;
         }
 
         [HttpGet]
         [Route("")]
         public IEnumerable<Role> Get()
         {
-            var roles = db.Roles;
+            var roles = _db.Roles;
             return roles;
         }
 
@@ -31,15 +31,15 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                if (db.Roles.Any(p => p.Name == roleName))
+                if (_db.Roles.Any(p => p.Name == roleName))
                 {
                     return BadRequest($"Le role '{roleName}' existe déjà.");
                 }
 
-                db.Add(new Role(roleName, type, defaultAlignment));
-                db.SaveChanges();
+                _db.Add(new Role(roleName, type, defaultAlignment));
+                _db.SaveChanges();
 
-                return Created("Role", null);
+                return Created("", null);
             }
             catch (Exception ex)
             {

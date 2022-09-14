@@ -8,19 +8,19 @@ namespace BotcRoles.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly ILogger<PlayerController> _logger;
-        private ModelContext db;
+        private readonly ModelContext _db;
 
-        public PlayerController(ILogger<PlayerController> logger)
+        public PlayerController(ILogger<PlayerController> logger, ModelContext db)
         {
             _logger = logger;
-            db = new ModelContext();
+            _db = db;
         }
 
         [HttpGet]
         [Route("")]
         public IEnumerable<Player> Get()
         {
-            var players = db.Players;
+            var players = _db.Players;
             return players;
         }
 
@@ -30,15 +30,20 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                if (db.Players.Any(p => p.Name == playerName))
+                if (string.IsNullOrWhiteSpace(playerName))
                 {
-                    return BadRequest($"Le nom de joueur '{playerName}' existe déjà.");
+                    return BadRequest($"Le nom du joueur est vide.");
                 }
 
-                db.Add(new Player(playerName));
-                db.SaveChanges();
+                if (_db.Players.Any(p => p.Name == playerName))
+                {
+                    return BadRequest($"Un joueur avec le nom '{playerName}' existe déjà.");
+                }
 
-                return Created("Player", null);
+                _db.Add(new Player(playerName));
+                _db.SaveChanges();
+
+                return Created("", null);
             }
             catch (Exception ex)
             {

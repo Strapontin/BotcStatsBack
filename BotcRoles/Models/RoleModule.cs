@@ -3,8 +3,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BotcRoles.Models
 {
+    /// <summary>
+    /// Datas about what Roles are in a Module
+    /// </summary>
     public class RoleModule
     {
+        public RoleModule() { }
+
+        public RoleModule(Role role, Module module)
+        {
+            Role = role;
+            Module = module;
+        }
+
         public long RoleModuleId { get; set; }
 
         public long RoleId { get; set; }
@@ -35,6 +46,10 @@ namespace BotcRoles.Models
                 .HasOne(rm => rm.Module)
                 .WithMany(m => m.RoleModules)
                 .HasForeignKey(rm => rm.ModuleId);
+
+            builder
+                .HasIndex(rm => new { rm.RoleId, rm.ModuleId })
+                .IsUnique();
         }
     }
 }

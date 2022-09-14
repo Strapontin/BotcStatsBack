@@ -3,6 +3,7 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    partial class MainModelContextModelSnapshot : ModelSnapshot
+    [Migration("20220914203439_AddingForeignKeysToGame")]
+    partial class AddingForeignKeysToGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -56,9 +58,6 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("ModuleId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Modules");
                 });
 
@@ -73,9 +72,6 @@ namespace BotcRoles.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("PlayerId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Players");
                 });
@@ -127,29 +123,26 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.RoleModule", b =>
                 {
-                    b.Property<long>("RoleId")
+                    b.Property<long>("RoleModuleId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("ModuleId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("RoleModuleId")
+                    b.Property<long>("RoleId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("RoleId", "ModuleId");
+                    b.HasKey("RoleModuleId");
 
                     b.HasIndex("ModuleId");
 
-                    b.HasIndex("RoleId", "ModuleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("RoleModules");
                 });

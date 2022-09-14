@@ -4,8 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
+    /// <summary>
+    /// Datas about a Player
+    /// </summary>
     public class Player
     {
+        public Player() { }
+
         public Player(string name)
         {
             Name = name;

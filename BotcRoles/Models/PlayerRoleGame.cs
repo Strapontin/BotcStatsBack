@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BotcRoles.Models
 {
+    /// <summary>
+    /// Data about a Role played by a Player in a Game
+    /// </summary>
     public class PlayerRoleGame
     {
-        public PlayerRoleGame()
-        { }
+        public PlayerRoleGame() { }
+
         public PlayerRoleGame(Player player, Game game)
         {
             Player = player;
@@ -30,7 +33,7 @@ namespace BotcRoles.Models
 
 
 
-    public class PlayerRoleEntityTypeConfiguration : IEntityTypeConfiguration<PlayerRoleGame>
+    public class PlayerRoleGameEntityTypeConfiguration : IEntityTypeConfiguration<PlayerRoleGame>
     {
         public void Configure(EntityTypeBuilder<PlayerRoleGame> builder)
         {

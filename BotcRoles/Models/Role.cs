@@ -5,8 +5,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
+    /// <summary>
+    /// Datas about a Role (Name, Type and Alignment)
+    /// </summary>
     public class Role
     {
+        public Role() { }
+
         public Role(string name, Enums.Type type, Alignment defaultAlignment)
         {
             Name = name;

@@ -3,6 +3,7 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    partial class MainModelContextModelSnapshot : ModelSnapshot
+    [Migration("20220914202754_UpdateMade")]
+    partial class UpdateMade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -32,14 +34,14 @@ namespace BotcRoles.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("StoryTellerId")
+                    b.Property<long>("StoryTellerPlayerId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("GameId");
 
                     b.HasIndex("ModuleId");
 
-                    b.HasIndex("StoryTellerId");
+                    b.HasIndex("StoryTellerPlayerId");
 
                     b.ToTable("Games");
                 });
@@ -56,9 +58,6 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("ModuleId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Modules");
                 });
 
@@ -73,9 +72,6 @@ namespace BotcRoles.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("PlayerId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Players");
                 });
@@ -127,29 +123,26 @@ namespace BotcRoles.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.RoleModule", b =>
                 {
-                    b.Property<long>("RoleId")
+                    b.Property<long>("RoleModuleId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("ModuleId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("RoleModuleId")
+                    b.Property<long>("RoleId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("RoleId", "ModuleId");
+                    b.HasKey("RoleModuleId");
 
                     b.HasIndex("ModuleId");
 
-                    b.HasIndex("RoleId", "ModuleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("RoleModules");
                 });
@@ -164,7 +157,7 @@ namespace BotcRoles.Migrations
 
                     b.HasOne("BotcRoles.Models.Player", "StoryTeller")
                         .WithMany("GamesStoryTelling")
-                        .HasForeignKey("StoryTellerId")
+                        .HasForeignKey("StoryTellerPlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

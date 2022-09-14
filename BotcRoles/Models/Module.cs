@@ -4,8 +4,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
+    /// <summary>
+    /// Data about a module to play (mostly defines what roles are in it)
+    /// </summary>
     public class Module
     {
+        public Module() { }
+
+        public Module(string name)
+        {
+            Name = name;
+        }
+
         public long ModuleId { get; set; }
         public string Name { get; set; }
 

@@ -14,19 +14,26 @@ namespace BotcRoles.Models
 
         public string DbPath { get; }
 
-        public ModelContext()
+        public ModelContext(DbContextOptions<ModelContext> options) : base(options)
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
             DbPath = System.IO.Path.Join(path, "test.db");// TODO : Change the path
+            // C:\Users\antod\AppData\Local
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
 
 
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new GameEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ModuleEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PlayerEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PlayerRoleGameEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleModuleEntityTypeConfiguration());
+        }
     }
 }
