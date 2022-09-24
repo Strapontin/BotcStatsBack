@@ -15,6 +15,13 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
+
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,3 +38,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { } // utile pour exposer la class Program au projet de tests

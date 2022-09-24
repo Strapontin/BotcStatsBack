@@ -48,7 +48,7 @@ namespace BotcRoles.Controllers
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    return BadRequest($"Le nom du joueur est vide.");
+                    return BadRequest($"Le nom du module est vide.");
                 }
 
                 if (_db.Modules.Any(m => m.Name == name))

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace BotcRoles.Models
 {
@@ -14,12 +15,13 @@ namespace BotcRoles.Models
 
         public string DbPath { get; }
 
-        public ModelContext(DbContextOptions<ModelContext> options) : base(options)
+        public ModelContext(DbContextOptions<ModelContext> options, IConfiguration config) : base(options)
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "test.db");// TODO : Change the path
-            // C:\Users\antod\AppData\Local
+            var path = config["Db_Path"];
+            var name = config["Db_Name"];
+            DbPath = System.IO.Path.Join(path, name);
+
+            this.Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
