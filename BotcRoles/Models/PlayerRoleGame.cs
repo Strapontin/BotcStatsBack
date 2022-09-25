@@ -22,8 +22,8 @@ namespace BotcRoles.Models
         public long PlayerId { get; set; }
         public Player Player { get; set; }
 
-        public long RoleId { get; set; }
-        public Role Role { get; set; }
+        public long? RoleId { get; set; }
+        public Role? Role { get; set; }
 
         public long GameId { get; set; }
         public Game Game { get; set; }

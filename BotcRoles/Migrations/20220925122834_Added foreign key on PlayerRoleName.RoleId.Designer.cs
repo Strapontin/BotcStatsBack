@@ -3,6 +3,7 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    partial class MainModelContextModelSnapshot : ModelSnapshot
+    [Migration("20220925122834_Added foreign key on PlayerRoleName.RoleId")]
+    partial class AddedforeignkeyonPlayerRoleNameRoleId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -106,7 +108,7 @@ namespace BotcRoles.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("PlayerRoleGames");
+                    b.ToTable("PlayerRoles");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.Role", b =>

@@ -19,31 +19,46 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<Role> Get()
+        public IEnumerable<Role> GetRoles()
         {
             var roles = _db.Roles;
             return roles;
         }
 
         [HttpPost]
-        [Route("{roleName}/{defaultAlignment}/{type}")]
-        public IActionResult Post(string roleName, Enums.Type type, Alignment defaultAlignment)
+        [Route("{roleName}")]
+        public IActionResult AddRole(string roleName, [FromQuery] Enums.Type? type, [FromQuery] Alignment? defaultAlignment)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(roleName))
+                {
+                    return BadRequest($"Le nom du role est vide.");
+                }
+
                 if (_db.Roles.Any(p => p.Name == roleName))
                 {
                     return BadRequest($"Le role '{roleName}' existe déjà.");
                 }
 
-                _db.Add(new Role(roleName, type, defaultAlignment));
+                if (type == null)
+                {
+                    return BadRequest($"Le type n'est pas défini.");
+                }
+
+                if (defaultAlignment == null)
+                {
+                    return BadRequest($"L'alignement par défaut n'est pas défini.");
+                }
+
+                _db.Add(new Role(roleName, type.Value, defaultAlignment.Value));
                 _db.SaveChanges();
 
                 return Created("", null);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException);
+                return StatusCode(500, ex.InnerException);
             }
         }
     }

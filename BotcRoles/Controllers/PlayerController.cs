@@ -1,5 +1,6 @@
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BotcRoles.Controllers
 {
@@ -18,15 +19,27 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<Player> Get()
+        public IEnumerable<Player> GetPlayers()
         {
             var players = _db.Players;
             return players;
         }
 
+        [HttpGet]
+        [Route("{playerId}")]
+        public Player? GetPlayer(long playerId)
+        {
+            var player = _db.Players
+                .Where(p => p.PlayerId == playerId)
+                .Include(p => p.PlayerRoleGames)
+                .FirstOrDefault();
+
+            return player;
+        }
+
         [HttpPost]
         [Route("{playerName}")]
-        public IActionResult Post(string playerName)
+        public IActionResult PostPlayer(string playerName)
         {
             try
             {
@@ -47,7 +60,7 @@ namespace BotcRoles.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException);
+                return StatusCode(500, ex.InnerException);
             }
         }
     }

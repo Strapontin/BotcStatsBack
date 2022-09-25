@@ -6,7 +6,7 @@ namespace BotcRoles.Models
     public class ModelContext : DbContext
     {
         public DbSet<Player> Players { get; set; }
-        public DbSet<PlayerRoleGame> PlayerRoles { get; set; }
+        public DbSet<PlayerRoleGame> PlayerRoleGames { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Module> Modules { get; set; }

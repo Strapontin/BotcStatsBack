@@ -1,4 +1,5 @@
 ﻿using BotcRoles.Test.HelperMethods;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
@@ -8,7 +9,7 @@ namespace BotcRoles.Test
     public class ModuleControllerShould
     {
         [Test]
-        public void PostAndGet_Module()
+        public void Post_And_Get_Module()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
@@ -16,21 +17,20 @@ namespace BotcRoles.Test
             string moduleName = "ModuleName";
 
             // Act
-            var res = (ObjectResult)ModuleHelper.PostModule(modelContext, moduleName);
+            var res = ModuleHelper.PostModule(modelContext, moduleName);
 
             // Assert
-            Assert.IsNotNull(res);
-            Assert.AreEqual(201, res.StatusCode);
+            Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
             // Act
-            long moduleId = ModuleHelper.GetModule(modelContext).First().ModuleId;
+            long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
             Assert.AreEqual(moduleName, ModuleHelper.GetModule(modelContext, moduleId).Name);
 
             Helper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void CantPostTwoModulesWithSameName()
+        public void Cant_Post_Two_Modules_With_Same_Name()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
@@ -39,15 +39,14 @@ namespace BotcRoles.Test
 
             // Act
             ModuleHelper.PostModule(modelContext, moduleName);
-            var res = (ObjectResult)ModuleHelper.PostModule(modelContext, moduleName);
-            Assert.IsNotNull(res);
-            Assert.AreEqual(400, res.StatusCode);
+            var res = ModuleHelper.PostModule(modelContext, moduleName);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
             Helper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void CantPostModuleWithEmptyName()
+        public void Cant_Post_Module_With_Empty_Name()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
@@ -55,11 +54,168 @@ namespace BotcRoles.Test
             string moduleName = string.Empty;
 
             // Act
-            var res = (ObjectResult)ModuleHelper.PostModule(modelContext, moduleName);
-            Assert.IsNotNull(res);
-            Assert.AreEqual(400, res.StatusCode);
+            var res = ModuleHelper.PostModule(modelContext, moduleName);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
             Helper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Add_And_Get_Role_In_Module()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string moduleName = "ModuleName";
+            string roleName = "RoleName";
+
+            try
+            {
+                ModuleHelper.PostModule(modelContext, moduleName);
+                long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+
+                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Good);
+                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+
+                // Act
+                var res = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+
+                // Assert
+                Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+
+                // Act
+                var rolesInModule = ModuleHelper.GetRolesFromModule(modelContext, moduleId);
+
+                // Assert
+                Assert.AreEqual(roleName, rolesInModule.First().Role.Name);
+            }
+            finally
+            {
+                Helper.DeleteCreatedDatabase(modelContext);
+            }
+        }
+
+        [Test]
+        public void Cant_Add_Twice_Same_Role_In_Module()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string moduleName = "ModuleName";
+            string roleName = "RoleName";
+
+            try
+            {
+                ModuleHelper.PostModule(modelContext, moduleName);
+                long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+
+                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Good);
+                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+
+                // Act
+                var res1 = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+                var res2 = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+
+                // Assert
+                Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res1).StatusCode);
+                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res2).StatusCode);
+            }
+            finally
+            {
+                Helper.DeleteCreatedDatabase(modelContext);
+            }
+        }
+
+        [Test]
+        public void Cant_Add_Role_In_Module_With_Wrong_ModuleId()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string moduleName = "ModuleName";
+            string roleName = "RoleName";
+
+            try
+            {
+                ModuleHelper.PostModule(modelContext, moduleName);
+                long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+
+                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Good);
+                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+
+                // Act
+                var res = ModuleHelper.AddRoleInModule(modelContext, moduleId + 1, roleId);
+
+                // Assert
+                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            }
+            finally
+            {
+                Helper.DeleteCreatedDatabase(modelContext);
+            }
+        }
+
+        [Test]
+        public void Cant_Add_Role_In_Module_With_Wrong_RoleId()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string moduleName = "ModuleName";
+            string roleName = "RoleName";
+
+            try
+            {
+                ModuleHelper.PostModule(modelContext, moduleName);
+                long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+
+                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Good);
+                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+
+                // Act
+                var res = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId + 1);
+
+                // Assert
+                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            }
+            finally
+            {
+                Helper.DeleteCreatedDatabase(modelContext);
+            }
+        }
+
+        [Test]
+        public void Remove_Role_From_Module()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string moduleName = "ModuleName";
+            string roleName = "RoleName";
+
+            try
+            {
+                ModuleHelper.PostModule(modelContext, moduleName);
+                long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+
+                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Good);
+                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+
+                ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+
+                // Act
+                var res = ModuleHelper.RemoveRoleFromModule(modelContext, moduleId, roleId);
+
+                // Assert
+                Assert.AreEqual(StatusCodes.Status200OK, ((OkResult)res).StatusCode);
+
+                var roles = ModuleHelper.GetRolesFromModule(modelContext, moduleId);
+                Assert.IsEmpty(roles);
+            }
+            finally
+            {
+                Helper.DeleteCreatedDatabase(modelContext);
+            }
         }
     }
 }

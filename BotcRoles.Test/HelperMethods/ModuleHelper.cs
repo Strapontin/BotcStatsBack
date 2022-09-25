@@ -15,11 +15,11 @@ namespace BotcRoles.Test.HelperMethods
         {
             ModuleController moduleController = new(null!, modelContext);
 
-            var res = moduleController.Post(moduleName);
+            var res = moduleController.CreateModule(moduleName);
             return res;
         }
 
-        public static IEnumerable<Module> GetModule(ModelContext modelContext)
+        public static IEnumerable<Module> GetModules(ModelContext modelContext)
         {
             ModuleController moduleController = new(null!, modelContext);
 
@@ -32,6 +32,30 @@ namespace BotcRoles.Test.HelperMethods
 
             var res = moduleController.Get(moduleId);
             return res!;
+        }
+
+        public static IActionResult AddRoleInModule(ModelContext modelContext, long moduleId, long roleId)
+        {
+            ModuleController moduleController = new(null!, modelContext);
+
+            var res = moduleController.AddRoleInModule(moduleId, roleId);
+            return res;
+        }
+
+        public static IEnumerable<RoleModule> GetRolesFromModule(ModelContext modelContext, long moduleId)
+        {
+            ModuleController moduleController = new(null!, modelContext);
+
+            var res = moduleController.GetRolesFromModule(moduleId);
+            return res;
+        }
+
+        public static IActionResult RemoveRoleFromModule(ModelContext modelContext, long moduleId, long roleId)
+        {
+            ModuleController moduleController = new(null!, modelContext);
+
+            var res = moduleController.RemoveRoleFromModule(moduleId, roleId);
+            return res;
         }
     }
 }

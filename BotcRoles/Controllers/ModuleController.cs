@@ -1,4 +1,3 @@
-using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +21,8 @@ namespace BotcRoles.Controllers
         [Route("")]
         public IEnumerable<Module> Get()
         {
-            var roles = _db.Modules
-                .ToList();
-
-            return roles;
+            var modules = _db.Modules;
+            return modules;
         }
 
         [HttpGet]
@@ -42,7 +39,7 @@ namespace BotcRoles.Controllers
 
         [HttpPost]
         [Route("{name}")]
-        public IActionResult Post(string name)
+        public IActionResult CreateModule(string name)
         {
             try
             {
@@ -63,7 +60,81 @@ namespace BotcRoles.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException);
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpGet]
+        [Route("{moduleId}")]
+        public IEnumerable<RoleModule> GetRolesFromModule(long moduleId)
+        {
+            var rolesInModule = _db.RoleModules
+                .Where(rm => rm.ModuleId == moduleId);
+
+            return rolesInModule;
+        }
+
+        [HttpPost]
+        [Route("{moduleId}")]
+        public IActionResult AddRoleInModule(long moduleId, [FromQuery] long roleId)
+        {
+            try
+            {
+                var module = _db.Modules
+                    .Where(m => m.ModuleId == moduleId)
+                    .Include(m => m.RoleModules)
+                    .FirstOrDefault();
+
+                var role = _db.Roles.Find(roleId);
+
+                if (module == null)
+                {
+                    return BadRequest($"Le module avec l'id '{moduleId}' n'a pas été trouvé.");
+                }
+
+                if (role == null)
+                {
+                    return BadRequest($"Le role avec l'id '{roleId}' n'a pas été trouvé.");
+                }
+
+                if (module.RoleModules.Any(rm => rm.RoleId == roleId))
+                {
+                    return BadRequest($"Ce rôle existe déjà dans ce module.");
+                }
+
+                _db.Add(new RoleModule(role, module));
+                _db.SaveChanges();
+
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{moduleId}")]
+        public IActionResult RemoveRoleFromModule(long moduleId, [FromQuery] long roleId)
+        {
+            try
+            {
+                var roleModule = _db.RoleModules.Where(rm => rm.ModuleId == moduleId &&
+                                                            rm.RoleId == roleId).FirstOrDefault();
+
+                if (roleModule == null)
+                {
+                    return BadRequest($"Le role n'existe pas dans ce module.");
+                }
+
+                _db.RoleModules.Remove(roleModule);
+                _db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
             }
         }
     }

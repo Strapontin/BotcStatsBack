@@ -3,6 +3,7 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    partial class MainModelContextModelSnapshot : ModelSnapshot
+    [Migration("20220925225422_Rename table PlayerRoleGames")]
+    partial class RenametablePlayerRoleGames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
