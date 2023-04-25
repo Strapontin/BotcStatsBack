@@ -1,0 +1,8 @@
+.main {
+  width: 90%;
+  max-width: 40rem;
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
