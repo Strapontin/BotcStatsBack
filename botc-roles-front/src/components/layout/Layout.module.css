@@ -1,6 +1,6 @@
 .main {
-  width: 90%;
-  max-width: 40rem;
+  width: 90%; /* Utile pour le mobile */
+  max-width: 30rem;
   margin: 3rem auto;
   display: flex;
   flex-direction: column;

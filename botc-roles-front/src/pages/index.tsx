@@ -1,5 +1,5 @@
-import GamesPlayedByPlayer from "./parties-joueurs";
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <GamesPlayedByPlayer />;
+  redirect("/parties-joueurs");
 }
