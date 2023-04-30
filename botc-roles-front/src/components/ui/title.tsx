@@ -1,3 +1,5 @@
+import { Text } from "@nextui-org/react";
+
 export default function Title(props: any) {
-  return <h1 className="text-center text-3xl">{props.children}</h1>;
+  return <Text span size="$4xl">{props.children}</Text>;
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
+import { Text } from "@nextui-org/react";
 
 export default function UserDetailsPage() {
   const playerName = useRouter().query.player;
@@ -18,11 +19,18 @@ export default function UserDetailsPage() {
     initPlayer();
   }, [playerName]);
 
+  if (!playerName) {
+    return;
+  }
+
   if (!player) {
     return (
       <Fragment>
         <Title>
-          Détails <strong>{playerName}</strong>
+          Détails{" "}
+          <Text span color="grey">
+            {playerName}
+          </Text>
         </Title>
         <p>loading...</p>
       </Fragment>
@@ -32,7 +40,10 @@ export default function UserDetailsPage() {
   return (
     <Fragment>
       <Title>
-        Détails <strong>{playerName}</strong>
+        Détails{" "}
+        <Text span color="grey">
+          {playerName}
+        </Text>
       </Title>
       <Container>
         <ListItem name="Parties jouées" value={player.gamesPlayed} />
