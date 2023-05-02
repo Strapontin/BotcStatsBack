@@ -1,10 +1,13 @@
 import classes from "./ListItem.module.css";
+import { Text } from "@nextui-org/react";
 
-export default function ListItem(props: { name: string; value: number }) {
+export default function ListItem(props: { name: any; value: any }) {
+  console.log(props.name);
+
   return (
     <div className={classes["list-item"]}>
-      <span className="text-lg">{props.name}</span>
-      <span className="text-lg">{props.value}</span>
+      <Text span>{props.name}</Text>
+      <Text span>{props.value}</Text>
     </div>
   );
 }

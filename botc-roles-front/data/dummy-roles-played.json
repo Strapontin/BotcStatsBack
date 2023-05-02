@@ -1,0 +1,52 @@
+[
+  {
+    "name": "acrobate",
+    "timesPlayed": 9,
+    "category": "townsfolk"
+  },
+  {
+    "name": "baron",
+    "timesPlayed": 8,
+    "category": "minion"
+  },
+  {
+    "name": "amnesique",
+    "timesPlayed": 7,
+    "category": "townsfolk"
+  },
+  {
+    "name": "croqueuse-d-hommes",
+    "timesPlayed": 6,
+    "category": "minion"
+  },
+  {
+    "name": "soulard",
+    "timesPlayed": 5,
+    "category": "outsider"
+  },
+  {
+    "name": "prophete-de-l-effroi",
+    "timesPlayed": 4,
+    "category": "minion"
+  },
+  {
+    "name": "zombuul",
+    "timesPlayed": 3,
+    "category": "demon"
+  },
+  {
+    "name": "lunatique",
+    "timesPlayed": 2,
+    "category": "outsider"
+  },
+  {
+    "name": "reclus",
+    "timesPlayed": 1,
+    "category": "outsider"
+  },
+  {
+    "name": "po",
+    "timesPlayed": 0,
+    "category": "demon"
+  }
+]

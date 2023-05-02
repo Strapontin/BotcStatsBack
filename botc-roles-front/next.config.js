@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/parties-joueurs',
+        destination: '/',
         permanent: true,
       },
     ]

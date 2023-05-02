@@ -1,3 +1,4 @@
+import { Game } from "@/entities/Game";
 import { Player } from "@/entities/Player";
 
 export async function getAllPlayers() {
@@ -17,12 +18,56 @@ export async function getAllPlayers() {
   return players;
 }
 
+export async function getAllRolesPlayed() {
+  const response = await fetch(
+    "https://nextjs-course-b67fb-default-rtdb.firebaseio.com/botc.json"
+  );
+  const data = await response.json();
+  const rolesPlayed = [];
+
+  console.log(data);
+
+  for (const key in data["roles-played"]) {
+    rolesPlayed.push({
+      id: key,
+      ...data["roles-played"][key],
+    });
+  }
+
+  return rolesPlayed;
+}
+
 export async function getPlayerByName(playerName: any) {
   const allPlayers = await getAllPlayers();
+  const allRolesPlayed = await getAllRolesPlayed();
 
   const player = allPlayers.find((player) => player.id === playerName);
 
-  return player;
+  return { player, allRolesPlayed };
+}
+
+export async function getAllGames() {
+  const response = await fetch(
+    "https://nextjs-course-b67fb-default-rtdb.firebaseio.com/botc.json"
+  );
+  const data = await response.json();
+  const games: Game[] = [];
+
+  for (const key in data.games) {
+    games.push({
+      id: key,
+      ...data.games[key],
+    });
+  }
+
+  return games;
+}
+
+export async function getGameById(id: number) {
+  const allGames = await getAllGames();
+  const game = allGames.find((game) => game.id === id);
+
+  return game;
 }
 
 // const DUMMY_DATA = {

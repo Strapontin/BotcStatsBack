@@ -19,14 +19,10 @@ export default function SelectionStats() {
           }}
           aria-label="Static Actions"
         >
-          <Dropdown.Item key="/parties-joueur">
+          <Dropdown.Item key="/games-player">
             Nombre de parties par joueur
           </Dropdown.Item>
-          <Dropdown.Item key="copy">Copy link</Dropdown.Item>
-          <Dropdown.Item key="edit">Edit file</Dropdown.Item>
-          <Dropdown.Item key="delete" color="error">
-            Delete file
-          </Dropdown.Item>
+          <Dropdown.Item key="/games">Liste parties</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </div>
