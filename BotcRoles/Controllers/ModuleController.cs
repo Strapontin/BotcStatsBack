@@ -65,7 +65,7 @@ namespace BotcRoles.Controllers
         }
 
         [HttpGet]
-        [Route("{moduleId}")]
+        [Route("{moduleId}/roles/")]
         public IEnumerable<RoleModule> GetRolesFromModule(long moduleId)
         {
             var rolesInModule = _db.RoleModules

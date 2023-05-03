@@ -1,4 +1,5 @@
 using BotcRoles.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,7 @@ namespace BotcRoles.Controllers
             return player;
         }
 
+        [Authorize(AuthenticationSchemes = "Discord")]
         [HttpPost]
         [Route("{playerName}")]
         public IActionResult PostPlayer(string playerName)
