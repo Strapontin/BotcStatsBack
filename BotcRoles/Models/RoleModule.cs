@@ -16,7 +16,6 @@ namespace BotcRoles.Models
             Module = module;
         }
 
-        public long RoleModuleId { get; set; }
 
         public long RoleId { get; set; }
         public Role Role { get; set; }
@@ -32,19 +31,16 @@ namespace BotcRoles.Models
         public void Configure(EntityTypeBuilder<RoleModule> builder)
         {
             builder
-                .HasKey(rm => rm.RoleModuleId);
-
-            builder
                 .HasKey(rm => new { rm.RoleId, rm.ModuleId });
 
             builder
                 .HasOne(rm => rm.Role)
-                .WithMany(r => r.RoleModules)
+                .WithMany(r => r.RolesModule)
                 .HasForeignKey(rm => rm.RoleId);
 
             builder
                 .HasOne(rm => rm.Module)
-                .WithMany(m => m.RoleModules)
+                .WithMany(m => m.RolesModule)
                 .HasForeignKey(rm => rm.ModuleId);
 
             builder

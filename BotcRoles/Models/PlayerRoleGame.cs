@@ -11,9 +11,10 @@ namespace BotcRoles.Models
     {
         public PlayerRoleGame() { }
 
-        public PlayerRoleGame(Player player, Game game)
+        public PlayerRoleGame(Player player, Role role, Game game)
         {
             Player = player;
+            Role = role;
             Game = game;
         }
 

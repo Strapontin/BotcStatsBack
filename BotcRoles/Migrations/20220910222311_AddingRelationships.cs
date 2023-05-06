@@ -22,7 +22,7 @@ namespace BotcRoles.Migrations
 
             migrationBuilder.AddColumn<long>(
                 name: "RoleModuleId",
-                table: "RoleModules",
+                table: "RolesModule",
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 0L)
@@ -37,8 +37,8 @@ namespace BotcRoles.Migrations
                 .Annotation("Sqlite:Autoincrement", true);
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules",
+                name: "PK_RolesModule",
+                table: "RolesModule",
                 column: "RoleModuleId");
 
             migrationBuilder.AddPrimaryKey(
@@ -50,8 +50,8 @@ namespace BotcRoles.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules");
+                name: "PK_RolesModule",
+                table: "RolesModule");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_PlayerRoles",
@@ -59,7 +59,7 @@ namespace BotcRoles.Migrations
 
             migrationBuilder.DropColumn(
                 name: "RoleModuleId",
-                table: "RoleModules");
+                table: "RolesModule");
 
             migrationBuilder.DropColumn(
                 name: "PlayerRoleGameId",

@@ -14,7 +14,7 @@ namespace BotcRoles.Test.HelperMethods
     {
         public static IActionResult PostGame(ModelContext modelContext, long moduleId, long storyTellerId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.Post(moduleId, storyTellerId);
             return res;
@@ -22,14 +22,14 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<Game> GetGames(ModelContext modelContext)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             return gameController.Get();
         }
 
         public static Game GetGame(ModelContext modelContext, long gameId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.Get(gameId);
             return res!;
@@ -37,7 +37,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.Delete(gameId);
             return res;
@@ -54,7 +54,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult AddPlayerInGame(ModelContext modelContext, long gameId, long? playerId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.AddPlayerInGame(gameId, playerId);
             return res;
@@ -62,7 +62,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<Player>? GetPlayersInGame(ModelContext modelContext, long gameId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.GetPlayers(gameId);
             return res;
@@ -70,7 +70,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult ChangePlayerRoleAndAlignmentInGame(ModelContext modelContext, long gameId, long playerId, long roleId, Alignment finalAlignment)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.ChangePlayerRoleAndAlignmentInGame(gameId, playerId, roleId, finalAlignment);
             return res;
@@ -78,7 +78,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<PlayerRoleGame>? GetPlayerRoleFromGame(ModelContext modelContext, long gameId, long playerId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gameController = new(null!, modelContext);
 
             var res = gameController.GetPlayerRoleFromGame(gameId, playerId);
             return res;

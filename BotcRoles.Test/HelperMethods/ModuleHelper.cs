@@ -13,7 +13,7 @@ namespace BotcRoles.Test.HelperMethods
     {
         public static IActionResult PostModule(ModelContext modelContext, string moduleName)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             var res = moduleController.CreateModule(moduleName);
             return res;
@@ -21,14 +21,14 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<Module> GetModules(ModelContext modelContext)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             return moduleController.Get();
         }
 
         public static Module GetModule(ModelContext modelContext, long moduleId)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             var res = moduleController.Get(moduleId);
             return res!;
@@ -36,7 +36,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult AddRoleInModule(ModelContext modelContext, long moduleId, long roleId)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             var res = moduleController.AddRoleInModule(moduleId, roleId);
             return res;
@@ -44,7 +44,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<RoleModule> GetRolesFromModule(ModelContext modelContext, long moduleId)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             var res = moduleController.GetRolesFromModule(moduleId);
             return res;
@@ -52,7 +52,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult RemoveRoleFromModule(ModelContext modelContext, long moduleId, long roleId)
         {
-            ModuleController moduleController = new(null!, modelContext);
+            ModulesController moduleController = new(null!, modelContext);
 
             var res = moduleController.RemoveRoleFromModule(moduleId, roleId);
             return res;

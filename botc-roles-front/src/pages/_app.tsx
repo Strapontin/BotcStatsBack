@@ -7,10 +7,6 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 export default function App({ Component, pageProps }: AppProps) {
   const { isBrowser } = useSSR();
 
-  const lightTheme = createTheme({
-    type: "dark",
-    theme: {},
-  });
   const darkTheme = createTheme({
     type: "dark",
     theme: {},
@@ -22,7 +18,6 @@ export default function App({ Component, pageProps }: AppProps) {
         defaultTheme="system"
         attribute="class"
         value={{
-          light: lightTheme.className,
           dark: darkTheme.className,
         }}
       >

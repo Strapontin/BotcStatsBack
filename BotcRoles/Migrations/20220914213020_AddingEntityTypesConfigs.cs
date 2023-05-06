@@ -9,16 +9,16 @@ namespace BotcRoles.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules");
+                name: "PK_RolesModule",
+                table: "RolesModule");
 
             migrationBuilder.DropIndex(
-                name: "IX_RoleModules_RoleId",
-                table: "RoleModules");
+                name: "IX_RolesModule_RoleId",
+                table: "RolesModule");
 
             migrationBuilder.AlterColumn<long>(
                 name: "RoleModuleId",
-                table: "RoleModules",
+                table: "RolesModule",
                 type: "INTEGER",
                 nullable: false,
                 oldClrType: typeof(long),
@@ -26,8 +26,8 @@ namespace BotcRoles.Migrations
                 .OldAnnotation("Sqlite:Autoincrement", true);
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules",
+                name: "PK_RolesModule",
+                table: "RolesModule",
                 columns: new[] { "RoleId", "ModuleId" });
 
             migrationBuilder.CreateIndex(
@@ -37,8 +37,8 @@ namespace BotcRoles.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleModules_RoleId_ModuleId",
-                table: "RoleModules",
+                name: "IX_RolesModule_RoleId_ModuleId",
+                table: "RolesModule",
                 columns: new[] { "RoleId", "ModuleId" },
                 unique: true);
 
@@ -62,12 +62,12 @@ namespace BotcRoles.Migrations
                 table: "Roles");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules");
+                name: "PK_RolesModule",
+                table: "RolesModule");
 
             migrationBuilder.DropIndex(
-                name: "IX_RoleModules_RoleId_ModuleId",
-                table: "RoleModules");
+                name: "IX_RolesModule_RoleId_ModuleId",
+                table: "RolesModule");
 
             migrationBuilder.DropIndex(
                 name: "IX_Players_Name",
@@ -79,7 +79,7 @@ namespace BotcRoles.Migrations
 
             migrationBuilder.AlterColumn<long>(
                 name: "RoleModuleId",
-                table: "RoleModules",
+                table: "RolesModule",
                 type: "INTEGER",
                 nullable: false,
                 oldClrType: typeof(long),
@@ -87,13 +87,13 @@ namespace BotcRoles.Migrations
                 .Annotation("Sqlite:Autoincrement", true);
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_RoleModules",
-                table: "RoleModules",
+                name: "PK_RolesModule",
+                table: "RolesModule",
                 column: "RoleModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleModules_RoleId",
-                table: "RoleModules",
+                name: "IX_RolesModule_RoleId",
+                table: "RolesModule",
                 column: "RoleId");
         }
     }

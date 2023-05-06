@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState } from "react";
-import { getPlayerByName } from "../../../data/dummy-backend";
 import { Player } from "@/entities/Player";
 import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
@@ -8,6 +7,7 @@ import Title from "@/components/ui/title";
 import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
+import { getPlayerByName } from "../../../data/back-api";
 
 export default function PlayerPage() {
   const playerName = useRouter().query.playerName?.toString();
@@ -22,6 +22,8 @@ export default function PlayerPage() {
 
   useEffect(() => {
     async function initPlayer() {
+      if (playerName === undefined) return;
+
       const p = await getPlayerByName(playerName);
       setPlayer(p.player);
       setRolesPlayed(p.allRolesPlayed);
@@ -30,6 +32,7 @@ export default function PlayerPage() {
   }, [playerName]);
 
   if (!playerName) {
+    <Loading />;
     return;
   }
 
@@ -39,15 +42,29 @@ export default function PlayerPage() {
     </Title>
   );
 
-  if (!player || !rolesPlayed) {
-    return (
-      <Fragment>
-        {title}
-        <Spacer y={3} />
-        <Loading />
-      </Fragment>
-    );
-  }
+  const playerComponent = player ? (
+    <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
+  ) : (
+    <Loading />
+  );
+
+  const rolesComponent = rolesPlayed ? (
+    rolesPlayed.map((rp) => (
+      <ListItem
+        key={rp.name}
+        name={
+          <ImageIconName
+            setNameAtRightOfImage
+            name={rp.name}
+            category={rp.category}
+          />
+        }
+        value={rp.timesPlayed}
+      />
+    ))
+  ) : (
+    <Loading />
+  );
 
   return (
     <Fragment>
@@ -55,29 +72,16 @@ export default function PlayerPage() {
       <Collapse.Group accordion={false} css={{ w: "100%" }}>
         <Collapse expanded title="Détails généraux">
           <Container>
-            <ListItem name="Parties jouées" value={player.gamesPlayed} />
-            <ListItem name="Parties gagnées" value={player.wins} />
+            {playerComponent}
+
+            {/* <ListItem name="Parties gagnées" value={player.wins} />
             <ListItem name="Parties perdues" value={player.loses} />
             <ListItem name="Parties maléfique" value={player.nbTimesEvil} />
-            <ListItem name="Parties gentil" value={player.nbTimesGood} />
+            <ListItem name="Parties gentil" value={player.nbTimesGood} /> */}
           </Container>
         </Collapse>
         <Collapse expanded title="Détails des rôles joués">
-          <Container>
-            {rolesPlayed.map((rp) => (
-              <ListItem
-                key={rp.name}
-                name={
-                  <ImageIconName
-                    setNameAtRightOfImage
-                    name={rp.name}
-                    category={rp.category}
-                  />
-                }
-                value={rp.timesPlayed}
-              />
-            ))}
-          </Container>
+          <Container>{rolesComponent}</Container>
         </Collapse>
       </Collapse.Group>
     </Fragment>

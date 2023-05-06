@@ -19,13 +19,12 @@ namespace BotcRoles.Models
         public long ModuleId { get; set; }
         public string Name { get; set; }
 
-        public List<RoleModule> RoleModules { get; set; }
+        public List<RoleModule> RolesModule { get; set; }
         public List<Game> Games { get; set; }
     }
 
 
     public class ModuleEntityTypeConfiguration : IEntityTypeConfiguration<Module>
-
     {
         public void Configure(EntityTypeBuilder<Module> builder)
         {

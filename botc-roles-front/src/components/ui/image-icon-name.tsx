@@ -6,12 +6,14 @@ export default function ImageIconName(props: {
   category: string;
   setNameAtRightOfImage?: boolean;
 }) {
-  const imgPath = `/images/roles-icons/${props.name}.png`;
+  const imgFileName = props.name
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replaceAll(" ", "-");
+  const imgPath = `/images/roles-icons/${imgFileName}.png`;
+  console.log(imgFileName)
 
-  var roleName = props.name.replace("-d-", " d'");
-  roleName = roleName.replace("-l-", " l'");
-  roleName = roleName.replace("-", " ");
-  roleName = roleName.charAt(0).toUpperCase() + roleName.slice(1);
+  var roleName = props.name;
 
   if (props.setNameAtRightOfImage) {
     return (

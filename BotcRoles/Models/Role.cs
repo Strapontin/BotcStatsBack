@@ -24,7 +24,7 @@ namespace BotcRoles.Models
         public Enums.Type Type { get; set; }
         public Alignment DefaultAlignment { get; set; }
 
-        public List<RoleModule> RoleModules { get; set; }
+        public List<RoleModule> RolesModule { get; set; }
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
     }
 

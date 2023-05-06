@@ -141,9 +141,6 @@ namespace BotcRoles.Migrations
                     b.Property<long>("ModuleId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("RoleModuleId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("RoleId", "ModuleId");
 
                     b.HasIndex("ModuleId");
@@ -151,7 +148,7 @@ namespace BotcRoles.Migrations
                     b.HasIndex("RoleId", "ModuleId")
                         .IsUnique();
 
-                    b.ToTable("RoleModules");
+                    b.ToTable("RolesModule");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
@@ -201,13 +198,13 @@ namespace BotcRoles.Migrations
             modelBuilder.Entity("BotcRoles.Models.RoleModule", b =>
                 {
                     b.HasOne("BotcRoles.Models.Module", "Module")
-                        .WithMany("RoleModules")
+                        .WithMany("RolesModule")
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BotcRoles.Models.Role", "Role")
-                        .WithMany("RoleModules")
+                        .WithMany("RolesModule")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -226,7 +223,7 @@ namespace BotcRoles.Migrations
                 {
                     b.Navigation("Games");
 
-                    b.Navigation("RoleModules");
+                    b.Navigation("RolesModule");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.Player", b =>
@@ -240,7 +237,7 @@ namespace BotcRoles.Migrations
                 {
                     b.Navigation("PlayerRoleGames");
 
-                    b.Navigation("RoleModules");
+                    b.Navigation("RolesModule");
                 });
 #pragma warning restore 612, 618
         }

@@ -80,7 +80,7 @@ namespace BotcRoles.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleModules",
+                name: "RolesModule",
                 columns: table => new
                 {
                     RoleId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -89,13 +89,13 @@ namespace BotcRoles.Migrations
                 constraints: table =>
                 {
                     table.ForeignKey(
-                        name: "FK_RoleModules_Modules_ModuleId",
+                        name: "FK_RolesModule_Modules_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Modules",
                         principalColumn: "ModuleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RoleModules_Roles_RoleId",
+                        name: "FK_RolesModule_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "RoleId",
@@ -131,13 +131,13 @@ namespace BotcRoles.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleModules_ModuleId",
-                table: "RoleModules",
+                name: "IX_RolesModule_ModuleId",
+                table: "RolesModule",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleModules_RoleId",
-                table: "RoleModules",
+                name: "IX_RolesModule_RoleId",
+                table: "RolesModule",
                 column: "RoleId");
 
             migrationBuilder.AddForeignKey(
@@ -183,7 +183,7 @@ namespace BotcRoles.Migrations
                 name: "playersInGames");
 
             migrationBuilder.DropTable(
-                name: "RoleModules");
+                name: "RolesModule");
 
             migrationBuilder.DropIndex(
                 name: "IX_Roles_Name",

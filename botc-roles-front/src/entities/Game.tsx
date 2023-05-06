@@ -1,15 +1,15 @@
-export type Game = {
-  id: number;
-  module: string;
-  storyTeller: string;
-  datePlayed: Date;
-  notes: string;
-  winningAlignment: string;
-  playerRoleGame: PlayerRoleGame[];
-};
+import { Module } from "./Module";
+import { Player } from "./Player";
+import { PlayerRoleGame } from "./PlayerRoleGame";
 
-export type PlayerRoleGame = {
-  playerName: string;
-  role: { name: string; category: string };
-  finalAlignment: string;
+export type Game = {
+  gameId: number;
+  moduleId: number;
+  module: Module;
+  storyTellerId: string;
+  storyTeller: Player;
+  creationDate: Date;
+  notes: string;
+  winningAlignment: string; // TODO
+  playerRoleGames: PlayerRoleGame[];
 };

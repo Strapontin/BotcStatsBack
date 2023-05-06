@@ -18,6 +18,13 @@ namespace BotcRoles.Models
 
         public long PlayerId { get; set; }
         public string Name { get; set; }
+        public int NbGamesPlayed
+        {
+            get
+            {
+                return PlayerRoleGames == null ? 0 : PlayerRoleGames.Count;
+            }
+        }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
         public List<Game> GamesStoryTelling { get; set; }

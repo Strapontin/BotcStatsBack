@@ -14,7 +14,7 @@ namespace BotcRoles.Test.HelperMethods
     {
         public static IActionResult AddRole(ModelContext modelContext, string roleName, Enums.Type? type, Alignment? defaultAlignment)
         {
-            RoleController roleController = new(null!, modelContext);
+            RolesController roleController = new(null!, modelContext);
 
             var res = roleController.AddRole(roleName, type, defaultAlignment);
             return res;
@@ -22,7 +22,7 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<Role> GetRoles(ModelContext modelContext)
         {
-            RoleController roleController = new(null!, modelContext);
+            RolesController roleController = new(null!, modelContext);
 
             return roleController.GetRoles();
         }

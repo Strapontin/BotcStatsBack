@@ -13,7 +13,7 @@ namespace BotcRoles.Test.HelperMethods
     {
         public static IActionResult PostPlayer(ModelContext modelContext, string playerName)
         {
-            PlayerController playerController = new(null!, modelContext);
+            PlayersController playerController = new(null!, modelContext);
 
             var res = playerController.PostPlayer(playerName);
             return res;
@@ -21,14 +21,14 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<Player> GetPlayers(ModelContext modelContext)
         {
-            PlayerController playerController = new(null!, modelContext);
+            PlayersController playerController = new(null!, modelContext);
 
             return playerController.GetPlayers();
         }
 
         public static Player GetPlayer(ModelContext modelContext, long playerId)
         {
-            PlayerController playerController = new(null!, modelContext);
+            PlayersController playerController = new(null!, modelContext);
 
             var res = playerController.GetPlayer(playerId);
             return res!;

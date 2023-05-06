@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
-import { getAllGames } from "../../../data/dummy-backend";
 import { Game } from "@/entities/Game";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
+import { getAllGames } from "../../../data/back-api";
+import { DateToString } from "@/components/helper/date";
 
 export default function GamesListPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -29,19 +30,17 @@ export default function GamesListPage() {
     );
   }
 
-  console.log(games);
-
   return (
     <Fragment>
       <Title>{title}</Title>
       <Container>
-        {games.map((game: any) => (
-          <Link key={game.id} href={`/games/${game.id}`} color="text">
+        {games.map((game: Game) => (
+          <Link key={game.gameId} href={`/games/${game.gameId}`} color="text">
             <ListItem
-              name={game.datePlayed}
+              name={DateToString(game.creationDate)}
               value={
                 <Fragment>
-                  Conté par {<PlayerName name={game.storyTeller} />}
+                  Contée par {<PlayerName name={game.storyTeller.name} />}
                 </Fragment>
               }
             ></ListItem>

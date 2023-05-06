@@ -142,7 +142,7 @@ namespace BotcRoles.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleModules");
+                    b.ToTable("RolesModule");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
