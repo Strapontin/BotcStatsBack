@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BotcRoles.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 
@@ -32,6 +33,8 @@ namespace BotcRoles.Models
         public string? Notes { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
+
+        public Alignment WinningAlignment { get; set; }
     }
 
 

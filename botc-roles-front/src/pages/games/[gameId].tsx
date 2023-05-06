@@ -37,6 +37,8 @@ export default function GamePage() {
     </Title>
   );
 
+  console.log(game);
+
   return (
     <Fragment>
       {title}
@@ -65,8 +67,7 @@ export default function GamePage() {
               value={
                 <ImageIconName
                   name={prg.role.name}
-                  // category={prg.role.category}
-                  category="minion"
+                  characterType={prg.role.characterType}
                 />
               }
             />

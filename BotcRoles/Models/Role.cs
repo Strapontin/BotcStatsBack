@@ -12,16 +12,16 @@ namespace BotcRoles.Models
     {
         public Role() { }
 
-        public Role(string name, Enums.Type type, Alignment defaultAlignment)
+        public Role(string name, CharacterType characterType, Alignment defaultAlignment)
         {
             Name = name;
-            Type = type;
+            CharacterType = characterType;
             DefaultAlignment = defaultAlignment;
         }
 
         public long RoleId { get; set; }
         public string Name { get; set; }
-        public Enums.Type Type { get; set; }
+        public CharacterType CharacterType { get; set; }
         public Alignment DefaultAlignment { get; set; }
 
         public List<RoleModule> RolesModule { get; set; }
@@ -46,7 +46,7 @@ namespace BotcRoles.Models
                 .IsRequired();
 
             builder
-                .Property(r => r.Type)
+                .Property(r => r.CharacterType)
                 .IsRequired();
 
             builder

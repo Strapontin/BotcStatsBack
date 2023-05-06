@@ -8,17 +8,12 @@ import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
 import { getPlayerByName } from "../../../data/back-api";
+import { Role } from "@/entities/Role";
 
 export default function PlayerPage() {
   const playerName = useRouter().query.playerName?.toString();
   const [player, setPlayer] = useState<Player>();
-  const [rolesPlayed, setRolesPlayed] = useState<
-    {
-      name: string;
-      timesPlayed: number;
-      category: string;
-    }[]
-  >();
+  const [rolesPlayed, setRolesPlayed] = useState<Role[]>();
 
   useEffect(() => {
     async function initPlayer() {
@@ -56,7 +51,7 @@ export default function PlayerPage() {
           <ImageIconName
             setNameAtRightOfImage
             name={rp.name}
-            category={rp.category}
+            characterType={rp.characterType}
           />
         }
         value={rp.timesPlayed}

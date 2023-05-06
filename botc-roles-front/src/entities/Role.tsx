@@ -1,7 +1,9 @@
-import { Game } from "./Game";
+import { Alignment } from "./enums/alignment";
+import { CharacterType } from "./enums/characterType";
 
 export type Role = {
-  moduleId: number;
+  roleId: number;
   name: string;
-  games: Game;
+  defaultAlignment: Alignment;
+  characterType: CharacterType;
 };

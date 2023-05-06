@@ -27,7 +27,7 @@ namespace BotcRoles.Controllers
 
         [HttpPost]
         [Route("{roleName}")]
-        public IActionResult AddRole(string roleName, [FromQuery] Enums.Type type, [FromQuery] Alignment defaultAlignment)
+        public IActionResult AddRole(string roleName, [FromQuery] CharacterType characterType, [FromQuery] Alignment defaultAlignment)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace BotcRoles.Controllers
                     return BadRequest($"Le role '{roleName}' existe déjà.");
                 }
 
-                _db.Add(new Role(roleName, type, defaultAlignment));
+                _db.Add(new Role(roleName, characterType, defaultAlignment));
                 _db.SaveChanges();
 
                 return Created("", null);

@@ -1,6 +1,7 @@
 import { Module } from "./Module";
 import { Player } from "./Player";
 import { PlayerRoleGame } from "./PlayerRoleGame";
+import { Alignment } from "./enums/alignment";
 
 export type Game = {
   gameId: number;
@@ -10,6 +11,6 @@ export type Game = {
   storyTeller: Player;
   creationDate: Date;
   notes: string;
-  winningAlignment: string; // TODO
+  winningAlignment: Alignment; // TODO
   playerRoleGames: PlayerRoleGame[];
 };

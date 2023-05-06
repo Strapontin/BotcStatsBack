@@ -1,6 +1,6 @@
 ﻿namespace BotcRoles.Enums
 {
-    public enum Type
+    public enum CharacterType
     {
         Townsfolk = 0,
         Outsider = 1,

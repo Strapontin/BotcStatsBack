@@ -87,14 +87,14 @@ namespace BotcRoles.Models
                 "Savant", "Soldat", "Veilleur de nuit", "Voyante" };
             foreach (var townfolk in townfolksNames)
             {
-                Roles.Add(new Role(townfolk, Enums.Type.Townsfolk, Enums.Alignment.Good));
+                Roles.Add(new Role(townfolk, Enums.CharacterType.Townsfolk, Enums.Alignment.Good));
             }
 
             List<string> outsidersNames = new() { "Acrobate", "Balance", "Barbier", "Bete de foire", "Brute", "Demoiselle", "Dulcinée", "Gitane", "Golem",
                 "Hérétique", "Inventeur", "Lunatique", "Majordome", "Maître des puzzles", "Maladroit", "Politicien", "Reclus", "Soûlard", "Vertueux" };
             foreach (var outsider in outsidersNames)
             {
-                Roles.Add(new Role(outsider, Enums.Type.Outsider, Enums.Alignment.Good));
+                Roles.Add(new Role(outsider, Enums.CharacterType.Outsider, Enums.Alignment.Good));
             }
 
             List<string> minionNames = new() { "Assassin", "Avocat du Diable", "Baron", "Boomdandy", "Conspirateur", "Croqueuse d'hommes", "Empoisonneur",
@@ -102,21 +102,21 @@ namespace BotcRoles.Models
                 "Veuve Noire", "Vieille Chouette" };
             foreach (var minion in minionNames)
             {
-                Roles.Add(new Role(minion, Enums.Type.Minion, Enums.Alignment.Good));
+                Roles.Add(new Role(minion, Enums.CharacterType.Minion, Enums.Alignment.Good));
             }
 
             List<string> demonNames = new() { "Al-Hadikhia", "Emeutier", "Fang Gu", "Imp", "Légion", "Léviathan", "Po", "Pukka", "No Dashii", "Sangsue", "Shabaloth",
                 "P'tit Monstre", "Vigormortis", "Vortox", "Zombuul" };
             foreach (var demon in demonNames)
             {
-                Roles.Add(new Role(demon, Enums.Type.Demon, Enums.Alignment.Good));
+                Roles.Add(new Role(demon, Enums.CharacterType.Demon, Enums.Alignment.Good));
             }
 
             List<string> travellerNames = new() { "Bouc Emissaire", "Bureaucrate", "Mendiant", "Vengeur", "Voleur", "Apprenti", "Archevêque", "Magistrat", "Matrone",
                 "Necromant", "Barista", "Boucher", "Collecteur d'os", "Déviant", "Fille de joie", "Gangster" };
             foreach (var traveller in travellerNames)
             {
-                Roles.Add(new Role(traveller, Enums.Type.Traveller, Enums.Alignment.Good));
+                Roles.Add(new Role(traveller, Enums.CharacterType.Traveller, Enums.Alignment.Good));
             }
             this.SaveChanges();
         }

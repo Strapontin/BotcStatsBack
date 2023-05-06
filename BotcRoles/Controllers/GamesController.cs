@@ -48,7 +48,6 @@ namespace BotcRoles.Controllers
         }
 
         [HttpPost]
-        //[Route("modules/{moduleId}/storyTeller/{storyTellerId}")]
         [Route("createGame")]
         public IActionResult Post(long moduleId, long storyTellerId)
         {
