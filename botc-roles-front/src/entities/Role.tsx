@@ -2,8 +2,11 @@ import { Alignment } from "./enums/alignment";
 import { CharacterType } from "./enums/characterType";
 
 export type Role = {
-  roleId: number;
+  id: number;
   name: string;
-  defaultAlignment: Alignment;
   characterType: CharacterType;
+  alignment: Alignment;
+
+  timesPlayed: number;
+  timesWon: number;
 };

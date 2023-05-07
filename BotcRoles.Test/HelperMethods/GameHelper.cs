@@ -1,4 +1,5 @@
 ﻿using BotcRoles.Controllers;
+using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,68 +21,68 @@ namespace BotcRoles.Test.HelperMethods
             return res;
         }
 
-        public static IEnumerable<Game> GetGames(ModelContext modelContext)
+        public static IEnumerable<GameEntities> GetGames(ModelContext modelContext)
         {
             GamesController gameController = new(null!, modelContext);
 
-            return gameController.Get();
+            return gameController.Get().Value;
         }
 
-        public static Game GetGame(ModelContext modelContext, long gameId)
+        public static GameEntities GetGame(ModelContext modelContext, long gameId)
         {
             GamesController gameController = new(null!, modelContext);
 
             var res = gameController.Get(gameId);
-            return res!;
+            return res.Value;
         }
 
-        public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
-        {
-            GamesController gameController = new(null!, modelContext);
+        //public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
+        //{
+        //    GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.Delete(gameId);
-            return res;
-        }
+        //    var res = gameController.Delete(gameId);
+        //    return res;
+        //}
 
-        public static void CreateModuleAndStoryTellerForGame(ModelContext modelContext, string moduleName, out long moduleId, string storyTellerName, out long storyTellerId)
-        {
-            ModuleHelper.PostModule(modelContext, moduleName);
-            moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+        //public static void CreateModuleAndStoryTellerForGame(ModelContext modelContext, string moduleName, out long moduleId, string storyTellerName, out long storyTellerId)
+        //{
+        //    ModuleHelper.PostModule(modelContext, moduleName);
+        //    moduleId = ModuleHelper.GetModules(modelContext).First().Id;
 
-            PlayerHelper.PostPlayer(modelContext, storyTellerName);
-            storyTellerId = PlayerHelper.GetPlayers(modelContext).First().PlayerId;
-        }
+        //    PlayerHelper.PostPlayer(modelContext, storyTellerName);
+        //    storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+        //}
 
-        public static IActionResult AddPlayerInGame(ModelContext modelContext, long gameId, long? playerId)
-        {
-            GamesController gameController = new(null!, modelContext);
+        //public static IActionResult AddPlayerInGame(ModelContext modelContext, long gameId, long? playerId)
+        //{
+        //    GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.AddPlayerInGame(gameId, playerId);
-            return res;
-        }
+        //    var res = gameController.AddPlayerInGame(gameId, playerId);
+        //    return res;
+        //}
 
-        public static IEnumerable<Player>? GetPlayersInGame(ModelContext modelContext, long gameId)
-        {
-            GamesController gameController = new(null!, modelContext);
+        //public static IEnumerable<Player>? GetPlayersInGame(ModelContext modelContext, long gameId)
+        //{
+        //    GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.GetPlayers(gameId);
-            return res;
-        }
+        //    var res = gameController.GetPlayers(gameId);
+        //    return res;
+        //}
 
-        public static IActionResult ChangePlayerRoleAndAlignmentInGame(ModelContext modelContext, long gameId, long playerId, long roleId, Alignment finalAlignment)
-        {
-            GamesController gameController = new(null!, modelContext);
+        //public static IActionResult ChangePlayerRoleAndAlignmentInGame(ModelContext modelContext, long gameId, long playerId, long roleId, Alignment finalAlignment)
+        //{
+        //    GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.ChangePlayerRoleAndAlignmentInGame(gameId, playerId, roleId, finalAlignment);
-            return res;
-        }
+        //    var res = gameController.ChangePlayerRoleAndAlignmentInGame(gameId, playerId, roleId, finalAlignment);
+        //    return res;
+        //}
 
-        public static IEnumerable<PlayerRoleGame>? GetPlayerRoleFromGame(ModelContext modelContext, long gameId, long playerId)
-        {
-            GamesController gameController = new(null!, modelContext);
+        //public static IEnumerable<PlayerRoleGame>? GetPlayerRoleFromGame(ModelContext modelContext, long gameId, long playerId)
+        //{
+        //    GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.GetPlayerRoleFromGame(gameId, playerId);
-            return res;
-        }
+        //    var res = gameController.GetPlayerRoleFromGame(gameId, playerId);
+        //    return res;
+        //}
     }
 }

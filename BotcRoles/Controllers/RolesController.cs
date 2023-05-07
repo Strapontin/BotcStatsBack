@@ -1,3 +1,4 @@
+using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,12 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Role>> GetRoles()
+        public ActionResult<IEnumerable<RoleEntities>> GetRoles()
         {
-            var roles = _db.Roles.ToList();
+            var roles = _db.Roles
+                .Select(r => new RoleEntities(_db, r))
+                .ToList();
+
             return roles;
         }
 

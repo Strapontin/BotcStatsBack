@@ -29,13 +29,14 @@ export default function GamesListPage() {
       </Fragment>
     );
   }
+  console.log(games)
 
   return (
     <Fragment>
       <Title>{title}</Title>
       <Container>
         {games.map((game: Game) => (
-          <Link key={game.gameId} href={`/games/${game.gameId}`} color="text">
+          <Link key={game.id} href={`/games/${game.id}`} color="text">
             <ListItem
               name={DateToString(game.creationDate)}
               value={

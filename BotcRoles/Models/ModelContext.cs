@@ -102,14 +102,14 @@ namespace BotcRoles.Models
                 "Veuve Noire", "Vieille Chouette" };
             foreach (var minion in minionNames)
             {
-                Roles.Add(new Role(minion, Enums.CharacterType.Minion, Enums.Alignment.Good));
+                Roles.Add(new Role(minion, Enums.CharacterType.Minion, Enums.Alignment.Evil));
             }
 
             List<string> demonNames = new() { "Al-Hadikhia", "Emeutier", "Fang Gu", "Imp", "Légion", "Léviathan", "Po", "Pukka", "No Dashii", "Sangsue", "Shabaloth",
                 "P'tit Monstre", "Vigormortis", "Vortox", "Zombuul" };
             foreach (var demon in demonNames)
             {
-                Roles.Add(new Role(demon, Enums.CharacterType.Demon, Enums.Alignment.Good));
+                Roles.Add(new Role(demon, Enums.CharacterType.Demon, Enums.Alignment.Evil));
             }
 
             List<string> travellerNames = new() { "Bouc Emissaire", "Bureaucrate", "Mendiant", "Vengeur", "Voleur", "Apprenti", "Archevêque", "Magistrat", "Matrone",
@@ -147,26 +147,42 @@ namespace BotcRoles.Models
         private void InitGames()
         {
             Games.Add(new Game(Modules.First(), Players.First()));
+            Games.Add(new Game(Modules.First(), Players.Skip(1).First()) { WinningAlignment = Enums.Alignment.Evil });
             this.SaveChanges();
         }
 
         private void InitPlayerRoleGames()
         {
-            var listPRG = new List<PlayerRoleGame>
+            var listPRG1 = new List<PlayerRoleGame>
             {
-                new PlayerRoleGame(Players.Skip(1).First(), Roles.First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(2).First(), Roles.Skip(1).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(3).First(), Roles.Skip(2).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(4).First(), Roles.Skip(3).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(5).First(), Roles.Skip(4).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(6).First(), Roles.Skip(5).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(7).First(), Roles.Skip(6).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(8).First(), Roles.Skip(7).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(9).First(), Roles.Skip(8).First(), Games.First()),
-                new PlayerRoleGame(Players.Skip(10).First(), Roles.Skip(9).First(), Games.First()),
+                new PlayerRoleGame(Players.Skip(1).First(), Modules.First().RolesModule.First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(2).First(), Roles.First(r => r.Name == "Baron"), Games.First()),
+                new PlayerRoleGame(Players.Skip(3).First(), Modules.First().RolesModule.Skip(2).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(4).First(), Modules.First().RolesModule.Skip(3).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(5).First(), Modules.First().RolesModule.Skip(4).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(6).First(), Modules.First().RolesModule.Skip(5).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(7).First(), Modules.First().RolesModule.Skip(6).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(8).First(), Modules.First().RolesModule.Skip(7).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(9).First(), Modules.First().RolesModule.Skip(8).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(10).First(), Modules.First().RolesModule.Last().Role, Games.First()),
+            };
+            var listPRG2 = new List<PlayerRoleGame>
+            {
+                new PlayerRoleGame(Players.Skip(1).First(), Modules.First().RolesModule.First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(2).First(), Modules.First().RolesModule.Skip(1+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(3).First(), Modules.First().RolesModule.Skip(2+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(4).First(), Modules.First().RolesModule.Skip(3+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(5).First(), Modules.First().RolesModule.Skip(4+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(6).First(), Modules.First().RolesModule.Skip(5+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(7).First(), Modules.First().RolesModule.Skip(6+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(8).First(), Modules.First().RolesModule.Skip(7+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(9).First(), Modules.First().RolesModule.Skip(8+1).First().Role, Games.First()),
+                new PlayerRoleGame(Players.Skip(10).First(), Modules.First().RolesModule.Last().Role, Games.First()),
             };
 
-            Games.First().PlayerRoleGames = listPRG;
+            Games.First().PlayerRoleGames = listPRG1;
+
+            Games.Skip(1).First().PlayerRoleGames = listPRG2;
             this.SaveChanges();
         }
     }

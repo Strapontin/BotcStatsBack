@@ -1,4 +1,5 @@
 ﻿using BotcRoles.Controllers;
+using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class RoleHelper
     {
-        public static IActionResult AddRole(ModelContext modelContext, string roleName, Enums.Type? type, Alignment? defaultAlignment)
+        public static IActionResult AddRole(ModelContext modelContext, string roleName, CharacterType type, Alignment defaultAlignment)
         {
             RolesController roleController = new(null!, modelContext);
 
@@ -20,11 +21,11 @@ namespace BotcRoles.Test.HelperMethods
             return res;
         }
 
-        public static IEnumerable<Role> GetRoles(ModelContext modelContext)
+        public static IEnumerable<RoleEntities> GetRoles(ModelContext modelContext)
         {
             RolesController roleController = new(null!, modelContext);
 
-            return roleController.GetRoles();
+            return roleController.GetRoles().Value;
         }
     }
 }

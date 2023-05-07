@@ -1,3 +1,4 @@
+using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,13 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<Game>> Get()
+        public ActionResult<IEnumerable<GameEntities>> Get()
         {
             var games = _db.Games
                 .Include(g => g.Module)
                 .Include(g => g.StoryTeller)
+                .Include(g => g.PlayerRoleGames)
+                .Select(g => new GameEntities(_db, g))
                 .ToList();
 
             return games;
@@ -32,16 +35,18 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("{gameId}")]
-        public ActionResult<Game> Get(long gameId)
+        public ActionResult<GameEntities> Get(long gameId)
         {
             var game = _db.Games
                 .Where(g => g.GameId == gameId)
                 .Include(g => g.Module)
+                    .ThenInclude(g => g.Games)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Player)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Role)
+                .Select(g => new GameEntities(_db, g))
                 .FirstOrDefault();
 
             return game == null ? NotFound() : game;

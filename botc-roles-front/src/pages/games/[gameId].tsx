@@ -11,6 +11,8 @@ import { Link, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
 import { getGameById } from "../../../data/back-api";
 import { PlayerRoleGame } from "@/entities/PlayerRoleGame";
+import { PlayerRole } from "@/entities/PlayerRole";
+import { Alignment, alignmentToString } from "@/entities/enums/alignment";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);
@@ -37,8 +39,6 @@ export default function GamePage() {
     </Title>
   );
 
-  console.log(game);
-
   return (
     <Fragment>
       {title}
@@ -52,13 +52,16 @@ export default function GamePage() {
           name="Date de la partie"
           value={<DateUi date={game.creationDate} />}
         />
-        <ListItem name="Alignement gagnant" value={game.winningAlignment} />
+        <ListItem
+          name="Alignement gagnant"
+          value={alignmentToString(game.winningAlignment)}
+        />
         <ListItemLarge name="Notes" value={game.notes} />
         <Spacer y={2} />
 
-        {game.playerRoleGames.map((prg: PlayerRoleGame) => (
+        {game.playerRoles.map((prg: PlayerRole) => (
           <Link
-            key={prg.playerRoleGameId}
+            key={prg.player.name}
             href={`/players/${prg.player.name}`}
             color="text"
           >

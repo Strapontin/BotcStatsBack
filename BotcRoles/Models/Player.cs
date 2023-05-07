@@ -11,13 +11,15 @@ namespace BotcRoles.Models
     {
         public Player() { }
 
-        public Player(string name)
+        public Player(string name, string pseudo = null)
         {
             Name = name;
+            Pseudo = pseudo ?? "";
         }
 
         public long PlayerId { get; set; }
         public string Name { get; set; }
+        public string Pseudo { get; set; }
         public int NbGamesPlayed
         {
             get
@@ -40,7 +42,7 @@ namespace BotcRoles.Models
                 .HasKey(p => p.PlayerId);
 
             builder
-                .HasIndex(p => p.Name)
+                .HasIndex(p => new { p.Name, p.Pseudo })
                 .IsUnique();
 
             builder

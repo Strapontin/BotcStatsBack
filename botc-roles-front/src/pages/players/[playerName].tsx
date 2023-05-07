@@ -8,20 +8,19 @@ import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
 import { getPlayerByName } from "../../../data/back-api";
-import { Role } from "@/entities/Role";
 
 export default function PlayerPage() {
   const playerName = useRouter().query.playerName?.toString();
   const [player, setPlayer] = useState<Player>();
-  const [rolesPlayed, setRolesPlayed] = useState<Role[]>();
 
   useEffect(() => {
     async function initPlayer() {
       if (playerName === undefined) return;
 
       const p = await getPlayerByName(playerName);
-      setPlayer(p.player);
-      setRolesPlayed(p.allRolesPlayed);
+      if (p !== undefined) {
+        setPlayer(p);
+      }
     }
     initPlayer();
   }, [playerName]);
@@ -38,23 +37,29 @@ export default function PlayerPage() {
   );
 
   const playerComponent = player ? (
-    <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
+    <Fragment>
+      <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
+      {/* <ListItem name="Parties gagnées" value={player.wins} />
+      <ListItem name="Parties perdues" value={player.loses} />
+      <ListItem name="Parties maléfique" value={player.nbTimesEvil} />
+      <ListItem name="Parties gentil" value={player.nbTimesGood} />{" "} */}
+    </Fragment>
   ) : (
     <Loading />
   );
 
-  const rolesComponent = rolesPlayed ? (
-    rolesPlayed.map((rp) => (
+  const rolesComponent = player?.timesPlayedRole ? (
+    player.timesPlayedRole.map((tpr) => (
       <ListItem
-        key={rp.name}
+        key={tpr.name}
         name={
           <ImageIconName
             setNameAtRightOfImage
-            name={rp.name}
-            characterType={rp.characterType}
+            name={tpr.name}
+            characterType={tpr.characterType}
           />
         }
-        value={rp.timesPlayed}
+        value={tpr.timesPlayed}
       />
     ))
   ) : (
@@ -66,14 +71,7 @@ export default function PlayerPage() {
       {title}
       <Collapse.Group accordion={false} css={{ w: "100%" }}>
         <Collapse expanded title="Détails généraux">
-          <Container>
-            {playerComponent}
-
-            {/* <ListItem name="Parties gagnées" value={player.wins} />
-            <ListItem name="Parties perdues" value={player.loses} />
-            <ListItem name="Parties maléfique" value={player.nbTimesEvil} />
-            <ListItem name="Parties gentil" value={player.nbTimesGood} /> */}
-          </Container>
+          <Container>{playerComponent}</Container>
         </Collapse>
         <Collapse expanded title="Détails des rôles joués">
           <Container>{rolesComponent}</Container>

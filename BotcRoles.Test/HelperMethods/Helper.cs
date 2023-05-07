@@ -24,6 +24,11 @@ namespace BotcRoles.Test.HelperMethods
 
         public static ModelContext GetContext(string methodName)
         {
+            if (!Directory.Exists(_dbPath))
+            {
+                Directory.CreateDirectory(_dbPath);
+            }
+
             var settings = new Dictionary<string, string>
             {
                 { "Db_Path", _dbPath },

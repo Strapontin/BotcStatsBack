@@ -1,9 +1,9 @@
+import { Role } from "./Role";
+
 export type Player = {
-  playerId: string;
-  name:string;
+  id: string;
+  name: string;
   nbGamesPlayed: number;
-  // wins: number;
-  // loses: number;
-  // nbTimesEvil: number;
-  // nbTimesGood: number;
+  timesPlayedRole: Role[];
+  // timesPlayedModule: IDictionary[];
 };

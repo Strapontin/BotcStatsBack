@@ -1,4 +1,5 @@
 ﻿using BotcRoles.Controllers;
+using BotcRoles.Entities;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,19 +20,19 @@ namespace BotcRoles.Test.HelperMethods
             return res;
         }
 
-        public static IEnumerable<Player> GetPlayers(ModelContext modelContext)
+        public static IEnumerable<PlayerEntities> GetPlayers(ModelContext modelContext)
         {
             PlayersController playerController = new(null!, modelContext);
 
-            return playerController.GetPlayers();
+            return playerController.GetPlayers().Value;
         }
 
-        public static Player GetPlayer(ModelContext modelContext, long playerId)
+        public static PlayerEntities GetPlayer(ModelContext modelContext, string playerName)
         {
             PlayersController playerController = new(null!, modelContext);
 
-            var res = playerController.GetPlayer(playerId);
-            return res!;
+            var res = playerController.GetPlayerByName(playerName);
+            return res.Value;
         }
     }
 }

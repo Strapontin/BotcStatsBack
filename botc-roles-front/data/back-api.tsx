@@ -20,9 +20,9 @@ export async function getPlayerByName(playerName: string) {
     return;
 
   const response = await fetch(`${apiUrl}/Players/${playerName}`);
-  const player = await response.json();
+  const player: Player = await response.json();
 
-  return { player, allRolesPlayed: player.playerRoleGames };
+  return player;
 }
 
 export async function getAllGames() {
