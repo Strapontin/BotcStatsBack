@@ -5,8 +5,8 @@ import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
-import { getAllGames } from "../../../data/back-api";
 import { DateToString } from "@/components/helper/date";
+import { getAllGames } from "../../../data/back-api-game";
 
 export default function GamesListPage() {
   const [games, setGames] = useState<Game[]>([]);

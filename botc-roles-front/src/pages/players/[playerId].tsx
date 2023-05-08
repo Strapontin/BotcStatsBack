@@ -5,7 +5,7 @@ import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
-import { getPlayerById } from "../../../data/back-api";
+import { getPlayerById } from "../../../data/back-api-player";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 
@@ -15,7 +15,6 @@ export default function PlayerPage() {
 
   useEffect(() => {
     async function initPlayer() {
-      console.log(playerId);
       if (playerId === undefined) return;
 
       const p = await getPlayerById(+playerId);

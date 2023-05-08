@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import { Button, Input, PressEvent, Spacer } from "@nextui-org/react";
 import { Player } from "@/entities/Player";
-import { getAllPlayers } from "../../../../data/back-api";
+import { createPlayer, getAllPlayers } from "../../../../data/back-api-player";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
@@ -19,11 +19,21 @@ export default function CreatePlayer() {
 
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
-  function createUser(e: PressEvent) {
-    console.log(prenom);
+  async function createUser(e: PressEvent) {
+    if (await createPlayer(prenom, pseudo)) {
+      console.log("ok");
+      var newPlayer: Player = {
+        name: prenom,
+        pseudo: pseudo,
+      };
+      players.push(newPlayer);
+      setPrenom("");
+      setPseudo("");
+      setPlayers(players);
+    }
   }
   function canCreatePlayer() {
-    // Can create a player when 
+    // Can create a player when
     //  - a name is set
     //  - {pseudo, name} is unique
     return (

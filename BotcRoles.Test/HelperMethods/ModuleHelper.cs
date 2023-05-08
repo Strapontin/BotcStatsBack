@@ -23,7 +23,7 @@ namespace BotcRoles.Test.HelperMethods
         //        roles = roleEntities
         //    };
 
-        //    var res = moduleController.CreateModule(JObject.Parse(data.ToString()));
+        //    var res = moduleController.CreateModule(JObject.FromObject(data));
         //    return res;
         //}
 

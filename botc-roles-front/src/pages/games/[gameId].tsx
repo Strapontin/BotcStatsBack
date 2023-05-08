@@ -9,10 +9,9 @@ import DateUi from "@/components/ui/date-ui";
 import ListItemLarge from "@/components/list-stats/ListItemLarge";
 import { Link, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
-import { getGameById } from "../../../data/back-api";
-import { PlayerRoleGame } from "@/entities/PlayerRoleGame";
 import { PlayerRole } from "@/entities/PlayerRole";
-import { Alignment, alignmentToString } from "@/entities/enums/alignment";
+import { alignmentToString } from "@/entities/enums/alignment";
+import { getGameById } from "../../../data/back-api-game";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);

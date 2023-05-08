@@ -2,6 +2,7 @@
 using BotcRoles.Entities;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class PlayerHelper
     {
-        public static IActionResult PostPlayer(ModelContext modelContext, string playerName)
+        public static IActionResult PostPlayer(ModelContext modelContext, string playerName, string pseudo = null)
         {
             PlayersController playerController = new(null!, modelContext);
 
-            var res = playerController.PostPlayer(playerName);
+            JObject playerPost = JObject.FromObject(new { playerName, pseudo });
+
+            var res = playerController.PostPlayer(playerPost);
             return res;
         }
 

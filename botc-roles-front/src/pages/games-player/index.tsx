@@ -4,7 +4,7 @@ import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllPlayers } from "../../../data/back-api";
+import { getAllPlayers } from "../../../data/back-api-player";
 
 export default function GamesPlayedByPlayerPage() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -33,7 +33,7 @@ export default function GamesPlayedByPlayerPage() {
       <Title>{title}</Title>
       <Container>
         {players.map((player) => (
-          <Link key={player.name} href={`/players/${player.id}`} color="text">
+          <Link key={player.id} href={`/players/${player.id}`} color="text">
             <ListItem
               name={player.name}
               subName={player.pseudo}
