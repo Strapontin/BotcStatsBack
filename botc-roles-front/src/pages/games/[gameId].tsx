@@ -33,7 +33,7 @@ export default function GamePage() {
   const title = (
     <Title>
       Détails de la partie du <DateUi date={game.creationDate} /> contée par{" "}
-      <Link href={`/players/${game.storyTeller}`} color="text">
+      <Link href={`/players/${game.storyTeller.name}`} color="text">
         <PlayerName name={game.storyTeller.name} />
       </Link>
     </Title>

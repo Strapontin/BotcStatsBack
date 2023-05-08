@@ -15,6 +15,7 @@ namespace BotcRoles.Entities
 
             this.PlayerRoles = game.PlayerRoleGames
                 .Select(prg => new PlayerRoleEntities(db, prg))
+                .OrderBy(prg => prg.Role.Alignment)
                 .ToList();
         }
 

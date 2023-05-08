@@ -6,8 +6,8 @@ import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
-import ImageIconName from "@/components/ui/image-icon-name";
 import { getPlayerByName } from "../../../data/back-api";
+import ListItemRole from "@/components/list-stats/ListItemRole";
 
 export default function PlayerPage() {
   const playerName = useRouter().query.playerName?.toString();
@@ -37,31 +37,34 @@ export default function PlayerPage() {
   );
 
   const playerComponent = player ? (
-    <Fragment>
-      <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
-      {/* <ListItem name="Parties gagnées" value={player.wins} />
-      <ListItem name="Parties perdues" value={player.loses} />
-      <ListItem name="Parties maléfique" value={player.nbTimesEvil} />
-      <ListItem name="Parties gentil" value={player.nbTimesGood} />{" "} */}
-    </Fragment>
+    <Collapse expanded title="Détails généraux">
+      <Container>
+        <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
+        <ListItem name="Parties gagnées | perdues" value={player.nbGamesWon} />
+        <ListItem name="Parties perdues" value={player.nbGamesLost} />
+        <ListItem name="Parties gentil" value={player.nbGamesGood} />
+        <ListItem name="Parties maléfique" value={player.nbGamesEvil} />
+      </Container>
+    </Collapse>
   ) : (
-    <Loading />
+    <Fragment />
   );
 
   const rolesComponent = player?.timesPlayedRole ? (
-    player.timesPlayedRole.map((tpr) => (
-      <ListItem
-        key={tpr.name}
-        name={
-          <ImageIconName
-            setNameAtRightOfImage
-            name={tpr.name}
+    <Collapse expanded title="Détails des rôles joués">
+      <Container>
+        {player.timesPlayedRole.map((tpr) => (
+          <ListItemRole
+            key={tpr.name}
+            image={tpr.name}
             characterType={tpr.characterType}
+            nbWins={tpr.timesWonByPlayer}
+            nbLoses={tpr.timesLostByPlayer}
+            nbGamesPlayed={tpr.timesPlayedByPlayer}
           />
-        }
-        value={tpr.timesPlayed}
-      />
-    ))
+        ))}
+      </Container>
+    </Collapse>
   ) : (
     <Loading />
   );
@@ -70,12 +73,8 @@ export default function PlayerPage() {
     <Fragment>
       {title}
       <Collapse.Group accordion={false} css={{ w: "100%" }}>
-        <Collapse expanded title="Détails généraux">
-          <Container>{playerComponent}</Container>
-        </Collapse>
-        <Collapse expanded title="Détails des rôles joués">
-          <Container>{rolesComponent}</Container>
-        </Collapse>
+        {playerComponent}
+        {rolesComponent}
       </Collapse.Group>
     </Fragment>
   );

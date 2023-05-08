@@ -7,6 +7,10 @@ export type Role = {
   characterType: CharacterType;
   alignment: Alignment;
 
-  timesPlayed: number;
-  timesWon: number;
+  timesPlayedByPlayer: number;
+  timesWonByPlayer: number;
+  timesLostByPlayer: number;
+
+  timesPlayedTotal: number;
+  timesWonTotal: number;
 };

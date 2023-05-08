@@ -5,7 +5,7 @@ import { CharacterType } from "@/entities/enums/characterType";
 export default function ImageIconName(props: {
   name: string;
   characterType: CharacterType;
-  setNameAtRightOfImage?: boolean;
+  setNameAtLeftOfImage?: boolean;
 }) {
   const imgFileName = props.name
     .normalize("NFD")
@@ -16,7 +16,7 @@ export default function ImageIconName(props: {
 
   var roleName = props.name;
 
-  if (props.setNameAtRightOfImage) {
+  if (props.setNameAtLeftOfImage) {
     return (
       <div className="flex ai-center">
         <Image width={50} height={50} src={imgPath} alt={props.name} />

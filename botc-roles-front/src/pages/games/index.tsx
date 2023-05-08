@@ -29,7 +29,6 @@ export default function GamesListPage() {
       </Fragment>
     );
   }
-  console.log(games)
 
   return (
     <Fragment>

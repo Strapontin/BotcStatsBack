@@ -20,6 +20,11 @@ namespace BotcRoles.Models
             var name = config["Db_Name"];
             DbPath = Path.Join(path, name);
 
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             this.Database.Migrate();
 
             InitDatabase();
@@ -129,8 +134,8 @@ namespace BotcRoles.Models
 
         private void InitRolesModule()
         {
-            List<string> rolesTB = new() { "Lavandière", "Archiviste", "Enquêteur", "Cuistot", "Empathique", "Voyante", "Croque-Mort", "Moine", "Gardien",
-                "Pucelle", "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp" };
+            List<string> rolesTB = new() { "Lavandière", "Archiviste", "Enquêteur", "Cuistot", "Empathique", "Voyante", "Croque-Mort", "Moine", "Gardien","Pucelle",
+                "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp", "Marionnette" };
 
             Module moduleTb = Modules.First(m => m.Name == "Trouble Brewing");
 
@@ -179,6 +184,11 @@ namespace BotcRoles.Models
                 new PlayerRoleGame(Players.Skip(9).First(), Modules.First().RolesModule.Skip(8+1).First().Role, Games.First()),
                 new PlayerRoleGame(Players.Skip(10).First(), Modules.First().RolesModule.Last().Role, Games.First()),
             };
+
+            foreach (var prg in listPRG1.Concat(listPRG2))
+            {
+                prg.FinalAlignment = prg.Role.DefaultAlignment;
+            }
 
             Games.First().PlayerRoleGames = listPRG1;
 

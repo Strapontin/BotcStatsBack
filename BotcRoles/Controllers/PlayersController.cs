@@ -51,6 +51,7 @@ namespace BotcRoles.Controllers
             var player = _db.Players
                 .Where(p => p.Name == playerName)
                 .Include(p => p.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Game)
                 .Select(p => new PlayerEntities(_db, p))
                 .FirstOrDefault();
 

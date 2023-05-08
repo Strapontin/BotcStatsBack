@@ -12,6 +12,7 @@ export async function getAllPlayers() {
     players.push(data[key]);
   }
 
+  console.log("getAllPlayers");
   return players;
 }
 
@@ -22,6 +23,7 @@ export async function getPlayerByName(playerName: string) {
   const response = await fetch(`${apiUrl}/Players/${playerName}`);
   const player: Player = await response.json();
 
+  console.log("getPlayerByName");
   return player;
 }
 
@@ -34,6 +36,7 @@ export async function getAllGames() {
     games.push(data[key]);
   }
 
+  console.log("getAllGames");
   return games;
 }
 
@@ -43,5 +46,6 @@ export async function getGameById(id: number) {
   const response = await fetch(`${apiUrl}/Games/${id}`);
   const game = await response.json();
 
+  console.log("getGameById");
   return game;
 }

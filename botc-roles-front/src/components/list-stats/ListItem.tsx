@@ -3,7 +3,6 @@ import { Text } from "@nextui-org/react";
 
 export default function ListItem(props: { name: any; value: any }) {
 
-  console.log(props)
   return (
     <div className={classes["list-item"]}>
       <Text span>{props.name}</Text>
