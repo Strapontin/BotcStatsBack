@@ -33,8 +33,12 @@ export default function GamesPlayedByPlayerPage() {
       <Title>{title}</Title>
       <Container>
         {players.map((player) => (
-          <Link key={player.name} href={`/players/${player.name}`} color="text">
-            <ListItem name={player.name} value={player.nbGamesPlayed} />
+          <Link key={player.name} href={`/players/${player.id}`} color="text">
+            <ListItem
+              name={player.name}
+              subName={player.pseudo}
+              value={player.nbGamesPlayed}
+            />
           </Link>
         ))}
       </Container>

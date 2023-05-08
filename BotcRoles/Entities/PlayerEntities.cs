@@ -12,6 +12,7 @@ namespace BotcRoles.Entities
 
             this.Id = player.PlayerId;
             this.Name = player.Name;
+            this.Pseudo = player.Pseudo;
 
             if (player.PlayerRoleGames == null)
                 return;
@@ -42,6 +43,7 @@ namespace BotcRoles.Entities
 
         public long Id { get; set; }
         public string Name { get; set; }
+        public string Pseudo { get; set; }
         public int NbGamesPlayed { get; set; }
 
         public int NbGamesGood { get; set; }

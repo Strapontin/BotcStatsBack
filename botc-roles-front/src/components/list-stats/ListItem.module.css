@@ -9,3 +9,13 @@
   align-items: center;
   border-radius: 10px;
 }
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.subname {
+  color: grey;
+}

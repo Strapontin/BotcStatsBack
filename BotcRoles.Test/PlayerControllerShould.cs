@@ -24,8 +24,10 @@ namespace BotcRoles.Test
                 // Assert
                 Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
+                long playerId = PlayerHelper.GetPlayers(modelContext).Last().Id;
+
                 // Act
-                Assert.AreEqual(playerName, PlayerHelper.GetPlayer(modelContext, playerName).Name);
+                Assert.AreEqual(playerName, PlayerHelper.GetPlayer(modelContext, playerId).Name);
             }
             finally
             {

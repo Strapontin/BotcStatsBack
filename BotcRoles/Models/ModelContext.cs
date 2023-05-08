@@ -25,9 +25,14 @@ namespace BotcRoles.Models
                 Directory.CreateDirectory(path);
             }
 
+            bool dbExists = File.Exists(DbPath);
+
             this.Database.Migrate();
 
-            InitDatabase();
+            if (!dbExists)
+            {
+                InitDatabase();
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
@@ -63,19 +68,19 @@ namespace BotcRoles.Models
         private void InitPlayers()
         {
             Players.AddRange(new List<Player> {
-                new Player("Strapontin"),
+                new Player("Anthony", "Strapontin"),
                 new Player("Pras"),
                 new Player("Mika"),
                 new Player("Gil"),
-                new Player("Zariko"),
-                new Player("Stashmou"),
-                new Player("Dura"),
+                new Player("Anthony", "Zariko"),
+                new Player("Jonathan", "Stashmou"),
+                new Player("Alfonse", "Dura"),
                 new Player("Eloise"),
-                new Player("Pacha"),
+                new Player("Alexandre", "Pacha"),
                 new Player("Lauriane"),
                 new Player("Marwanne"),
-                new Player("Jila"),
-                new Player("Florian"),
+                new Player("Alexandre", "Jila"),
+                new Player("Florian", "Goratschin"),
                 new Player("Florine"),
             });
 

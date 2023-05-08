@@ -9,6 +9,40 @@ namespace BotcRoles.Test
     [TestFixture]
     public class ModuleControllerShould
     {
+        [Test]
+        public void Get_Modules()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+
+            // Act
+            var res = ModuleHelper.GetModules(modelContext);
+
+            // Assert 
+            Assert.IsTrue(res.Any());
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Get_Module()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+
+            string moduleName = ModuleHelper.GetModules(modelContext).First().Name;
+
+            // Act
+            var res = ModuleHelper.GetModule(modelContext, moduleName);
+
+            // Assert 
+            Assert.IsTrue(res != null);
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
+
         //[Test]
         //public void Post_And_Get_Module()
         //{

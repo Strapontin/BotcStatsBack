@@ -32,24 +32,12 @@ namespace BotcRoles.Controllers
             return players;
         }
 
-        //[HttpGet]
-        //[Route("{playerId}")]
-        //public Player? GetPlayer(long playerId)
-        //{
-        //    var player = _db.Players
-        //        .Where(p => p.PlayerId == playerId)
-        //        .Include(p => p.PlayerRoleGames)
-        //        .FirstOrDefault();
-
-        //    return player;
-        //}
-
         [HttpGet]
-        [Route("{playerName}")]
-        public ActionResult<PlayerEntities> GetPlayerByName(string playerName)
+        [Route("{playerId}")]
+        public ActionResult<PlayerEntities> GetPlayerByName(long playerId)
         {
             var player = _db.Players
-                .Where(p => p.Name == playerName)
+                .Where(p => p.PlayerId == playerId)
                 .Include(p => p.PlayerRoleGames)
                     .ThenInclude(prg => prg.Game)
                 .Select(p => new PlayerEntities(_db, p))

@@ -19,33 +19,37 @@ namespace BotcRoles.Test
     [TestFixture]
     public class GameControllerShould
     {
-        //[Test]
-        //public void Post_And_Get_Game()
-        //{
-        //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
-        //    string storyTellerName = "StoryTellerName";
+        [Test]
+        public void Get_Games()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
 
-        //    GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+            // Act
+            var res = GameHelper.GetGames(modelContext);
 
-        //    // Act
-        //    var res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+            // Assert 
+            Assert.IsTrue(res.Count() > 0);
 
-        //    // Assert POST Ok
-        //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
 
-        //    // Act
-        //    long gameId = GameHelper.GetGames(modelContext).First().Id;
-        //    var game = GameHelper.GetGame(modelContext, gameId);
+        [Test]
+        public void Get_Game()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
 
-        //    // Assert GET Ok
-        //    Assert.AreEqual(moduleName, game.Module.Name);
-        //    Assert.AreEqual(storyTellerName, game.StoryTeller.Name);
+            // Act
+            var res = GameHelper.GetGame(modelContext, 1);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
-        //}
+            // Assert 
+            Assert.IsTrue(res != null);
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
 
         //[Test]
         //public void Cant_Post_Game_With_Wrong_PlayerId()
@@ -83,6 +87,43 @@ namespace BotcRoles.Test
 
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Cant_Post_Game_With_Wrong_StoryTellerId()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+
+            long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+
+            // Act
+            var res = GameHelper.PostGame(modelContext, moduleId, -1);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Post_And_Get_Game()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+
+            long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+            long playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+
+            // Act
+            var res = GameHelper.PostGame(modelContext, moduleId, playerId);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
             Helper.DeleteCreatedDatabase(modelContext);
         }

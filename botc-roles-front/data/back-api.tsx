@@ -16,14 +16,14 @@ export async function getAllPlayers() {
   return players;
 }
 
-export async function getPlayerByName(playerName: string) {
-  if (playerName === undefined || playerName === null || playerName === "")
-    return;
+export async function getPlayerById(playerId: number) {
+  if (playerId === undefined || playerId === null || isNaN(playerId)) return;
 
-  const response = await fetch(`${apiUrl}/Players/${playerName}`);
+  const response = await fetch(`${apiUrl}/Players/${playerId}`);
   const player: Player = await response.json();
 
-  console.log("getPlayerByName");
+  console.log("getPlayerById");
+  console.log(player);
   return player;
 }
 

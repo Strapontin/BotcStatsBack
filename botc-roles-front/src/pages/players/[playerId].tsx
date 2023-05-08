@@ -4,38 +4,34 @@ import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
-import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
-import { getPlayerByName } from "../../../data/back-api";
+import { getPlayerById } from "../../../data/back-api";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 
 export default function PlayerPage() {
-  const playerName = useRouter().query.playerName?.toString();
+  const playerId = useRouter().query.playerId;
   const [player, setPlayer] = useState<Player>();
 
   useEffect(() => {
     async function initPlayer() {
-      if (playerName === undefined) return;
+      console.log(playerId);
+      if (playerId === undefined) return;
 
-      const p = await getPlayerByName(playerName);
+      const p = await getPlayerById(+playerId);
       if (p !== undefined) {
         setPlayer(p);
       }
     }
     initPlayer();
-  }, [playerName]);
+  }, [playerId]);
 
-  if (!playerName) {
+  if (!playerId) {
     <Loading />;
     return;
   }
 
-  const title = (
-    <Title>
-      Détails <PlayerName name={playerName} />
-    </Title>
-  );
+  const title = <Title>Détails joueur...</Title>;
 
   const playerComponent = player ? (
     <Collapse expanded title="Détails généraux">

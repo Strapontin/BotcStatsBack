@@ -35,12 +35,17 @@ namespace BotcRoles.Models
                 .HasKey(p => p.PlayerId);
 
             builder
-                .HasIndex(p => new { p.Name, p.Pseudo })
-                .IsUnique();
-
-            builder
                 .Property(p => p.Name)
                 .IsRequired();
+
+            builder
+                .Property(p => p.Pseudo)
+                .IsRequired(false);
+
+            builder
+                .HasIndex(p => new { p.Name, p.Pseudo })
+                .IsUnique()
+                .HasFilter(null);
         }
     }
 }

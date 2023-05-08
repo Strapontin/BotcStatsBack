@@ -49,60 +49,60 @@ namespace BotcRoles.Controllers
             return module == null ? NotFound() : module;
         }
 
-        [HttpPost]
-        [Route("")]
-        public IActionResult CreateModule([FromBody] JObject data)
-        {
-            try
-            {
-                // Get Module name and test errors
-                string? name = data["name"]?.ToString();
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    return BadRequest($"Le nom du module est vide.");
-                }
-                if (_db.Modules.Any(m => m.Name == name))
-                {
-                    return BadRequest($"Un module avec le nom '{name}' existe déjà.");
-                }
+        //[HttpPost]
+        //[Route("")]
+        //public IActionResult CreateModule([FromBody] JObject data)
+        //{
+        //    try
+        //    {
+        //        // Get Module name and test errors
+        //        string? name = data["name"]?.ToString();
+        //        if (string.IsNullOrWhiteSpace(name))
+        //        {
+        //            return BadRequest($"Le nom du module est vide.");
+        //        }
+        //        if (_db.Modules.Any(m => m.Name == name))
+        //        {
+        //            return BadRequest($"Un module avec le nom '{name}' existe déjà.");
+        //        }
 
-                // Get roles names and test errors
-                List<RoleEntities>? roles = data["roles"]?.ToObject<List<RoleEntities>>();
-                if (roles == null || !roles.Any())
-                {
-                    return BadRequest($"Il n'y a aucun rôle d'ajouté pour ce module.");
-                }
-                // Try to convert to Role object from database to ensure it exists
-                List<Models.Role> rolesDb = new();
-                foreach (var role in roles)
-                {
-                    Models.Role? roleDb = _db.Roles.FirstOrDefault(r => r.Name == role.Name);
-                    if (roleDb == null)
-                    {
-                        return BadRequest($"Le rôle avec le nom '{role.Name}' n'a pas été trouvé.");
-                    }
-                    rolesDb.Add(roleDb);
-                }
+        //        // Get roles names and test errors
+        //        List<RoleEntities>? roles = data["roles"]?.ToObject<List<RoleEntities>>();
+        //        if (roles == null || !roles.Any())
+        //        {
+        //            return BadRequest($"Il n'y a aucun rôle d'ajouté pour ce module.");
+        //        }
+        //        // Try to convert to Role object from database to ensure it exists
+        //        List<Models.Role> rolesDb = new();
+        //        foreach (var role in roles)
+        //        {
+        //            Models.Role? roleDb = _db.Roles.FirstOrDefault(r => r.Name == role.Name);
+        //            if (roleDb == null)
+        //            {
+        //                return BadRequest($"Le rôle avec le nom '{role.Name}' n'a pas été trouvé.");
+        //            }
+        //            rolesDb.Add(roleDb);
+        //        }
 
-                // Save module with name
-                Module module = new(name);
-                _db.Add(module);
-                _db.SaveChanges();
+        //        // Save module with name
+        //        Module module = new(name);
+        //        _db.Add(module);
+        //        _db.SaveChanges();
 
-                // Get module db
-                var moduleDb = _db.Modules.First(module => module.Name == name);
+        //        // Get module db
+        //        var moduleDb = _db.Modules.First(module => module.Name == name);
 
-                var rolesModuleDb = rolesDb.Select(rdb => new RoleModule(rdb, moduleDb));
-                _db.AddRange(rolesModuleDb);
-                _db.SaveChanges();
+        //        var rolesModuleDb = rolesDb.Select(rdb => new RoleModule(rdb, moduleDb));
+        //        _db.AddRange(rolesModuleDb);
+        //        _db.SaveChanges();
 
-                return Created("", null);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.InnerException);
-            }
-        }
+        //        return Created("", null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.InnerException);
+        //    }
+        //}
 
         //[HttpGet]
         //[Route("{moduleId}/roles")]

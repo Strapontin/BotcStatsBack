@@ -3,7 +3,6 @@ using System;
 using BotcRoles.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,10 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    [Migration("20230507080330_WinningAlignmentColumn")]
-    partial class WinningAlignmentColumn
+    partial class ModelContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -77,9 +75,12 @@ namespace BotcRoles.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Pseudo")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("PlayerId");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Name", "Pseudo")
                         .IsUnique();
 
                     b.ToTable("Players");
