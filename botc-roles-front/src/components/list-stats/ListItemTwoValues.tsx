@@ -2,7 +2,10 @@ import classes from "./ListItem.module.css";
 import { Text } from "@nextui-org/react";
 
 export default function ListItemTwoValues(props: {
-  name: string;
+  key1: string;
+  key2: string;
+  classKey1?: string;
+  classKey2?: string;
   value1: string | number;
   value2: string | number;
   classValue1?: string;
@@ -10,7 +13,15 @@ export default function ListItemTwoValues(props: {
 }) {
   return (
     <div className={classes["list-item"]}>
-      <Text span>{props.name}</Text>
+      <div>
+        <Text span className={props.classKey1}>
+          {props.key1}
+        </Text>{" "}
+        |{" "}
+        <Text span className={props.classKey2}>
+          {props.key2}
+        </Text>
+      </div>
       <div>
         <Text b className={props.classValue1}>
           {props.value1}

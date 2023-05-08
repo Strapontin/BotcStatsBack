@@ -42,18 +42,24 @@ export default function PlayerPage() {
       <Container>
         <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
         <ListItemTwoValues
-          name="Gagnées | Perdues"
+          key1="Gagnées"
+          key2="Perdues"
           value1={player.nbGamesWon}
-          classValue1="green"
           value2={player.nbGamesLost}
+          classKey1="green"
+          classKey2="red"
+          classValue1="green"
           classValue2="red"
         />
 
         <ListItemTwoValues
-          name="Gentil | Maléfique"
+          key1="Gentil"
+          key2="Maléfique"
           value1={player.nbGamesGood}
-          classValue1="townsfolk"
           value2={player.nbGamesEvil}
+          classKey1="townsfolk"
+          classKey2="red"
+          classValue1="townsfolk"
           classValue2="red"
         />
       </Container>
