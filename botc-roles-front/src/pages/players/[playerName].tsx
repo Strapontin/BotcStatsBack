@@ -8,6 +8,7 @@ import PlayerName from "@/components/ui/playerName";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
 import { getPlayerByName } from "../../../data/back-api";
 import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 
 export default function PlayerPage() {
   const playerName = useRouter().query.playerName?.toString();
@@ -40,10 +41,21 @@ export default function PlayerPage() {
     <Collapse expanded title="Détails généraux">
       <Container>
         <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
-        <ListItem name="Parties gagnées | perdues" value={player.nbGamesWon} />
-        <ListItem name="Parties perdues" value={player.nbGamesLost} />
-        <ListItem name="Parties gentil" value={player.nbGamesGood} />
-        <ListItem name="Parties maléfique" value={player.nbGamesEvil} />
+        <ListItemTwoValues
+          name="Gagnées | Perdues"
+          value1={player.nbGamesWon}
+          classValue1="green"
+          value2={player.nbGamesLost}
+          classValue2="red"
+        />
+
+        <ListItemTwoValues
+          name="Gentil | Maléfique"
+          value1={player.nbGamesGood}
+          classValue1="townsfolk"
+          value2={player.nbGamesEvil}
+          classValue2="red"
+        />
       </Container>
     </Collapse>
   ) : (

@@ -20,11 +20,11 @@ export default function ListItemRole(props: {
         />
       </div>
       <div>
-        <Text b className={classes.green}>
+        <Text b className="green">
           {props.nbWins}
         </Text>{" "}
         |{" "}
-        <Text b className={classes.red}>
+        <Text b className="red">
           {props.nbLoses}
         </Text>{" "}
         |{" "}

@@ -25,6 +25,14 @@ html {
   color: rgb(197, 0, 0);
 }
 
+.green {
+  color: #988F2A;
+}
+
+.red {
+  color: #f8533a;
+}
+
 .flex {
   display: flex;
 }
