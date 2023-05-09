@@ -8,10 +8,13 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { createPlayer, getAllPlayers } from "../../../../data/back-api";
+import { Text } from "@nextui-org/react";
+import { Camera, XOctagon } from "react-feather";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
   const [pseudo, setPseudo] = useState("");
+  const [error, setError] = useState(<Fragment />);
 
   const [players, setPlayers] = useState<{ name: string; pseudo: string }[]>(
     []
@@ -32,8 +35,11 @@ export default function CreatePlayer() {
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
   async function createUser(e: PressEvent) {
+    // TODO : switch response.ok => notification (popover ? Toast ?) :
+    //  - === true : message "Joueur 'prenom, pseudo' sauvegardé correctement"
+    //    => Vider les champs pour si on veut ajouter un autre joueur
+    //  - === false : message d'erreur
     if (await createPlayer(prenom, pseudo)) {
-      console.log("ok");
       var newPlayer: { name: string; pseudo: string } = {
         name: prenom,
         pseudo: pseudo,
@@ -42,7 +48,17 @@ export default function CreatePlayer() {
       setPrenom("");
       setPseudo("");
       setPlayers(players);
+      setError(<Fragment />);
+    } else {
+      //Erreur
     }
+    setError(
+      <Text span css={{ color: "red", display: "flex", width: "95%" }}>
+        <XOctagon />
+        Une erreur est survenue lors de l{"'"}
+        enregistrement du joueur.
+      </Text>
+    );
   }
   function canCreatePlayer() {
     // Can create a player when
@@ -58,39 +74,39 @@ export default function CreatePlayer() {
   return (
     <Fragment>
       {title}
-      <Spacer y={3} />
+      <Spacer y={2} />
+      {error}
+      <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <Input
-          fullWidth
           clearable
           bordered
-          labelLeft="Prénom"
+          labelPlaceholder="Prénom"
           aria-label="Prénom"
           value={prenom}
           onChange={(event) => setPrenom(event.target.value)}
         ></Input>
         <Spacer y={1.75} />
         <Input
-          fullWidth
           clearable
           bordered
-          labelLeft="Pseudo"
+          labelPlaceholder="Pseudo"
           aria-label="Pseudo"
           value={pseudo}
           onChange={(event) => setPseudo(event.target.value)}
         ></Input>
         <Spacer y={3} />
-
-        <Button
-          shadow
-          ghost
-          color="success"
-          onPress={createUser}
-          disabled={!canCreatePlayer()}
-        >
-          Créer un joueur
-        </Button>
       </Container>
+
+      <Button
+        shadow
+        ghost
+        color="success"
+        onPress={createUser}
+        disabled={!canCreatePlayer()}
+      >
+        Créer un joueur
+      </Button>
     </Fragment>
   );
 }

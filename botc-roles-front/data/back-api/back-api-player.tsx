@@ -50,10 +50,4 @@ export async function createPlayer(
   }
 
   return true;
-  // console.log(response);
-
-  // TODO : switch response.ok => notification (popover ? Toast ?) :
-  //  - === true : message "Joueur 'prenom, pseudo' sauvegardé correctement"
-  //    => Vider les champs pour si on veut ajouter un autre joueur
-  //  - === false : message d'erreur
 }
