@@ -1,8 +1,6 @@
 import { Player } from "@/entities/Player";
 
-const apiUrl = "https://localhost:7099";
-
-export async function getAllPlayers() {
+export async function getAllPlayers(apiUrl: string) {
   const response = await fetch(`${apiUrl}/Players`);
   const data = await response.json();
   const players: Player[] = [];
@@ -15,7 +13,7 @@ export async function getAllPlayers() {
   return players;
 }
 
-export async function getPlayerById(playerId: number) {
+export async function getPlayerById(apiUrl: string, playerId: number) {
   if (playerId === undefined || playerId === null || isNaN(playerId)) return;
 
   const response = await fetch(`${apiUrl}/Players/${playerId}`);
@@ -26,6 +24,7 @@ export async function getPlayerById(playerId: number) {
 }
 
 export async function createPlayer(
+  apiUrl: string,
   playerName: string,
   pseudo: string
 ): Promise<boolean> {

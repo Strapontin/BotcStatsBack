@@ -1,18 +1,30 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { Button, Input, PressEvent, Spacer } from "@nextui-org/react";
-import { Player } from "@/entities/Player";
-import { createPlayer, getAllPlayers } from "../../../../data/back-api-player";
+import {
+  Button,
+  Container,
+  Input,
+  PressEvent,
+  Spacer,
+} from "@nextui-org/react";
+import { createPlayer, getAllPlayers } from "../../../../data/back-api";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
   const [pseudo, setPseudo] = useState("");
 
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<{ name: string; pseudo: string }[]>(
+    []
+  );
   useEffect(() => {
     async function initPlayers() {
-      const p = await getAllPlayers();
-      setPlayers(p);
+      const tempPlayers = (await getAllPlayers()).map((player) => {
+        return {
+          name: player.name,
+          pseudo: player.pseudo,
+        };
+      });
+      setPlayers(tempPlayers);
     }
     initPlayers();
   }, []);
@@ -22,7 +34,7 @@ export default function CreatePlayer() {
   async function createUser(e: PressEvent) {
     if (await createPlayer(prenom, pseudo)) {
       console.log("ok");
-      var newPlayer: Player = {
+      var newPlayer: { name: string; pseudo: string } = {
         name: prenom,
         pseudo: pseudo,
       };
@@ -47,38 +59,38 @@ export default function CreatePlayer() {
     <Fragment>
       {title}
       <Spacer y={3} />
-      <Input
-        fullWidth
-        clearable
-        bordered
-        labelLeft="Prénom"
-        aria-label="Prénom"
-        value={prenom}
-        onChange={(event) => setPrenom(event.target.value)}
-      ></Input>
-      <Spacer y={1.75} />
-      <Input
-        fullWidth
-        clearable
-        bordered
-        labelLeft="Pseudo"
-        aria-label="Pseudo"
-        value={pseudo}
-        onChange={(event) => setPseudo(event.target.value)}
-        helperText="Obligatoire"
-      ></Input>
-      <Spacer y={3} />
+      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
+        <Input
+          fullWidth
+          clearable
+          bordered
+          labelLeft="Prénom"
+          aria-label="Prénom"
+          value={prenom}
+          onChange={(event) => setPrenom(event.target.value)}
+        ></Input>
+        <Spacer y={1.75} />
+        <Input
+          fullWidth
+          clearable
+          bordered
+          labelLeft="Pseudo"
+          aria-label="Pseudo"
+          value={pseudo}
+          onChange={(event) => setPseudo(event.target.value)}
+        ></Input>
+        <Spacer y={3} />
 
-      <Button
-        auto
-        shadow
-        ghost
-        color="success"
-        onPress={createUser}
-        disabled={!canCreatePlayer()}
-      >
-        Créer un joueur
-      </Button>
+        <Button
+          shadow
+          ghost
+          color="success"
+          onPress={createUser}
+          disabled={!canCreatePlayer()}
+        >
+          Créer un joueur
+        </Button>
+      </Container>
     </Fragment>
   );
 }

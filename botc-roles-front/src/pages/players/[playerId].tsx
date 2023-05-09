@@ -5,9 +5,9 @@ import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
-import { getPlayerById } from "../../../data/back-api-player";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
+import { getPlayerById } from "../../../data/back-api";
 
 export default function PlayerPage() {
   const playerId = useRouter().query.playerId;
