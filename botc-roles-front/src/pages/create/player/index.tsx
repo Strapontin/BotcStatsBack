@@ -9,12 +9,13 @@ import {
 } from "@nextui-org/react";
 import { createPlayer, getAllPlayers } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
-import { Camera, XOctagon } from "react-feather";
+import { XOctagon, Check } from "react-feather";
+import classes from "./index.module.css";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
   const [pseudo, setPseudo] = useState("");
-  const [error, setError] = useState(<Fragment />);
+  const [message, setMessage] = useState(<Fragment />);
 
   const [players, setPlayers] = useState<{ name: string; pseudo: string }[]>(
     []
@@ -35,31 +36,40 @@ export default function CreatePlayer() {
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
   async function createUser(e: PressEvent) {
-    // TODO : switch response.ok => notification (popover ? Toast ?) :
-    //  - === true : message "Joueur 'prenom, pseudo' sauvegardé correctement"
-    //    => Vider les champs pour si on veut ajouter un autre joueur
-    //  - === false : message d'erreur
     if (await createPlayer(prenom, pseudo)) {
       var newPlayer: { name: string; pseudo: string } = {
         name: prenom,
         pseudo: pseudo,
       };
+
       players.push(newPlayer);
       setPrenom("");
       setPseudo("");
       setPlayers(players);
-      setError(<Fragment />);
+
+      const pseudoMsg = pseudo ? " (" + pseudo + ")" : "";
+
+      setMessage(
+        <Text span className={classes.green}>
+          <Check className={classes.icon} />
+          Joueur {'"'}
+          {prenom}
+          {pseudoMsg}
+          {'"'} enregistré correctement.
+        </Text>
+      );
     } else {
       //Erreur
+      setMessage(
+        <Text span className={classes.red}>
+          <XOctagon className={classes.icon} />
+          Une erreur est survenue lors de l{"'"}
+          enregistrement du joueur.
+        </Text>
+      );
     }
-    setError(
-      <Text span css={{ color: "red", display: "flex", width: "95%" }}>
-        <XOctagon />
-        Une erreur est survenue lors de l{"'"}
-        enregistrement du joueur.
-      </Text>
-    );
   }
+
   function canCreatePlayer() {
     // Can create a player when
     //  - a name is set
@@ -75,7 +85,7 @@ export default function CreatePlayer() {
     <Fragment>
       {title}
       <Spacer y={2} />
-      {error}
+      {message}
       <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <Input
@@ -107,6 +117,7 @@ export default function CreatePlayer() {
       >
         Créer un joueur
       </Button>
+      <Spacer y={3} />
     </Fragment>
   );
 }

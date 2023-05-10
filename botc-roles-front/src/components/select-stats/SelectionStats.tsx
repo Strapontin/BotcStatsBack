@@ -22,7 +22,16 @@ export default function SelectionStats() {
           <Dropdown.Item key="/create/player">
             Ajouter un nouveau joueur
           </Dropdown.Item>
-          <Dropdown.Item key="/games-player">
+          <Dropdown.Item key="/create/role">
+            Ajouter un nouveau rôle
+          </Dropdown.Item>
+          <Dropdown.Item key="/create/module">
+            Ajouter un nouveau module
+          </Dropdown.Item>
+          <Dropdown.Item key="/create/partie">
+            Ajouter un nouveau partie
+          </Dropdown.Item>
+          <Dropdown.Item withDivider key="/games-player">
             Nombre de parties par joueur
           </Dropdown.Item>
           <Dropdown.Item key="/games">Liste parties</Dropdown.Item>
