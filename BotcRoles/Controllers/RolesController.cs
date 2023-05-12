@@ -2,6 +2,7 @@ using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
@@ -29,23 +30,49 @@ namespace BotcRoles.Controllers
             return roles;
         }
 
+        [HttpGet]
+        [Route("{roleId}")]
+        public ActionResult<RoleEntities> GetRoleById(long roleId)
+        {
+            var role = _db.Roles
+                .Where(p => p.RoleId == roleId)
+                .Select(p => new RoleEntities(_db, p))
+                .FirstOrDefault();
+
+            return role == null ? NotFound() : role;
+        }
+
         [HttpPost]
-        [Route("{roleName}")]
-        public IActionResult AddRole(string roleName, [FromQuery] CharacterType characterType, [FromQuery] Alignment defaultAlignment)
+        [Route("")]
+        public IActionResult AddRole([FromBody] JObject data)
         {
             try
             {
+                string? roleName = data["roleName"]?.ToString();
+
                 if (string.IsNullOrWhiteSpace(roleName))
                 {
-                    return BadRequest($"Le nom du role est vide.");
+                    return BadRequest(JObject.FromObject(new { error = $"Le nom du role est vide." }));
                 }
 
-                if (_db.Roles.Any(p => p.Name == roleName))
+                if (_db.Roles.Any(r => r.Name == roleName))
                 {
-                    return BadRequest($"Le role '{roleName}' existe d�j�.");
+                    return BadRequest(JObject.FromObject(new { error = $"Un rôle avec le nom '{roleName}' existe déjà." }));
                 }
 
-                _db.Add(new Role(roleName, characterType, defaultAlignment));
+                if (!int.TryParse(data["characterType"]?.ToString(), out int ctInt) || !Enum.IsDefined(typeof(CharacterType), ctInt))
+                {
+                    return BadRequest(JObject.FromObject(new { error = $"Une erreur a été rencontrée avec le paramètre 'characterType'." }));
+                }
+                CharacterType characterType = (CharacterType)ctInt;
+
+                if (!int.TryParse(data["alignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
+                {
+                    return BadRequest(JObject.FromObject(new { error = $"Une erreur a été rencontrée avec le paramètre 'alignment'." }));
+                }
+                Alignment alignment = (Alignment)alignmentInt;
+
+                _db.Add(new Role(roleName, characterType, alignment));
                 _db.SaveChanges();
 
                 return Created("", null);

@@ -35,7 +35,7 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("{playerId}")]
-        public ActionResult<PlayerEntities> GetPlayerByName(long playerId)
+        public ActionResult<PlayerEntities> GetPlayerById(long playerId)
         {
             var player = _db.Players
                 .Where(p => p.PlayerId == playerId)

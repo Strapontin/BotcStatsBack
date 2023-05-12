@@ -22,7 +22,29 @@ namespace BotcRoles.Test
 
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
-            Assert.IsTrue(RoleHelper.GetRoles(modelContext).Any(r => r.Name == roleName));
+
+            //Act
+            long roleId = RoleHelper.GetRoles(modelContext).Last().Id;
+
+            // Assert
+            Assert.AreEqual(roleName, RoleHelper.GetRoleById(modelContext, roleId).Name);
+
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Get_Role_By_Id()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+
+            // Act
+            var res = RoleHelper.GetRoleById(modelContext, roleId);
+
+            // Assert
+            Assert.IsNotNull(res);
 
             Helper.DeleteCreatedDatabase(modelContext);
         }
@@ -38,7 +60,7 @@ namespace BotcRoles.Test
             // Act
             RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
             var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Townsfolk, Alignment.Good);
-            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
             Helper.DeleteCreatedDatabase(modelContext);
         }
@@ -58,34 +80,34 @@ namespace BotcRoles.Test
             Helper.DeleteCreatedDatabase(modelContext);
         }
 
-        //[Test]
-        //public void Cant_Post_Role_With_Empty_Type()
-        //{
-        //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
-        //    string roleName = "RoleName";
+        [Test]
+        public void Cant_Post_Role_With_Empty_Type()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string roleName = "RoleName";
 
-        //    // Act
-        //    var res = RoleHelper.AddRole(modelContext, roleName, null, Alignment.Evil);
-        //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            // Act
+            var res = RoleHelper.AddRole(modelContext, roleName, null, Alignment.Evil);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
-        //}
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
 
-        //[Test]
-        //public void Cant_Post_Role_With_Empty_Alignement()
-        //{
-        //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
-        //    string roleName = "RoleName";
+        [Test]
+        public void Cant_Post_Role_With_Empty_Alignement()
+        {
+            // Arrange
+            string fileName = Helper.GetCurrentMethodName() + ".db";
+            var modelContext = Helper.GetContext(fileName);
+            string roleName = "RoleName";
 
-        //    // Act
-        //    var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, null);
-        //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            // Act
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, null);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
-        //}
+            Helper.DeleteCreatedDatabase(modelContext);
+        }
     }
 }

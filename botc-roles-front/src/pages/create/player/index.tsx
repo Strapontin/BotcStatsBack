@@ -7,10 +7,10 @@ import {
   PressEvent,
   Spacer,
 } from "@nextui-org/react";
-import { createPlayer, getAllPlayers } from "../../../../data/back-api";
+import { createNewPlayer, getAllPlayers } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import { XOctagon, Check } from "react-feather";
-import classes from "./index.module.css";
+import classes from "../index.module.css";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
@@ -36,7 +36,7 @@ export default function CreatePlayer() {
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
   async function createUser(e: PressEvent) {
-    if (await createPlayer(prenom, pseudo)) {
+    if (await createNewPlayer(prenom, pseudo)) {
       var newPlayer: { name: string; pseudo: string } = {
         name: prenom,
         pseudo: pseudo,
@@ -49,22 +49,32 @@ export default function CreatePlayer() {
 
       const pseudoMsg = pseudo ? " (" + pseudo + ")" : "";
 
-      setMessage(
-        <Text span className={classes.green}>
-          <Check className={classes.icon} />
-          Joueur {'"'}
-          {prenom}
-          {pseudoMsg}
-          {'"'} enregistré correctement.
-        </Text>
+      updateMessage(
+        false,
+        `Joueur "${prenom}${pseudoMsg}" enregistré correctement.`
       );
     } else {
       //Erreur
+      updateMessage(
+        true,
+        "Une erreur est survenue lors de l'enregistrement du joueur."
+      );
+    }
+  }
+
+  function updateMessage(isError: boolean, message: string) {
+    if (isError) {
       setMessage(
         <Text span className={classes.red}>
           <XOctagon className={classes.icon} />
-          Une erreur est survenue lors de l{"'"}
-          enregistrement du joueur.
+          {message}
+        </Text>
+      );
+    } else {
+      setMessage(
+        <Text span className={classes.green}>
+          <Check className={classes.icon} />
+          {message}
         </Text>
       );
     }
@@ -76,9 +86,41 @@ export default function CreatePlayer() {
     //  - {pseudo, name} is unique
     return (
       prenom !== "" &&
-      players.filter((p) => p.pseudo === pseudo && p.name == prenom).length ===
+      players.filter((p) => p.pseudo === pseudo && p.name === prenom).length ===
         0
     );
+  }
+
+  function prenomChanged(value: string) {
+    setPrenom(value);
+
+    checkError(value, pseudo);
+  }
+
+  function pseudoChanged(value: string) {
+    setPseudo(value);
+
+    checkError(prenom, value);
+  }
+
+  function checkError(newName: string, newPseudo: string) {
+    setMessage(<Fragment />);
+
+    if (newName === "") {
+      updateMessage(true, "Le prénom ne doit pas être vide.");
+      return;
+    }
+
+    if (
+      players.filter((p) => p.pseudo === newPseudo && p.name == newName).length !==
+      0
+    ) {
+      updateMessage(
+        true,
+        `Le joueur '${newName}' avec le pseudo '${newPseudo}' existe déjà.`
+      );
+      return;
+    }
   }
 
   return (
@@ -94,7 +136,7 @@ export default function CreatePlayer() {
           labelPlaceholder="Prénom"
           aria-label="Prénom"
           value={prenom}
-          onChange={(event) => setPrenom(event.target.value)}
+          onChange={(event) => prenomChanged(event.target.value)}
         ></Input>
         <Spacer y={1.75} />
         <Input
@@ -103,7 +145,7 @@ export default function CreatePlayer() {
           labelPlaceholder="Pseudo"
           aria-label="Pseudo"
           value={pseudo}
-          onChange={(event) => setPseudo(event.target.value)}
+          onChange={(event) => pseudoChanged(event.target.value)}
         ></Input>
         <Spacer y={3} />
       </Container>

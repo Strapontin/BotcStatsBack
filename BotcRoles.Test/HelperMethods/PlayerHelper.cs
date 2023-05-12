@@ -30,11 +30,11 @@ namespace BotcRoles.Test.HelperMethods
             return playerController.GetPlayers().Value;
         }
 
-        public static PlayerEntities GetPlayer(ModelContext modelContext, long playerId)
+        public static PlayerEntities GetPlayerById(ModelContext modelContext, long playerId)
         {
             PlayersController playerController = new(null!, modelContext);
 
-            var res = playerController.GetPlayerByName(playerId);
+            var res = playerController.GetPlayerById(playerId);
             return res.Value;
         }
     }

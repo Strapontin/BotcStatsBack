@@ -2,13 +2,14 @@ import { Dropdown } from "@nextui-org/react";
 import { Fragment, useState } from "react";
 import { characterTypeList } from "@/entities/enums/characterType";
 
-export default function DropdownCharacterType() {
+export default function DropdownCharacterType(props: {
+  setCharacterType: any;
+}) {
   const [characterTypeSelected, setCharacterTypeSelected] =
     useState("Type de personnage");
 
   function selectCharacterType(key: number) {
-    console.log(key);
-    console.log(characterTypeList());
+    props.setCharacterType(key);
     setCharacterTypeSelected(characterTypeList()[key].value);
   }
 

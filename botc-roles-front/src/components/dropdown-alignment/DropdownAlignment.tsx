@@ -2,11 +2,11 @@ import { alignmentList } from "@/entities/enums/alignment";
 import { Dropdown } from "@nextui-org/react";
 import { Fragment, useState } from "react";
 
-export default function DropdownAlignment() {
-  const [alignmentSelected, setAlignmentSelected] =
-    useState("Alignement");
+export default function DropdownAlignment(props: { setAlignment: any }) {
+  const [alignmentSelected, setAlignmentSelected] = useState("Alignement");
 
   function selectAlignment(key: number) {
+    props.setAlignment(key);
     setAlignmentSelected(alignmentList()[key].value);
   }
 

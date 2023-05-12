@@ -23,7 +23,7 @@ export async function getPlayerById(apiUrl: string, playerId: number) {
   return player;
 }
 
-export async function createPlayer(
+export async function createNewPlayer(
   apiUrl: string,
   playerName: string,
   pseudo: string
