@@ -24,7 +24,7 @@ namespace BotcRoles.Models
         public CharacterType CharacterType { get; set; }
         public Alignment DefaultAlignment { get; set; }
 
-        public List<RoleModule> RolesModule { get; set; }
+        public List<RoleEdition> RolesEdition { get; set; }
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
     }
 

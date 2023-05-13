@@ -25,7 +25,7 @@ export default function SelectionStats() {
           <Dropdown.Item key="/create/role">
             Ajouter un nouveau rôle
           </Dropdown.Item>
-          <Dropdown.Item key="/create/module">
+          <Dropdown.Item key="/create/edition">
             Ajouter un nouveau module
           </Dropdown.Item>
           <Dropdown.Item key="/create/partie">

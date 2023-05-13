@@ -5,31 +5,31 @@ using System.ComponentModel.DataAnnotations;
 namespace BotcRoles.Models
 {
     /// <summary>
-    /// Data about a module to play (mostly defines what roles are in it)
+    /// Data about an edition to play (mostly defines what roles are in it)
     /// </summary>
-    public class Module
+    public class Edition
     {
-        public Module() { }
+        public Edition() { }
 
-        public Module(string name)
+        public Edition(string name)
         {
             Name = name;
         }
 
-        public long ModuleId { get; set; }
+        public long EditionId { get; set; }
         public string Name { get; set; }
 
-        public List<RoleModule> RolesModule { get; set; }
+        public List<RoleEdition> RolesEdition { get; set; }
         public List<Game> Games { get; set; }
     }
 
 
-    public class ModuleEntityTypeConfiguration : IEntityTypeConfiguration<Module>
+    public class EditionEntityTypeConfiguration : IEntityTypeConfiguration<Edition>
     {
-        public void Configure(EntityTypeBuilder<Module> builder)
+        public void Configure(EntityTypeBuilder<Edition> builder)
         {
             builder
-                .HasKey(m => m.ModuleId);
+                .HasKey(m => m.EditionId);
 
             builder
                 .HasIndex(m => m.Name)

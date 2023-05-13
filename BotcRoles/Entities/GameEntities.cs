@@ -7,7 +7,7 @@ namespace BotcRoles.Entities
         public GameEntities(Models.ModelContext db, Models.Game game)
         {
             this.Id = game.GameId;
-            this.Module = new ModuleEntities(db, game.Module);
+            this.Edition = new EditionEntities(db, game.Edition);
             this.StoryTeller = new PlayerEntities(db, game.StoryTeller);
             this.CreationDate = game.CreationDate;
             this.Notes = game.Notes;
@@ -20,7 +20,7 @@ namespace BotcRoles.Entities
         }
 
         public long Id { get; set; }
-        public ModuleEntities Module { get; set; }
+        public EditionEntities Edition { get; set; }
         public PlayerEntities StoryTeller { get; set; }
         public DateTime CreationDate { get; set; }
         public string Notes { get; set; }

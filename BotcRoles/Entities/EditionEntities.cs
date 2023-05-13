@@ -3,23 +3,23 @@ using System.Collections.Generic;
 
 namespace BotcRoles.Entities
 {
-    public class ModuleEntities
+    public class EditionEntities
     {
-        public ModuleEntities(Models.ModelContext db, Models.Module module)
+        public EditionEntities(Models.ModelContext db, Models.Edition edition)
         {
-            this.Id = module.ModuleId;
-            this.Name = module.Name;
-            this.Roles = module.RolesModule?.Select(rm => new RoleEntities(db, rm.Role)).ToList();
+            this.Id = edition.EditionId;
+            this.Name = edition.Name;
+            this.Roles = edition.RolesEdition?.Select(rm => new RoleEntities(db, rm.Role)).ToList();
 
 
-            this.TimesPlayed = db.Modules
+            this.TimesPlayed = db.Editions
                 .Include(m => m.Games)
-                .First(m => m.ModuleId == this.Id)
+                .First(m => m.EditionId == this.Id)
                 .Games.Count;
 
-            this.TimesGoodWon = db.Modules
+            this.TimesGoodWon = db.Editions
                 .Include(m => m.Games)
-                .First(m => m.ModuleId == this.Id)
+                .First(m => m.EditionId == this.Id)
                 .Games.Where(g => g.WinningAlignment == Enums.Alignment.Good)
                 .Count();
         }

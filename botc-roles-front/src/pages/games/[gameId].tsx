@@ -11,7 +11,7 @@ import { Link, Spacer } from "@nextui-org/react";
 import ImageIconName from "@/components/ui/image-icon-name";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { getGameById } from "../../../data/back-api-game";
+import { getGameById } from "../../../data/back-api";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);
@@ -42,7 +42,7 @@ export default function GamePage() {
     <Fragment>
       {title}
       <Container>
-        <ListItem name="Module" value={game.module.name} />
+        <ListItem name="Module" value={game.edition.name} />
         <ListItem
           name="Conteur"
           value={<PlayerName name={game.storyTeller.name} />}

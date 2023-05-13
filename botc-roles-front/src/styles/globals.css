@@ -43,3 +43,7 @@ html {
 .h-auto{
   height: auto;
 }
+
+svg {
+  stroke-width: 3;
+}

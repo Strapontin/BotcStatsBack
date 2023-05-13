@@ -7,17 +7,17 @@ using NUnit.Framework;
 namespace BotcRoles.Test
 {
     [TestFixture]
-    public class ModuleControllerShould
+    public class EditionControllerShould
     {
         [Test]
-        public void Get_Modules()
+        public void Get_Editions()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
             var modelContext = Helper.GetContext(fileName);
 
             // Act
-            var res = ModuleHelper.GetModules(modelContext);
+            var res = EditionHelper.GetEditions(modelContext);
 
             // Assert 
             Assert.IsTrue(res.Any());
@@ -26,16 +26,16 @@ namespace BotcRoles.Test
         }
 
         [Test]
-        public void Get_Module()
+        public void Get_Edition()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
             var modelContext = Helper.GetContext(fileName);
 
-            string moduleName = ModuleHelper.GetModules(modelContext).First().Name;
+            string editionName = EditionHelper.GetEditions(modelContext).First().Name;
 
             // Act
-            var res = ModuleHelper.GetModule(modelContext, moduleName);
+            var res = EditionHelper.GetEdition(modelContext, editionName);
 
             // Assert 
             Assert.IsTrue(res != null);
@@ -44,84 +44,84 @@ namespace BotcRoles.Test
         }
 
         //[Test]
-        //public void Post_And_Get_Module()
+        //public void Post_And_Get_Edition()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
 
         //    // Act
-        //    var res = ModuleHelper.PostModule(modelContext, moduleName);
+        //    var res = EditionHelper.PostEdition(modelContext, editionName);
 
         //    // Assert
         //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
         //    // Act
-        //    Assert.AreEqual(moduleName, ModuleHelper.GetModule(modelContext, moduleName).Name);
+        //    Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
 
         //    Helper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
-        //public void Cant_Post_Two_Modules_With_Same_Name()
+        //public void Cant_Post_Two_Editions_With_Same_Name()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
 
         //    // Act
-        //    ModuleHelper.PostModule(modelContext, moduleName);
-        //    var res = ModuleHelper.PostModule(modelContext, moduleName);
+        //    EditionHelper.PostEdition(modelContext, editionName);
+        //    var res = EditionHelper.PostEdition(modelContext, editionName);
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
         //    Helper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
-        //public void Cant_Post_Module_With_Empty_Name()
+        //public void Cant_Post_Edition_With_Empty_Name()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = string.Empty;
+        //    string editionName = string.Empty;
 
         //    // Act
-        //    var res = ModuleHelper.PostModule(modelContext, moduleName);
+        //    var res = EditionHelper.PostEdition(modelContext, editionName);
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
         //    Helper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
-        //public void Add_And_Get_Role_In_Module()
+        //public void Add_And_Get_Role_In_Edition()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        ModuleHelper.PostModule(modelContext, moduleName);
-        //        long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //        EditionHelper.PostEdition(modelContext, editionName);
+        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
         //        // Act
-        //        var res = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Assert
         //        Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
         //        // Act
-        //        var rolesInModule = ModuleHelper.GetRolesFromModule(modelContext, moduleId);
+        //        var rolesInEdition = EditionHelper.GetRolesFromEdition(modelContext, editionId);
 
         //        // Assert
-        //        Assert.AreEqual(roleName, rolesInModule.First().Role.Name);
+        //        Assert.AreEqual(roleName, rolesInEdition.First().Role.Name);
         //    }
         //    finally
         //    {
@@ -130,25 +130,25 @@ namespace BotcRoles.Test
         //}
 
         //[Test]
-        //public void Cant_Add_Twice_Same_Role_In_Module()
+        //public void Cant_Add_Twice_Same_Role_In_Edition()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        ModuleHelper.PostModule(modelContext, moduleName);
-        //        long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //        EditionHelper.PostEdition(modelContext, editionName);
+        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
         //        // Act
-        //        var res1 = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
-        //        var res2 = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+        //        var res1 = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
+        //        var res2 = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Assert
         //        Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res1).StatusCode);
@@ -161,24 +161,24 @@ namespace BotcRoles.Test
         //}
 
         //[Test]
-        //public void Cant_Add_Role_In_Module_With_Wrong_ModuleId()
+        //public void Cant_Add_Role_In_Edition_With_Wrong_EditionId()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        ModuleHelper.PostModule(modelContext, moduleName);
-        //        long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //        EditionHelper.PostEdition(modelContext, editionName);
+        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
         //        // Act
-        //        var res = ModuleHelper.AddRoleInModule(modelContext, moduleId + 1, roleId);
+        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId + 1, roleId);
 
         //        // Assert
         //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
@@ -190,24 +190,24 @@ namespace BotcRoles.Test
         //}
 
         //[Test]
-        //public void Cant_Add_Role_In_Module_With_Wrong_RoleId()
+        //public void Cant_Add_Role_In_Edition_With_Wrong_RoleId()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        ModuleHelper.PostModule(modelContext, moduleName);
-        //        long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //        EditionHelper.PostEdition(modelContext, editionName);
+        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
         //        // Act
-        //        var res = ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId + 1);
+        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId + 1);
 
         //        // Assert
         //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
@@ -219,31 +219,31 @@ namespace BotcRoles.Test
         //}
 
         //[Test]
-        //public void Remove_Role_From_Module()
+        //public void Remove_Role_From_Edition()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        ModuleHelper.PostModule(modelContext, moduleName);
-        //        long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //        EditionHelper.PostEdition(modelContext, editionName);
+        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
-        //        ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+        //        EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Act
-        //        var res = ModuleHelper.RemoveRoleFromModule(modelContext, moduleId, roleId);
+        //        var res = EditionHelper.RemoveRoleFromEdition(modelContext, editionId, roleId);
 
         //        // Assert
         //        Assert.AreEqual(StatusCodes.Status200OK, ((OkResult)res).StatusCode);
 
-        //        var roles = ModuleHelper.GetRolesFromModule(modelContext, moduleId);
+        //        var roles = EditionHelper.GetRolesFromEdition(modelContext, editionId);
         //        Assert.IsEmpty(roles);
         //    }
         //    finally

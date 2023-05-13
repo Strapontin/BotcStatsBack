@@ -13,11 +13,11 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class GameHelper
     {
-        public static IActionResult PostGame(ModelContext modelContext, long moduleId, long storyTellerId)
+        public static IActionResult PostGame(ModelContext modelContext, long editionId, long storyTellerId)
         {
             GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.Post(moduleId, storyTellerId);
+            var res = gameController.Post(editionId, storyTellerId);
             return res;
         }
 
@@ -44,10 +44,10 @@ namespace BotcRoles.Test.HelperMethods
         //    return res;
         //}
 
-        //public static void CreateModuleAndStoryTellerForGame(ModelContext modelContext, string moduleName, out long moduleId, string storyTellerName, out long storyTellerId)
+        //public static void CreateEditionAndStoryTellerForGame(ModelContext modelContext, string editionName, out long editionId, string storyTellerName, out long storyTellerId)
         //{
-        //    ModuleHelper.PostModule(modelContext, moduleName);
-        //    moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //    EditionHelper.PostEdition(modelContext, editionName);
+        //    editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //    PlayerHelper.PostPlayer(modelContext, storyTellerName);
         //    storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;

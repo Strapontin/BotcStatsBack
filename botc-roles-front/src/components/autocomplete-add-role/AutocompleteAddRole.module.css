@@ -1,0 +1,24 @@
+.autocomplete-role {
+  width: 100%;
+}
+
+.input-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete {
+  cursor: pointer;
+  color: rgba(255, 0, 0, 0.75);
+}
+
+.container-roles-values {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 25rem;
+  max-width: 200px;
+  padding: 10px;
+  margin: auto;
+}

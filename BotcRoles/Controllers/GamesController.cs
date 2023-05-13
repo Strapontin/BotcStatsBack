@@ -25,7 +25,7 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<GameEntities>> Get()
         {
             var games = _db.Games
-                .Include(g => g.Module)
+                .Include(g => g.Edition)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
                 .Select(g => new GameEntities(_db, g))
@@ -40,7 +40,7 @@ namespace BotcRoles.Controllers
         {
             var game = _db.Games
                 .Where(g => g.GameId == gameId)
-                .Include(g => g.Module)
+                .Include(g => g.Edition)
                     .ThenInclude(g => g.Games)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
@@ -55,24 +55,24 @@ namespace BotcRoles.Controllers
 
         [HttpPost]
         [Route("createGame")]
-        public IActionResult Post(long moduleId, long storyTellerId)
+        public IActionResult Post(long EditionId, long storyTellerId)
         {
             try
             {
-                var module = _db.Modules.Find(moduleId);
+                var Edition = _db.Editions.Find(EditionId);
                 var storyTeller = _db.Players.Find(storyTellerId);
 
-                if (module == null)
+                if (Edition == null)
                 {
-                    return BadRequest($"Le module avec l'id '{module}' n'a pas été trouvé.");
+                    return BadRequest($"Le Edition avec l'id '{Edition}' n'a pas Ã©tÃ© trouvÃ©.");
                 }
 
                 if (storyTeller == null)
                 {
-                    return BadRequest($"Le joueur avec l'id '{storyTeller}' n'a pas été trouvé.");
+                    return BadRequest($"Le joueur avec l'id '{storyTeller}' n'a pas Ã©tÃ© trouvÃ©.");
                 }
 
-                _db.Add(new Game(module, storyTeller));
+                _db.Add(new Game(Edition, storyTeller));
                 _db.SaveChanges();
 
                 return Created("", null);
@@ -107,7 +107,7 @@ namespace BotcRoles.Controllers
         //    {
         //        if (playerId == null)
         //        {
-        //            return BadRequest($"Le paramètre playerId n'est pas spécifié");
+        //            return BadRequest($"Le paramÃ¨tre playerId n'est pas spÃ©cifiÃ©");
         //        }
 
         //        var game = _db.Games
@@ -119,17 +119,17 @@ namespace BotcRoles.Controllers
 
         //        if (game == null)
         //        {
-        //            return BadRequest($"La partie avec l'id '{gameId}' n'a pas été trouvé.");
+        //            return BadRequest($"La partie avec l'id '{gameId}' n'a pas Ã©tÃ© trouvÃ©.");
         //        }
 
         //        if (player == null)
         //        {
-        //            return BadRequest($"Le joueur avec l'id '{playerId}' n'a pas été trouvé.");
+        //            return BadRequest($"Le joueur avec l'id '{playerId}' n'a pas Ã©tÃ© trouvÃ©.");
         //        }
 
         //        if (game.PlayerRoleGames.Any(prg => prg.PlayerId == playerId))
         //        {
-        //            return BadRequest($"Le joueur est déjà dans la partie.");
+        //            return BadRequest($"Le joueur est dÃ©jÃ  dans la partie.");
         //        }
 
         //        _db.Add(new PlayerRoleGame(player, game));
@@ -151,17 +151,17 @@ namespace BotcRoles.Controllers
         //    {
         //        var playerRole = _db.PlayerRoleGames.Where(pr => pr.PlayerId == playerId &&
         //                                                    pr.GameId == gameId)
-        //            .Include(pr => pr.Game.Module.RolesModule)
+        //            .Include(pr => pr.Game.Edition.RolesEdition)
         //            .FirstOrDefault();
 
         //        if (playerRole == null)
         //        {
-        //            return BadRequest($"Le PlayerRole n'a pas été trouvé. L'utilisateur a-t-il bien été ajouté à la partie ?");
+        //            return BadRequest($"Le PlayerRole n'a pas Ã©tÃ© trouvÃ©. L'utilisateur a-t-il bien Ã©tÃ© ajoutÃ© Ã  la partie ?");
         //        }
 
-        //        if (!playerRole.Game.Module.RolesModule.Any(rm => rm.RoleId == roleId))
+        //        if (!playerRole.Game.Edition.RolesEdition.Any(rm => rm.RoleId == roleId))
         //        {
-        //            return BadRequest($"Le rôle que vous essayez d'assigner n'appartient pas aux roles assignés au module de cette game.");
+        //            return BadRequest($"Le rÃ´le que vous essayez d'assigner n'appartient pas aux roles assignï¿½sEditiondule de cette game.");
         //        }
 
         //        playerRole.RoleId = roleId;

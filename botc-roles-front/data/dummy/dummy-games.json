@@ -2,7 +2,7 @@
   {
     "datePlayed": "2023-05-15",
     "id": 1,
-    "module": "Trouble Brewing",
+    "edition": "Trouble Brewing",
     "notes": "Partie rythmée, victoire grâce au mercenaire le dernier jour",
     "playerRoleGame": [
       {
@@ -82,7 +82,7 @@
   {
     "datePlayed": "2023-02-05",
     "id": 2,
-    "module": "Trouble Brewing",
+    "edition": "Trouble Brewing",
     "notes": "notes2",
     "playerRoleGame": [
       {
@@ -155,7 +155,7 @@
   {
     "datePlayed": "2024-05-15",
     "id": 3,
-    "module": "Trouble Brewing",
+    "edition": "Trouble Brewing",
     "notes": "Le conteur est le meilleur",
     "playerRoleGame": [
       {

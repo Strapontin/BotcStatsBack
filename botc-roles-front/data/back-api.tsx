@@ -13,6 +13,11 @@ import {
   getRoleById as queryRoleById,
   createNewRole as queryCreateNewRole,
 } from "./back-api/back-api-role";
+import {
+  getAllEditions as queryAllEditions,
+  getEditionById as queryEditionById,
+  createNewEdition as queryCreateNewEdition,
+} from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
 
 const apiUrl = "http://192.168.1.48:7099";
@@ -60,4 +65,22 @@ export async function createNewRole(
   alignment: Alignment
 ) {
   return queryCreateNewRole(apiUrl, roleName, characterType, alignment);
+}
+
+
+/* Edition */
+
+export async function getAllEditions() {
+  return queryAllEditions(apiUrl);
+}
+
+export async function getEditionById(editionId: number) {
+  return queryEditionById(apiUrl, editionId);
+}
+
+export async function createNewEdition(
+  editionName: string,
+  rolesId: number[]
+) {
+  return queryCreateNewEdition(apiUrl, editionName, rolesId);
 }

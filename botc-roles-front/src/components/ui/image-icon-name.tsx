@@ -1,15 +1,14 @@
 import { Image } from "@nextui-org/react";
 import RoleColored from "./role-colored";
 import { CharacterType } from "@/entities/enums/characterType";
+import { removeDiacritics } from "../helper/string";
 
 export default function ImageIconName(props: {
   name: string;
   characterType: CharacterType;
   setNameAtLeftOfImage?: boolean;
 }) {
-  const imgFileName = props.name
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+  const imgFileName = removeDiacritics(props.name)
     .replaceAll(" ", "-")
     .replaceAll("'", "");
   const imgPath = `/images/roles-icons/${imgFileName}.png`;

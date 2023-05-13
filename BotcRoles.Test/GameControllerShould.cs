@@ -57,13 +57,13 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
 
-        //    ModuleHelper.PostModule(modelContext, moduleName);
-        //    long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+        //    EditionHelper.PostEdition(modelContext, editionName);
+        //    long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
         //    // Act
-        //    var res = GameHelper.PostGame(modelContext, moduleId, 1);
+        //    var res = GameHelper.PostGame(modelContext, editionId, 1);
 
         //    // Assert
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
@@ -72,7 +72,7 @@ namespace BotcRoles.Test
         //}
 
         [Test]
-        public void Cant_Post_Game_With_Wrong_ModuleId()
+        public void Cant_Post_Game_With_Wrong_EditionId()
         {
             // Arrange
             string fileName = Helper.GetCurrentMethodName() + ".db";
@@ -98,10 +98,10 @@ namespace BotcRoles.Test
             string fileName = Helper.GetCurrentMethodName() + ".db";
             var modelContext = Helper.GetContext(fileName);
 
-            long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
             // Act
-            var res = GameHelper.PostGame(modelContext, moduleId, -1);
+            var res = GameHelper.PostGame(modelContext, editionId, -1);
 
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
@@ -116,11 +116,11 @@ namespace BotcRoles.Test
             string fileName = Helper.GetCurrentMethodName() + ".db";
             var modelContext = Helper.GetContext(fileName);
 
-            long moduleId = ModuleHelper.GetModules(modelContext).First().Id;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
 
             // Act
-            var res = GameHelper.PostGame(modelContext, moduleId, playerId);
+            var res = GameHelper.PostGame(modelContext, editionId, playerId);
 
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
@@ -129,24 +129,24 @@ namespace BotcRoles.Test
         }
 
         //[Test]
-        //public void Can_Post_Two_Games_With_Same_StoryTellerId_And_ModuleId()
+        //public void Can_Post_Two_Games_With_Same_StoryTellerId_And_EditionId()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
 
-        //    GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+        //    GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
 
         //    // Act
-        //    var res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //    var res = GameHelper.PostGame(modelContext, editionId, storyTellerId);
 
         //    // Assert POST Ok
         //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
         //    // Act
-        //    res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //    res = GameHelper.PostGame(modelContext, editionId, storyTellerId);
 
         //    // Assert POST Ok
         //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
@@ -160,15 +160,15 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
 
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
 
         //        var games = GameHelper.GetGames(modelContext);
         //        Assert.AreEqual(2, games.Count());
@@ -193,14 +193,14 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().GameId;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -231,15 +231,15 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -249,7 +249,7 @@ namespace BotcRoles.Test
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
-        //        ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+        //        EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Act
         //        var res = GameHelper.ChangePlayerRoleAndAlignmentInGame(modelContext, gameId, playerId, roleId, Alignment.Evil);
@@ -272,20 +272,20 @@ namespace BotcRoles.Test
         //}
 
         //[Test]
-        //public void Cant_Change_Player_Role_And_Alignment_In_Game_If_Role_Is_Not_In_Role_Module()
+        //public void Cant_Change_Player_Role_And_Alignment_In_Game_If_Role_Is_Not_In_Role_Edition()
         //{
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -311,14 +311,14 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -344,14 +344,14 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -375,14 +375,14 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -406,14 +406,14 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -437,15 +437,15 @@ namespace BotcRoles.Test
         //    // Arrange
         //    string fileName = Helper.GetCurrentMethodName() + ".db";
         //    var modelContext = Helper.GetContext(fileName);
-        //    string moduleName = "ModuleName";
+        //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
         //    string roleName = "RoleName";
 
         //    try
         //    {
-        //        GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-        //        GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+        //        GameHelper.CreateEditionAndStoryTellerForGame(modelContext, editionName, out long editionId, storyTellerName, out long storyTellerId);
+        //        GameHelper.PostGame(modelContext, editionId, storyTellerId);
         //        var gameId = GameHelper.GetGames(modelContext).First().Id;
 
         //        PlayerHelper.PostPlayer(modelContext, playerName);
@@ -455,7 +455,7 @@ namespace BotcRoles.Test
         //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
         //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
-        //        ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+        //        EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Act
         //        var res = GameHelper.ChangePlayerRoleAndAlignmentInGame(modelContext, gameId, playerId, roleId, Alignment.Evil);
