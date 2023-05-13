@@ -14,3 +14,18 @@ export type Role = {
   timesPlayedTotal: number;
   timesWonTotal: number;
 };
+
+export function getNewEmptyRole() {
+  const role: Role = {
+    id: -1,
+    name: "",
+    characterType: 0,
+    alignment: 0,
+    timesPlayedByPlayer: 0,
+    timesWonByPlayer: 0,
+    timesLostByPlayer: 0,
+    timesPlayedTotal: 0,
+    timesWonTotal: 0,
+  };
+  return role;
+}

@@ -22,3 +22,7 @@
   padding: 10px;
   margin: auto;
 }
+
+.role-item div {
+  cursor: pointer;
+}

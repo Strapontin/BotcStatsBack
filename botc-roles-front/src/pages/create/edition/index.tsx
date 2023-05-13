@@ -4,17 +4,15 @@ import { Button, Container, Input, Spacer } from "@nextui-org/react";
 import { getAllEditions, getAllRoles } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
+import { Check, PlusCircle, XOctagon } from "react-feather";
 import DropdownAddRole from "@/components/autocomplete-add-role/AutocompleteAddRole";
-import { Role } from "@/entities/Role";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 
 export default function CreateEdition() {
   const [editionName, setEditionName] = useState("");
   const [message, setMessage] = useState(<Fragment />);
   const [roles, setRoles] = useState<Role[]>([]);
-
-  const [resetCharacterType, setResetCharacterType] = useState("characterType");
-  const [resetAlignment, setResetAlignment] = useState("alignment");
+  const [dropDownRoles, setDropDownRoles] = useState<Role[]>([]);
 
   const [editions, setEditions] = useState<string[]>([]);
   useEffect(() => {
@@ -23,10 +21,10 @@ export default function CreateEdition() {
         return edition.name;
       });
       setEditions(tempEditions);
-      const tempRoles = (await getAllRoles()).map((role) =>{
+      const tempRoles = (await getAllRoles()).map((role) => {
         return role;
-      })
-      setRoles(tempRoles)
+      });
+      setRoles(tempRoles);
     }
     initEditions();
   }, []);
@@ -77,7 +75,7 @@ export default function CreateEdition() {
     //  - the name is unique
     return (
       editionName !== "" &&
-      editions.filter((p) => p === editionName).length === 0 
+      editions.filter((p) => p === editionName).length === 0
       // && characterType !== undefined &&
       // alignment !== undefined
     );
@@ -102,6 +100,13 @@ export default function CreateEdition() {
     }
   }
 
+  function addRole() {
+    setDropDownRoles([getNewEmptyRole(), ...dropDownRoles]);
+  }
+  function removeRole(index: number) {
+    setDropDownRoles(dropDownRoles.filter((r, i) => i !== index));
+  }
+
   return (
     <Fragment>
       {title}
@@ -118,7 +123,19 @@ export default function CreateEdition() {
           onChange={(event) => editionNameChanged(event.target.value)}
         ></Input>
         <Spacer y={3} />
-        <DropdownAddRole roles={roles}/>
+        {dropDownRoles.map((dropDownRole, index) => (
+          <Fragment key={index}>
+            <DropdownAddRole roles={roles} delete={() => removeRole(index)} />
+            <Spacer y={1.5} />
+          </Fragment>
+        ))}
+        <Spacer y={1.5} />
+        <Button
+          auto
+          color="success"
+          icon={<PlusCircle />}
+          onPress={addRole}
+        ></Button>
         <Spacer y={3} />
       </Container>
 
