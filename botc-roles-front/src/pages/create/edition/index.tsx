@@ -5,8 +5,9 @@ import { getAllEditions, getAllRoles } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, PlusCircle, XOctagon } from "react-feather";
-import DropdownAddRole from "@/components/autocomplete-add-role/AutocompleteAddRole";
+import AutocompleteAddRole from "@/components/autocomplete-add-role/AutocompleteAddRole";
 import { Role, getNewEmptyRole } from "@/entities/Role";
+import { removeDiaLowerCase } from "@/components/helper/string";
 
 export default function CreateEdition() {
   const [editionName, setEditionName] = useState("");
@@ -31,25 +32,28 @@ export default function CreateEdition() {
 
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
-  // async function createEdition() {
-  //   if (characterType === undefined || alignment === undefined) return;
+  async function createEdition() {
+    console.log(dropDownRoles);
+    return;
 
-  //   if (await createNewEdition(editionName, characterType, alignment)) {
-  //     editions.push(editionName);
-  //     setEditionName("");
-  //     setEditions(editions);
-  //     setResetCharacterType(resetCharacterType + " ");
-  //     setResetAlignment(resetAlignment + " ");
+    // if (characterType === undefined || alignment === undefined) return;
 
-  //     updateMessage(false, `Module "${editionName}" enregistré correctement.`);
-  //   } else {
-  //     //Erreur
-  //     updateMessage(
-  //       true,
-  //       "Une erreur est survenue lors de l'enregistrement du module."
-  //     );
-  //   }
-  // }
+    // if (await createNewEdition(editionName, characterType, alignment)) {
+    //   editions.push(editionName);
+    //   setEditionName("");
+    //   setEditions(editions);
+    //   setResetCharacterType(resetCharacterType + " ");
+    //   setResetAlignment(resetAlignment + " ");
+
+    //   updateMessage(false, `Module "${editionName}" enregistré correctement.`);
+    // } else {
+    //   //Erreur
+    //   updateMessage(
+    //     true,
+    //     "Une erreur est survenue lors de l'enregistrement du module."
+    //   );
+    // }
+  }
 
   function updateMessage(isError: boolean, message: string) {
     if (isError) {
@@ -75,7 +79,9 @@ export default function CreateEdition() {
     //  - the name is unique
     return (
       editionName !== "" &&
-      editions.filter((p) => p === editionName).length === 0
+      editions.filter(
+        (p) => removeDiaLowerCase(p) === removeDiaLowerCase(editionName)
+      ).length === 0
       // && characterType !== undefined &&
       // alignment !== undefined
     );
@@ -125,7 +131,11 @@ export default function CreateEdition() {
         <Spacer y={3} />
         {dropDownRoles.map((dropDownRole, index) => (
           <Fragment key={index}>
-            <DropdownAddRole roles={roles} delete={() => removeRole(index)} />
+            <AutocompleteAddRole
+              roles={roles}
+              onDelete={() => removeRole(index)}
+              onSelectRole={(role: Role) => (dropDownRoles[index] = role)}
+            />
             <Spacer y={1.5} />
           </Fragment>
         ))}
@@ -143,7 +153,7 @@ export default function CreateEdition() {
         shadow
         ghost
         color="success"
-        // onPress={createEdition}
+        onPress={createEdition}
         disabled={!canCreateEdition()}
       >
         Créer un module

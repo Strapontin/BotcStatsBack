@@ -2,7 +2,8 @@
   width: 100%;
 }
 
-.input-container {
+.input-container,
+.selected-role-container {
   width: 100%;
   display: flex;
   justify-content: space-between;

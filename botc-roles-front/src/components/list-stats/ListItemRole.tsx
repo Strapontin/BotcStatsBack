@@ -10,7 +10,7 @@ export default function ListItemRole(props: {
   nbWins?: number;
   nbLoses?: number;
   nbGamesPlayed?: number;
-  onClick: any;
+  onClick?: any;
 }) {
   const textNbWins =
     props.nbWins !== undefined ? (

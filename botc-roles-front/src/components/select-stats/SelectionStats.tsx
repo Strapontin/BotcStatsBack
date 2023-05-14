@@ -19,17 +19,17 @@ export default function SelectionStats() {
           }}
           aria-label="Static Actions"
         >
-          <Dropdown.Item key="/create/player">
-            Ajouter un nouveau joueur
-          </Dropdown.Item>
-          <Dropdown.Item key="/create/role">
-            Ajouter un nouveau rôle
+          <Dropdown.Item key="/create/partie">
+            Ajouter une nouvelle partie
           </Dropdown.Item>
           <Dropdown.Item key="/create/edition">
             Ajouter un nouveau module
           </Dropdown.Item>
-          <Dropdown.Item key="/create/partie">
-            Ajouter un nouveau partie
+          <Dropdown.Item key="/create/role">
+            Ajouter un nouveau rôle
+          </Dropdown.Item>
+          <Dropdown.Item key="/create/player">
+            Ajouter un nouveau joueur
           </Dropdown.Item>
           <Dropdown.Item withDivider key="/games-player">
             Nombre de parties par joueur

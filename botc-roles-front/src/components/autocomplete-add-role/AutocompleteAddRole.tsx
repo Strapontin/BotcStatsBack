@@ -1,4 +1,4 @@
-import { Role } from "@/entities/Role";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 import { Container, Input, Loading, Spacer } from "@nextui-org/react";
 import { Fragment, useState } from "react";
 import { removeDiaLowerCase } from "../helper/string";
@@ -8,9 +8,11 @@ import ListItemRole from "../list-stats/ListItemRole";
 
 export default function AutocompleteAddRole(props: {
   roles: Role[];
-  delete: any;
+  onDelete: any;
+  onSelectRole: any;
 }) {
   const allRoles = props.roles;
+  const [roleSelected, setRoleSelected] = useState<Role>(getNewEmptyRole());
   const [isVisible, setIsVisible] = useState(false);
   const [visibleRoles, setVisibleRoles] = useState<Role[]>(
     getAllVisibleRoles("")
@@ -36,42 +38,58 @@ export default function AutocompleteAddRole(props: {
   }
 
   function onSelectRole(id: number) {
-    console.log(id);
+    const roleSelected = allRoles.filter((role) => role.id === id)[0];
+    setRoleSelected(roleSelected);
+    props.onSelectRole(roleSelected);
   }
 
   return (
-    <div className={Classes["autocomplete-role"]}>
-      <div className={Classes["input-container"]}>
-        <Input
-          css={{ flex: 1 }}
-          labelPlaceholder="Rôle"
-          aria-label="Rôle"
-          clearable
-          bordered
-          // value={roleSelected}
-          onChange={(event) => inputChanged(event.target.value)}
-          onFocus={() => setValuesToSelectVisible(true)}
-          // onClearClick={() => inputChanged("")}
-          // onBlur={() => setValuesToSelectVisible(false)}
-        ></Input>
-        <Spacer x={0.75} />
-        <X className={Classes.delete} onClick={props.delete} />
-      </div>
-      {isVisible && <Spacer y={0.75} />}
-      {isVisible && (
-        <div className={Classes["container-roles-values"]}>
-          {visibleRoles.map((role) => (
-            <div key={role.id} className={Classes["role-item"]}>
-              <ListItemRole
-                image={role.name}
-                characterType={role.characterType}
-                onClick={() => onSelectRole(role.id)}
-              />
-              <Spacer y={0.75} />
+    <Fragment>
+      {roleSelected.id === -1 && (
+        <div className={Classes["autocomplete-role"]}>
+          <div className={Classes["input-container"]}>
+            <Input
+              css={{ flex: 1 }}
+              labelPlaceholder="Rôle"
+              aria-label="Rôle"
+              clearable
+              bordered
+              // value={roleSelected}
+              onChange={(event) => inputChanged(event.target.value)}
+              onFocus={() => setValuesToSelectVisible(true)}
+              // onClearClick={() => inputChanged("")}
+              // onBlur={() => setValuesToSelectVisible(false)}
+            ></Input>
+            <Spacer x={0.75} />
+            <X className={Classes.delete} onClick={props.onDelete} />
+          </div>
+          {isVisible && <Spacer y={0.75} />}
+          {isVisible && (
+            <div className={Classes["container-roles-values"]}>
+              {visibleRoles.map((role) => (
+                <div key={role.id} className={Classes["role-item"]}>
+                  <ListItemRole
+                    image={role.name}
+                    characterType={role.characterType}
+                    onClick={() => onSelectRole(role.id)}
+                  />
+                  <Spacer y={0.75} />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       )}
-    </div>
+      {roleSelected.id !== -1 && (
+        <div className={Classes["selected-role-container"]}>
+          <ListItemRole
+            image={roleSelected.name}
+            characterType={roleSelected.characterType}
+          ></ListItemRole>
+          <Spacer x={0.75} />
+          <X className={Classes.delete} onClick={props.onDelete} />
+        </div>
+      )}
+    </Fragment>
   );
 }
