@@ -1,10 +1,11 @@
-import { Role } from "@/entities/Role";
+import { Role, RoleOrderBy } from "@/entities/Role";
 import { Fragment, useEffect, useState } from "react";
 import Classes from "./RolesSelector.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
 import { getAllRoles } from "../../../data/back-api";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function RolesSelector(props: { rolesSelected: Role[] }) {
   const [showRoles, setShowRoles] = useState(false);
@@ -12,14 +13,26 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
   const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
+  const [filter, setFilter] = useState("");
+
   useEffect(() => {
     async function initRoles() {
-      const tempRoles = await getAllRoles();
+      const tempRoles = await getAllRoles(
+        RoleOrderBy.CharacterType & RoleOrderBy.Name
+      );
       setAllRoles(tempRoles);
       setVisibleRoles(tempRoles);
     }
     initRoles();
   }, []);
+
+  function onChangeInput(value: string) {
+    const visibleRolesToSet = allRoles.filter((r) =>
+      toLowerRemoveDiacritics(r.name).includes(toLowerRemoveDiacritics(value))
+    );
+    setVisibleRoles(visibleRolesToSet);
+    setFilter(value);
+  }
 
   function onSelectRole(idRoleSelected: number) {
     const roleSelected = visibleRoles.find((role) => role.id == idRoleSelected);
@@ -32,7 +45,10 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
       setVisibleRoles(
         visibleRoles.filter((role) => role.id !== idRoleSelected)
       );
+
+      console.log("toto");
       setShowRoles(false);
+      setFilter("");
     }
   }
 
@@ -90,14 +106,13 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
           aria-label="Rôle"
           clearable
           bordered
-          // value={roleSelected}
-          // onChange={(event) => inputChanged(event.target.value)}
-          onFocus={(event) => setShowRoles(true)}
+          value={filter}
+          onChange={(event) => onChangeInput(event.target.value)}
+          onFocus={(event) => setTimeout(() => setShowRoles(true), 0)}
           // onClearClick={() => inputChanged("")}
           onBlur={(event) => blurInput(event)}
         ></Input>
         <Spacer x={0.75} />
-        {/* <X className={Classes.delete} onClick={props.onDelete} /> */}
       </div>
       {showRoles && <Spacer y={0.75} />}
       {showRoles && (

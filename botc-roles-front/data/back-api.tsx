@@ -19,6 +19,7 @@ import {
   createNewEdition as queryCreateNewEdition,
 } from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
+import { RoleOrderBy } from "@/entities/Role";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -51,8 +52,22 @@ export async function createNewPlayer(
 
 /* Roles */
 
-export async function getAllRoles() {
-  return queryAllRoles(apiUrl);
+export async function getAllRoles(orderBy: RoleOrderBy) {
+  var result = await queryAllRoles(apiUrl);
+
+  switch (orderBy) {
+    case RoleOrderBy.Name | RoleOrderBy.CharacterType:
+      return result.sort((a, b) => {
+        if (a.characterType === b.characterType) {
+          return a.name < b.name ? -1 : 1;
+        }
+        return a.characterType < b.characterType ? -1 : 1;
+      });
+      
+    default:
+      case RoleOrderBy.None:
+        return result;
+  }
 }
 
 export async function getRoleById(roleId: number) {
@@ -67,7 +82,6 @@ export async function createNewRole(
   return queryCreateNewRole(apiUrl, roleName, characterType, alignment);
 }
 
-
 /* Edition */
 
 export async function getAllEditions() {
@@ -78,9 +92,6 @@ export async function getEditionById(editionId: number) {
   return queryEditionById(apiUrl, editionId);
 }
 
-export async function createNewEdition(
-  editionName: string,
-  rolesId: number[]
-) {
+export async function createNewEdition(editionName: string, rolesId: number[]) {
   return queryCreateNewEdition(apiUrl, editionName, rolesId);
 }

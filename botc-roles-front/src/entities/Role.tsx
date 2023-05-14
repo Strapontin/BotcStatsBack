@@ -29,3 +29,9 @@ export function getNewEmptyRole() {
   };
   return role;
 }
+
+export enum RoleOrderBy {
+  None = 0,
+  Name = 1 << 0,
+  CharacterType = 1 << 1,
+}
