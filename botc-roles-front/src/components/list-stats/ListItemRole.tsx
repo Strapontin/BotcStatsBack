@@ -1,6 +1,6 @@
 import { CharacterType } from "@/entities/enums/characterType";
 import ImageIconName from "../ui/image-icon-name";
-import classes from "./ListItem.module.css";
+import Classes from "./ListItem.module.css";
 import { Text } from "@nextui-org/react";
 import { Fragment } from "react";
 
@@ -10,7 +10,6 @@ export default function ListItemRole(props: {
   nbWins?: number;
   nbLoses?: number;
   nbGamesPlayed?: number;
-  onClick?: any;
 }) {
   const textNbWins =
     props.nbWins !== undefined ? (
@@ -46,7 +45,7 @@ export default function ListItemRole(props: {
     );
 
   return (
-    <div className={classes["list-item"]} onClick={props.onClick}>
+    <div className={Classes["list-item"]}>
       <div>
         <ImageIconName
           setNameAtLeftOfImage

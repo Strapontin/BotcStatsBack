@@ -23,8 +23,8 @@ namespace BotcRoles.Test
         public void Get_Games()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             // Act
             var res = GameHelper.GetGames(modelContext);
@@ -32,15 +32,15 @@ namespace BotcRoles.Test
             // Assert 
             Assert.IsTrue(res.Count() > 0);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Get_Game()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             // Act
             var res = GameHelper.GetGame(modelContext, 1);
@@ -48,15 +48,15 @@ namespace BotcRoles.Test
             // Assert 
             Assert.IsTrue(res != null);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         //[Test]
         //public void Cant_Post_Game_With_Wrong_PlayerId()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
 
         //    EditionHelper.PostEdition(modelContext, editionName);
@@ -68,15 +68,15 @@ namespace BotcRoles.Test
         //    // Assert
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
+        //    DBHelper.DeleteCreatedDatabase(modelContext);
         //}
 
         [Test]
         public void Cant_Post_Game_With_Wrong_EditionId()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
             string playerName = "PlayerName";
 
             PlayerHelper.PostPlayer(modelContext, playerName);
@@ -88,15 +88,15 @@ namespace BotcRoles.Test
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Cant_Post_Game_With_Wrong_StoryTellerId()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
@@ -106,15 +106,15 @@ namespace BotcRoles.Test
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Post_And_Get_Game()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
@@ -125,15 +125,15 @@ namespace BotcRoles.Test
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         //[Test]
         //public void Can_Post_Two_Games_With_Same_StoryTellerId_And_EditionId()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
 
@@ -151,15 +151,15 @@ namespace BotcRoles.Test
         //    // Assert POST Ok
         //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
+        //    DBHelper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
         //public void Delete_Game_Deletes_Only_One_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
 
@@ -183,7 +183,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -191,8 +191,8 @@ namespace BotcRoles.Test
         //public void Post_And_Get_Player_In_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -221,7 +221,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -229,8 +229,8 @@ namespace BotcRoles.Test
         //public void Change_Player_Role_And_Alignment_In_Game_And_Get_Correct_Value()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -267,7 +267,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -275,8 +275,8 @@ namespace BotcRoles.Test
         //public void Cant_Change_Player_Role_And_Alignment_In_Game_If_Role_Is_Not_In_Role_Edition()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -301,7 +301,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -309,8 +309,8 @@ namespace BotcRoles.Test
         //public void Cant_Add_Two_PlayerRoleGame_With_Same_PlayerId_And_GameId()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -334,7 +334,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -342,8 +342,8 @@ namespace BotcRoles.Test
         //public void Return_Bad_Request_If_PlayerId_Not_Provided_When_Add_Player_In_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -365,7 +365,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -373,8 +373,8 @@ namespace BotcRoles.Test
         //public void Return_Bad_Request_If_GameId_Not_Found_When_Add_Player_In_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -396,7 +396,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -404,8 +404,8 @@ namespace BotcRoles.Test
         //public void Return_Bad_Request_If_PlayerId_Not_Found_When_Add_Player_In_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -427,7 +427,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -435,8 +435,8 @@ namespace BotcRoles.Test
         //public void Return_Bad_Request_When_ChangePlayerRoleAndAlignmentInGame_And_PlayerRoleGame_Is_Not_Assigned_To_Game()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string storyTellerName = "StoryTellerName";
         //    string playerName = "PlayerName";
@@ -465,7 +465,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
     }

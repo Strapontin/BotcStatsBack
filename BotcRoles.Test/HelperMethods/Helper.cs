@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BotcRoles.Test.HelperMethods
 {
-    public static class Helper
+    public static class DBHelper
     {
         private static readonly string _dbPath = "E:\\Anthony\\Devs\\Devs\\BotcRoles\\BotcRoles\\DB\\BotcRoles_TestDatabases";
 

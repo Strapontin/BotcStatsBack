@@ -1,5 +1,6 @@
 using BotcRoles.Entities;
 using BotcRoles.Enums;
+using BotcRoles.Helper;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -56,7 +57,7 @@ namespace BotcRoles.Controllers
                     return BadRequest(JObject.FromObject(new { error = $"Le nom du role est vide." }));
                 }
 
-                if (_db.Roles.Any(r => r.Name == roleName))
+                if (_db.Roles.ToList().Any(r => r.Name.ToLowerRemoveDiacritics() == roleName.ToLowerRemoveDiacritics()))
                 {
                     return BadRequest(JObject.FromObject(new { error = $"Un rôle avec le nom '{roleName}' existe déjà." }));
                 }

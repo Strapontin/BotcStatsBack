@@ -11,6 +11,7 @@ import { createNewPlayer, getAllPlayers } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import { XOctagon, Check } from "react-feather";
 import classes from "../index.module.css";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function CreatePlayer() {
   const [prenom, setPrenom] = useState("");
@@ -112,8 +113,11 @@ export default function CreatePlayer() {
     }
 
     if (
-      players.filter((p) => p.pseudo === newPseudo && p.name == newName).length !==
-      0
+      players.filter(
+        (p) =>
+          toLowerRemoveDiacritics(p.pseudo) === toLowerRemoveDiacritics(newPseudo) &&
+          toLowerRemoveDiacritics(p.name) == toLowerRemoveDiacritics(newName)
+      ).length !== 0
     ) {
       updateMessage(
         true,
@@ -135,7 +139,6 @@ export default function CreatePlayer() {
           bordered
           labelPlaceholder="Prénom"
           aria-label="Prénom"
-          value={prenom}
           onChange={(event) => prenomChanged(event.target.value)}
         ></Input>
         <Spacer y={1.75} />
@@ -144,7 +147,6 @@ export default function CreatePlayer() {
           bordered
           labelPlaceholder="Pseudo"
           aria-label="Pseudo"
-          value={pseudo}
           onChange={(event) => pseudoChanged(event.target.value)}
         ></Input>
         <Spacer y={3} />

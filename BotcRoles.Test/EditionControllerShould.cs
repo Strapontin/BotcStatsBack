@@ -13,8 +13,8 @@ namespace BotcRoles.Test
         public void Get_Editions()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             // Act
             var res = EditionHelper.GetEditions(modelContext);
@@ -22,15 +22,15 @@ namespace BotcRoles.Test
             // Assert 
             Assert.IsTrue(res.Any());
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Get_Edition()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
 
             string editionName = EditionHelper.GetEditions(modelContext).First().Name;
 
@@ -40,15 +40,15 @@ namespace BotcRoles.Test
             // Assert 
             Assert.IsTrue(res != null);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         //[Test]
         //public void Post_And_Get_Edition()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
 
         //    // Act
@@ -60,15 +60,15 @@ namespace BotcRoles.Test
         //    // Act
         //    Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
+        //    DBHelper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
         //public void Cant_Post_Two_Editions_With_Same_Name()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
 
         //    // Act
@@ -76,30 +76,30 @@ namespace BotcRoles.Test
         //    var res = EditionHelper.PostEdition(modelContext, editionName);
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
+        //    DBHelper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
         //public void Cant_Post_Edition_With_Empty_Name()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = string.Empty;
 
         //    // Act
         //    var res = EditionHelper.PostEdition(modelContext, editionName);
         //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-        //    Helper.DeleteCreatedDatabase(modelContext);
+        //    DBHelper.DeleteCreatedDatabase(modelContext);
         //}
 
         //[Test]
         //public void Add_And_Get_Role_In_Edition()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
@@ -125,7 +125,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -133,8 +133,8 @@ namespace BotcRoles.Test
         //public void Cant_Add_Twice_Same_Role_In_Edition()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
@@ -156,7 +156,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -164,8 +164,8 @@ namespace BotcRoles.Test
         //public void Cant_Add_Role_In_Edition_With_Wrong_EditionId()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
@@ -185,7 +185,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -193,8 +193,8 @@ namespace BotcRoles.Test
         //public void Cant_Add_Role_In_Edition_With_Wrong_RoleId()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
@@ -214,7 +214,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
 
@@ -222,8 +222,8 @@ namespace BotcRoles.Test
         //public void Remove_Role_From_Edition()
         //{
         //    // Arrange
-        //    string fileName = Helper.GetCurrentMethodName() + ".db";
-        //    var modelContext = Helper.GetContext(fileName);
+        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
+        //    var modelContext = DBHelper.GetContext(fileName);
         //    string editionName = "EditionName";
         //    string roleName = "RoleName";
 
@@ -248,7 +248,7 @@ namespace BotcRoles.Test
         //    }
         //    finally
         //    {
-        //        Helper.DeleteCreatedDatabase(modelContext);
+        //        DBHelper.DeleteCreatedDatabase(modelContext);
         //    }
         //}
     }

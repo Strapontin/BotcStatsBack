@@ -12,8 +12,8 @@ namespace BotcRoles.Test
         public void Post_And_Get_Player()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
             string playerName = "PlayerName";
             string pseudo = "";
 
@@ -33,7 +33,7 @@ namespace BotcRoles.Test
             }
             finally
             {
-                Helper.DeleteCreatedDatabase(modelContext);
+                DBHelper.DeleteCreatedDatabase(modelContext);
             }
         }
 
@@ -41,8 +41,8 @@ namespace BotcRoles.Test
         public void Cant_Post_Two_Players_With_Same_Name()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
             string playerName = "PlayerName";
 
             // Act
@@ -50,15 +50,15 @@ namespace BotcRoles.Test
             var res = PlayerHelper.PostPlayer(modelContext, playerName);
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Can_Post_Two_Players_With_Same_Name_And_Different_Pseudo()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
             string playerName = "PlayerName";
             string pseudo1 = "pseudo1";
             string pseudo2 = "pseudo2";
@@ -67,7 +67,7 @@ namespace BotcRoles.Test
             PlayerHelper.PostPlayer(modelContext, playerName, pseudo1);
             var res = PlayerHelper.PostPlayer(modelContext, playerName, pseudo2);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
         }
 
@@ -75,15 +75,15 @@ namespace BotcRoles.Test
         public void Cant_Post_Player_With_Empty_Name()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
             string playerName = string.Empty;
 
             // Act
             var res = PlayerHelper.PostPlayer(modelContext, playerName);
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
     }
 }

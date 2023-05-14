@@ -3,6 +3,7 @@ using BotcRoles.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using BotcRoles.Helper;
 
 namespace BotcRoles.Controllers
 {
@@ -61,7 +62,7 @@ namespace BotcRoles.Controllers
                 {
                     return BadRequest($"Le nom du edition est vide.");
                 }
-                if (_db.Editions.Any(m => m.Name == name))
+                if (_db.Editions.Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
                 {
                     return BadRequest($"Un edition avec le nom '{name}' existe déjà.");
                 }

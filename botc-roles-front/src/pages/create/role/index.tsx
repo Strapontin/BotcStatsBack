@@ -7,6 +7,7 @@ import { createNewRole, getAllRoles } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function CreateRole() {
   const [roleName, setRoleName] = useState("");
@@ -74,7 +75,9 @@ export default function CreateRole() {
     //  - the name is unique
     return (
       roleName !== "" &&
-      roles.filter((p) => p === roleName).length === 0 &&
+      roles.filter(
+        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
+      ).length === 0 &&
       characterType !== undefined &&
       alignment !== undefined
     );
@@ -93,7 +96,11 @@ export default function CreateRole() {
       return;
     }
 
-    if (roles.filter((p) => p === roleName).length !== 0) {
+    if (
+      roles.filter(
+        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
+      ).length !== 0
+    ) {
       updateMessage(true, `Le rôle '${roleName}' existe déjà.`);
       return;
     }
@@ -111,7 +118,6 @@ export default function CreateRole() {
           bordered
           labelPlaceholder="Nom"
           aria-label="Nom"
-          value={roleName}
           onChange={(event) => roleNameChanged(event.target.value)}
         ></Input>
         <Spacer y={1.75} />
@@ -120,10 +126,7 @@ export default function CreateRole() {
           setCharacterType={setCharacterType}
         />
         <Spacer y={1.75} />
-        <DropdownAlignment
-          key={resetAlignment}
-          setAlignment={setAlignment}
-        />
+        <DropdownAlignment key={resetAlignment} setAlignment={setAlignment} />
         <Spacer y={3} />
       </Container>
 

@@ -1,7 +1,7 @@
 import { Role, getNewEmptyRole } from "@/entities/Role";
-import { Container, Input, Loading, Spacer } from "@nextui-org/react";
+import { Input, Loading, Spacer } from "@nextui-org/react";
 import { Fragment, useState } from "react";
-import { removeDiaLowerCase } from "../helper/string";
+import { toLowerRemoveDiacritics } from "../../helper/string";
 import Classes from "./AutocompleteAddRole.module.css";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
@@ -10,19 +10,30 @@ export default function AutocompleteAddRole(props: {
   roles: Role[];
   onDelete: any;
   onSelectRole: any;
+  roleSelected?: Role;
 }) {
   const allRoles = props.roles;
-  const [roleSelected, setRoleSelected] = useState<Role>(getNewEmptyRole());
-  const [isVisible, setIsVisible] = useState(false);
   const [visibleRoles, setVisibleRoles] = useState<Role[]>(
     getAllVisibleRoles("")
   );
+  const [roleSelected, setRoleSelected] = useState<Role>(getInitRoleSelected());
+  const [isVisible, setIsVisible] = useState(false);
   if (props.roles.length === 0) return <Loading />;
+
+  function getInitRoleSelected() {
+    if (props.roleSelected !== undefined) return props.roleSelected;
+    return getNewEmptyRole();
+  }
+
+  // console.log("roleSelected ==");
+  // console.log(roleSelected);
 
   // All roles filtered with the input
   function getAllVisibleRoles(filter: string) {
     return allRoles.filter((role) =>
-      removeDiaLowerCase(role.name).includes(removeDiaLowerCase(filter))
+      toLowerRemoveDiacritics(role.name).includes(
+        toLowerRemoveDiacritics(filter)
+      )
     );
   }
 
@@ -32,9 +43,13 @@ export default function AutocompleteAddRole(props: {
   }
 
   // Hides/Show the list of roles filtered
-  function setValuesToSelectVisible(visible: boolean) {
-    setIsVisible(visible);
-    setVisibleRoles(getAllVisibleRoles(""));
+  function setValuesToSelectVisible(event: any, visible: boolean) {
+    // console.log(event);
+    const timeout = visible ? 0 : 500;
+    setTimeout(() => {
+      setIsVisible(visible);
+      setVisibleRoles(getAllVisibleRoles(""));
+    }, timeout);
   }
 
   function onSelectRole(id: number) {
@@ -56,9 +71,9 @@ export default function AutocompleteAddRole(props: {
               bordered
               // value={roleSelected}
               onChange={(event) => inputChanged(event.target.value)}
-              onFocus={() => setValuesToSelectVisible(true)}
-              // onClearClick={() => inputChanged("")}
-              // onBlur={() => setValuesToSelectVisible(false)}
+              onFocus={(event) => setValuesToSelectVisible(event, true)}
+              onClearClick={() => inputChanged("")}
+              onBlur={(event) => setValuesToSelectVisible(event, false)}
             ></Input>
             <Spacer x={0.75} />
             <X className={Classes.delete} onClick={props.onDelete} />

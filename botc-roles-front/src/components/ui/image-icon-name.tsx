@@ -1,7 +1,7 @@
 import { Image } from "@nextui-org/react";
 import RoleColored from "./role-colored";
 import { CharacterType } from "@/entities/enums/characterType";
-import { removeDiacritics } from "../helper/string";
+import { removeDiacritics } from "../../helper/string";
 
 export default function ImageIconName(props: {
   name: string;

@@ -1,4 +1,5 @@
 using BotcRoles.Entities;
+using BotcRoles.Helper;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ namespace BotcRoles.Controllers
                 .Include(p => p.PlayerRoleGames)
                 .OrderByDescending(p => p.PlayerRoleGames.Count)
                 .ThenBy(p => p.Name)
+                .ThenBy(p => p.Pseudo)
                 .Select(p => new PlayerEntities(_db, p))
                 .ToList();
             return players;
@@ -62,7 +64,8 @@ namespace BotcRoles.Controllers
                     return BadRequest(JObject.FromObject(new { error = $"Le nom du joueur est vide." }));
                 }
 
-                if (_db.Players.Any(p => p.Name == playerName && p.Pseudo == pseudo))
+                if (_db.Players.ToList().Any(p => p.Name.ToLowerRemoveDiacritics() == playerName.ToLowerRemoveDiacritics() &&
+                                             p.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics()))
                 {
                     return BadRequest(JObject.FromObject(new { error = $"Un joueur avec le nom '{playerName}' et le pseudo '{pseudo}' existe déjà." }));
                 }

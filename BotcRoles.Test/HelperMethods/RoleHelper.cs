@@ -37,5 +37,11 @@ namespace BotcRoles.Test.HelperMethods
 
             return roleController.GetRoleById(id).Value;
         }
+
+        public static void DeleteAllRoles(ModelContext modelContext)
+        {
+            modelContext.Roles.RemoveRange(modelContext.Roles);
+            modelContext.SaveChanges();
+        }
     }
 }

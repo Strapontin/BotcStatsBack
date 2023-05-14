@@ -5,9 +5,9 @@ import { getAllEditions, getAllRoles } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, PlusCircle, XOctagon } from "react-feather";
+import AutocompleteAddRole from "@/components/autocomplete-add-role/AutocompleteAddRole";
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
 
 export default function CreateEdition() {
   const [editionName, setEditionName] = useState("");
@@ -79,7 +79,7 @@ export default function CreateEdition() {
     // Can create a edition when
     //  - all params are set
     //  - the name is unique
-    return true;
+    return true
     return (
       editionName !== "" &&
       editions.filter(
@@ -121,8 +121,8 @@ export default function CreateEdition() {
   function selectRole(index: number, role: Role) {
     rolesSelected[index] = role;
 
-    const rolesNotSelected = allRoles.filter(
-      (role) => !rolesSelected.some((r) => r.id === role.id)
+    const rolesNotSelected = allRoles.filter((role) =>
+      !rolesSelected.some((r) => r.id === role.id)
     );
     setRoles(rolesNotSelected);
   }
@@ -143,7 +143,24 @@ export default function CreateEdition() {
           onChange={(event) => editionNameChanged(event.target.value)}
         ></Input>
         <Spacer y={3} />
-        <RolesSelector rolesSelected={null} />
+        {rolesSelected.map((roleSelected, index) => (
+          <Fragment key={index}>
+            <AutocompleteAddRole
+              roles={roles}
+              onDelete={() => removeRole(index)}
+              onSelectRole={(role: Role) => selectRole(index, role)}
+              roleSelected={roleSelected}
+            />
+            <Spacer y={1.5} />
+          </Fragment>
+        ))}
+        <Spacer y={1.5} />
+        <Button
+          auto
+          color="success"
+          icon={<PlusCircle />}
+          onPress={addRole}
+        ></Button>
         <Spacer y={3} />
       </Container>
 
