@@ -5,16 +5,14 @@ import { getAllEditions, getAllRoles } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, PlusCircle, XOctagon } from "react-feather";
-import { Role, getNewEmptyRole } from "@/entities/Role";
+import { Role, RoleOrderBy, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 
 export default function CreateEdition() {
   const [editionName, setEditionName] = useState("");
   const [message, setMessage] = useState(<Fragment />);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [allRoles, setAllRoles] = useState<Role[]>([]);
-  const [rolesSelected, setRolesSelected] = useState<Role[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   const [editions, setEditions] = useState<string[]>([]);
   useEffect(() => {
@@ -23,11 +21,6 @@ export default function CreateEdition() {
         return edition.name;
       });
       setEditions(tempEditions);
-      const tempRoles = (await getAllRoles()).map((role) => {
-        return role;
-      });
-      setRoles(tempRoles);
-      setAllRoles(tempRoles);
     }
     initEditions();
   }, []);
@@ -35,7 +28,7 @@ export default function CreateEdition() {
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
-    console.log(rolesSelected);
+    console.log(selectedRoles);
     return;
 
     // if (characterType === undefined || alignment === undefined) return;
@@ -99,32 +92,20 @@ export default function CreateEdition() {
   function checkError(editionName: string) {
     setMessage(<Fragment />);
 
-    if (editionName === "") {
+    if (editionName.trim() === "") {
       updateMessage(true, "Le nom du module ne doit pas être vide.");
       return;
     }
 
-    if (editions.filter((p) => p === editionName).length !== 0) {
+    if (
+      editions.filter(
+        (p) =>
+          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
+      ).length !== 0
+    ) {
       updateMessage(true, `Le module '${editionName}' existe déjà.`);
       return;
     }
-  }
-
-  function addRole() {
-    setRolesSelected([...rolesSelected, getNewEmptyRole()]);
-  }
-  function removeRole(index: number) {
-    const filteredDDR = rolesSelected.filter((r, i) => i !== index);
-    console.log(filteredDDR);
-    setRolesSelected(filteredDDR);
-  }
-  function selectRole(index: number, role: Role) {
-    rolesSelected[index] = role;
-
-    const rolesNotSelected = allRoles.filter(
-      (role) => !rolesSelected.some((r) => r.id === role.id)
-    );
-    setRoles(rolesNotSelected);
   }
 
   return (
@@ -143,7 +124,10 @@ export default function CreateEdition() {
           onChange={(event) => editionNameChanged(event.target.value)}
         ></Input>
         <Spacer y={3} />
-        <RolesSelector rolesSelected={null} />
+        <RolesSelector
+          selectedRoles={selectedRoles}
+          setSelectedRoles={setSelectedRoles}
+        />
         <Spacer y={3} />
       </Container>
 

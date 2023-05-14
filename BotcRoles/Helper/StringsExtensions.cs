@@ -27,7 +27,7 @@ namespace BotcRoles.Helper
 
         public static string ToLowerRemoveDiacritics(this string str)
         {
-            return str.RemoveDiacritics().ToLower();
+            return str.RemoveDiacritics().ToLower().Trim();
         }
     }
 }

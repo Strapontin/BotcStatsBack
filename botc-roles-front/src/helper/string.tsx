@@ -3,8 +3,13 @@ export function removeDiacritics(string: string): string {
 }
 
 export function toLowerRemoveDiacritics(string: string): string {
-  return string
+  const result = string
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase();
+    .toLowerCase()
+    .trim();
+
+  console.log(result);
+
+  return result;
 }

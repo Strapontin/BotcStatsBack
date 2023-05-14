@@ -1,5 +1,5 @@
 import { Role, RoleOrderBy } from "@/entities/Role";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./RolesSelector.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { X } from "react-feather";
@@ -7,11 +7,14 @@ import ListItemRole from "../list-stats/ListItemRole";
 import { getAllRoles } from "../../../data/back-api";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
-export default function RolesSelector(props: { rolesSelected: Role[] }) {
+export default function RolesSelector(props: {
+  selectedRoles: Role[];
+  setSelectedRoles: any;
+}) {
+  const inputFilterRole = useRef<HTMLInputElement>(null);
   const [showRoles, setShowRoles] = useState(false);
   const [allRoles, setAllRoles] = useState<Role[]>([]);
   const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   const [filter, setFilter] = useState("");
 
@@ -38,26 +41,27 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
     const roleSelected = visibleRoles.find((role) => role.id == idRoleSelected);
 
     if (roleSelected !== undefined) {
-      const roles = selectedRoles;
+      const roles = props.selectedRoles;
       roles.push(roleSelected);
-      setSelectedRoles(roles);
+      props.setSelectedRoles(roles);
 
       setVisibleRoles(
         visibleRoles.filter((role) => role.id !== idRoleSelected)
       );
 
-      console.log("toto");
       setShowRoles(false);
       setFilter("");
     }
   }
 
   function removeSelectedRole(id: number) {
-    const roleSelected = selectedRoles.find((role) => role.id == id);
+    const roleSelected = props.selectedRoles.find((role) => role.id == id);
 
     if (roleSelected !== undefined) {
-      const allSelectedroles = selectedRoles.filter((role) => role.id !== id);
-      setSelectedRoles(allSelectedroles);
+      const allSelectedroles = props.selectedRoles.filter(
+        (role) => role.id !== id
+      );
+      props.setSelectedRoles(allSelectedroles);
 
       setVisibleRoles(
         allRoles.filter((ar) => !allSelectedroles.some((sr) => sr.id === ar.id))
@@ -66,7 +70,7 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
   }
 
   function blurInput(event: any) {
-    // Not selecting a role => hide roles
+    // Not (selecting a role/clearing input/click around roles) => hide roles
     if (
       event === undefined ||
       event === null ||
@@ -74,16 +78,28 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
       event.relatedTarget === null ||
       event.relatedTarget.classList === undefined ||
       event.relatedTarget.classList === null ||
-      !event.relatedTarget.classList.contains(Classes["role-item"])
+      (!event.relatedTarget.classList.contains(Classes["role-item"]) &&
+        !event.relatedTarget.classList.contains("nextui-input-clear-button") &&
+        !event.relatedTarget.classList.contains(
+          Classes["container-roles-values"]
+        ))
     ) {
       setShowRoles(false);
+    } else if (
+      event.relatedTarget.classList.contains("nextui-input-clear-button")
+    ) {
+      onChangeInput("");
+    } else if (
+      event.relatedTarget.classList.contains(Classes["container-roles-values"])
+    ) {
+      inputFilterRole.current?.focus();
     }
   }
 
   return (
     <Fragment>
       <div className={Classes["roles-selected"]}>
-        {selectedRoles.map((role) => (
+        {props.selectedRoles.map((role) => (
           <Fragment key={role.id}>
             <div className={Classes["role-selected"]}>
               <ListItemRole
@@ -109,14 +125,14 @@ export default function RolesSelector(props: { rolesSelected: Role[] }) {
           value={filter}
           onChange={(event) => onChangeInput(event.target.value)}
           onFocus={(event) => setTimeout(() => setShowRoles(true), 0)}
-          // onClearClick={() => inputChanged("")}
           onBlur={(event) => blurInput(event)}
+          ref={inputFilterRole}
         ></Input>
         <Spacer x={0.75} />
       </div>
       {showRoles && <Spacer y={0.75} />}
       {showRoles && (
-        <div className={Classes["container-roles-values"]}>
+        <div tabIndex={0} className={Classes["container-roles-values"]}>
           {visibleRoles.map((role) => (
             <Fragment key={role.id}>
               <Button
