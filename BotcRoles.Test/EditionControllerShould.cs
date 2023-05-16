@@ -1,4 +1,5 @@
-﻿using BotcRoles.Enums;
+﻿using BotcRoles.Entities;
+using BotcRoles.Enums;
 using BotcRoles.Test.HelperMethods;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,56 +44,87 @@ namespace BotcRoles.Test
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
-        //[Test]
-        //public void Post_And_Get_Edition()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
+        [Test]
+        public void Post_And_Get_Edition()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
+            string editionName = "EditionName";
+            EditionHelper.DeleteAllEditions(modelContext);
 
-        //    // Act
-        //    var res = EditionHelper.PostEdition(modelContext, editionName);
+            // Act
+            var res = EditionHelper.PostEdition(modelContext, editionName);
 
-        //    // Assert
-        //    Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-        //    // Act
-        //    Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
+            // Act
+            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
 
-        //    DBHelper.DeleteCreatedDatabase(modelContext);
-        //}
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
 
-        //[Test]
-        //public void Cant_Post_Two_Editions_With_Same_Name()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
+        [Test]
+        public void Cant_Post_Two_Editions_With_Same_Name()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
+            string editionName = "EditionName";
+            EditionHelper.DeleteAllEditions(modelContext);
 
-        //    // Act
-        //    EditionHelper.PostEdition(modelContext, editionName);
-        //    var res = EditionHelper.PostEdition(modelContext, editionName);
-        //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            // Act
+            EditionHelper.PostEdition(modelContext, editionName);
+            var res = EditionHelper.PostEdition(modelContext, editionName + " ");
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-        //    DBHelper.DeleteCreatedDatabase(modelContext);
-        //}
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
 
-        //[Test]
-        //public void Cant_Post_Edition_With_Empty_Name()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = string.Empty;
+        [Test]
+        public void Cant_Post_Edition_With_Empty_Name()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
+            string editionName = string.Empty;
 
-        //    // Act
-        //    var res = EditionHelper.PostEdition(modelContext, editionName);
-        //    Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            // Act
+            var res = EditionHelper.PostEdition(modelContext, editionName);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-        //    DBHelper.DeleteCreatedDatabase(modelContext);
-        //}
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Post_Edition_And_Assign_Roles()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
+            string editionName = "EditionName";
+            EditionHelper.DeleteAllEditions(modelContext);
+
+            List<RoleEntities> roles = new()
+            {
+                new RoleEntities(modelContext, modelContext.Roles.First()),
+                new RoleEntities(modelContext, modelContext.Roles.Skip(1).First()),
+                new RoleEntities(modelContext, modelContext.Roles.Skip(2).First()),
+            };
+
+            // Act
+            var res = EditionHelper.PostEdition(modelContext, editionName, roles);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
+
+            var editionId = EditionHelper.GetEdition(modelContext, editionName).Id;
+            Assert.AreEqual(3, modelContext.RolesEdition.Count(re => re.EditionId == editionId));
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
 
         //[Test]
         //public void Add_And_Get_Role_In_Edition()
@@ -115,7 +147,7 @@ namespace BotcRoles.Test
         //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
         //        // Act
         //        var rolesInEdition = EditionHelper.GetRolesFromEdition(modelContext, editionId);
@@ -151,8 +183,8 @@ namespace BotcRoles.Test
         //        var res2 = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
 
         //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res1).StatusCode);
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res2).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res1).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res2).StatusCode);
         //    }
         //    finally
         //    {
@@ -181,7 +213,7 @@ namespace BotcRoles.Test
         //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId + 1, roleId);
 
         //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
         //    }
         //    finally
         //    {
@@ -210,7 +242,7 @@ namespace BotcRoles.Test
         //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId + 1);
 
         //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
         //    }
         //    finally
         //    {
@@ -241,7 +273,7 @@ namespace BotcRoles.Test
         //        var res = EditionHelper.RemoveRoleFromEdition(modelContext, editionId, roleId);
 
         //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status200OK, ((OkResult)res).StatusCode);
+        //        Assert.AreEqual(StatusCodes.Status200OK, ((ObjectResult)res).StatusCode);
 
         //        var roles = EditionHelper.GetRolesFromEdition(modelContext, editionId);
         //        Assert.IsEmpty(roles);

@@ -13,19 +13,19 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class EditionHelper
     {
-        //public static IActionResult PostEdition(ModelContext modelContext, string editionName, List<RoleEntities> roleEntities = null)
-        //{
-        //    EditionsController editionController = new(null!, modelContext);
+        public static IActionResult PostEdition(ModelContext modelContext, string editionName, List<RoleEntities> roleEntities = null)
+        {
+            EditionsController editionController = new(null!, modelContext);
 
-        //    var data = new
-        //    {
-        //        name = editionName,
-        //        roles = roleEntities
-        //    };
+            var data = new
+            {
+                name = editionName,
+                roles = roleEntities
+            };
 
-        //    var res = editionController.CreateEdition(JObject.FromObject(data));
-        //    return res;
-        //}
+            var res = editionController.CreateEdition(JObject.FromObject(data));
+            return res;
+        }
 
         public static IEnumerable<EditionEntities> GetEditions(ModelContext modelContext)
         {
@@ -56,6 +56,12 @@ namespace BotcRoles.Test.HelperMethods
 
             var res = editionController.Get(editionName).Value.Roles;
             return res;
+        }
+
+        public static void DeleteAllEditions(ModelContext modelContext)
+        {
+            modelContext.Editions.RemoveRange(modelContext.Editions);
+            modelContext.SaveChanges();
         }
 
         //public static IActionResult RemoveRoleFromEdition(ModelContext modelContext, long editionId, long roleId)

@@ -4,6 +4,8 @@ namespace BotcRoles.Entities
 {
     public class RoleEntities
     {
+        public RoleEntities() { }
+
         public RoleEntities(Models.ModelContext db, Models.Role role) : this(db, role, null) { }
 
         public RoleEntities(Models.ModelContext db, Models.Role role, List<Models.PlayerRoleGame> rolesIdPlayed)

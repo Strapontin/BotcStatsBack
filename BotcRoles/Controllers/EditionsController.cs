@@ -62,17 +62,17 @@ namespace BotcRoles.Controllers
                 {
                     return BadRequest($"Le nom du edition est vide.");
                 }
-                if (_db.Editions.Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
+                if (_db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
                 {
                     return BadRequest($"Un edition avec le nom '{name}' existe déjà.");
                 }
 
-                
+
                 // Try to convert to Role object from database to ensure it exists
                 List<RoleEntities>? roles = data["roles"]?.ToObject<List<RoleEntities>>();
+                List<Role> rolesDb = new();
                 if (roles != null)
                 {
-                    List<Role> rolesDb = new();
                     foreach (var role in roles)
                     {
                         Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == role.Id);
@@ -85,16 +85,16 @@ namespace BotcRoles.Controllers
                 }
 
                 // Save edition with name
-                //Edition edition = new(name);
-                //_db.Add(edition);
-                //_db.SaveChanges();
+                Edition edition = new(name);
+                var test = _db.Add(edition);
+                _db.SaveChanges();
 
-                //// Get edition db
-                //var editionDb = _db.Editions.First(edition => edition.Name == name);
+                // Get edition db
+                var editionDb = _db.Editions.First(edition => edition.Name == name);
 
-                //var rolesEditionDb = rolesDb.Select(rdb => new RoleEdition(rdb, editionDb));
-                //_db.AddRange(rolesEditionDb);
-                //_db.SaveChanges();
+                var rolesEditionDb = rolesDb.Select(rdb => new RoleEdition(rdb, editionDb));
+                _db.AddRange(rolesEditionDb);
+                _db.SaveChanges();
 
                 return Created("", null);
             }
