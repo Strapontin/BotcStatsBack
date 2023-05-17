@@ -37,7 +37,9 @@ export default function SelectionStats() {
           <Dropdown.Item key="/games-role">
             Nombre de parties par rôle
           </Dropdown.Item>
-          <Dropdown.Item key="/games">Liste parties</Dropdown.Item>
+          <Dropdown.Item withDivider key="/games">Liste des parties</Dropdown.Item>
+          <Dropdown.Item key="/editions">Liste des modules</Dropdown.Item>
+          <Dropdown.Item key="/roles">Liste des rôles</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </div>

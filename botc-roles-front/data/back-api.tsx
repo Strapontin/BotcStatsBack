@@ -20,6 +20,7 @@ import {
 } from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
 import { RoleOrderBy } from "@/entities/Role";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -55,18 +56,22 @@ export async function createNewPlayer(
 export async function getAllRoles(orderBy: RoleOrderBy) {
   var result = await queryAllRoles(apiUrl);
 
+  console.log(orderBy);
   switch (orderBy) {
     case RoleOrderBy.Name | RoleOrderBy.CharacterType:
       return result.sort((a, b) => {
         if (a.characterType === b.characterType) {
-          return a.name < b.name ? -1 : 1;
+          return toLowerRemoveDiacritics(a.name) <
+            toLowerRemoveDiacritics(b.name)
+            ? -1
+            : 1;
         }
         return a.characterType < b.characterType ? -1 : 1;
       });
-      
+
     default:
-      case RoleOrderBy.None:
-        return result;
+    case RoleOrderBy.None:
+      return result;
   }
 }
 
