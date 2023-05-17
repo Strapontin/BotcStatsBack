@@ -33,10 +33,10 @@ namespace BotcRoles.Test
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
             var modelContext = DBHelper.GetContext(fileName);
 
-            string editionName = EditionHelper.GetEditions(modelContext).First().Name;
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
             // Act
-            var res = EditionHelper.GetEdition(modelContext, editionName);
+            var res = EditionHelper.GetEdition(modelContext, editionId);
 
             // Assert 
             Assert.IsTrue(res != null);
@@ -59,8 +59,10 @@ namespace BotcRoles.Test
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
+
             // Act
-            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
+            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionId).Name);
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
@@ -116,11 +118,12 @@ namespace BotcRoles.Test
             // Act
             var res = EditionHelper.PostEdition(modelContext, editionName, roles);
 
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
+
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
-            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionName).Name);
+            Assert.AreEqual(editionName, EditionHelper.GetEdition(modelContext, editionId).Name);
 
-            var editionId = EditionHelper.GetEdition(modelContext, editionName).Id;
             Assert.AreEqual(3, modelContext.RolesEdition.Count(re => re.EditionId == editionId));
 
             DBHelper.DeleteCreatedDatabase(modelContext);
@@ -147,7 +150,7 @@ namespace BotcRoles.Test
 
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
-            Assert.IsNull(EditionHelper.GetEdition(modelContext, editionName));
+            Assert.IsEmpty(EditionHelper.GetEditions(modelContext));
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }

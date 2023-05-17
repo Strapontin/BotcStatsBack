@@ -31,14 +31,14 @@ namespace BotcRoles.Test.HelperMethods
         {
             EditionsController editionController = new(null!, modelContext);
 
-            return editionController.Get().Value;
+            return editionController.GetEditions().Value;
         }
 
-        public static EditionEntities GetEdition(ModelContext modelContext, string editionName)
+        public static EditionEntities GetEdition(ModelContext modelContext, long editionId)
         {
             EditionsController editionController = new(null!, modelContext);
 
-            var res = editionController.Get(editionName);
+            var res = editionController.GetEditionById(editionId);
             return res.Value;
         }
 
@@ -50,11 +50,11 @@ namespace BotcRoles.Test.HelperMethods
         //    return res;
         //}
 
-        public static IEnumerable<RoleEntities> GetRolesFromEdition(ModelContext modelContext, string editionName)
+        public static IEnumerable<RoleEntities> GetRolesFromEdition(ModelContext modelContext, long editionId)
         {
             EditionsController editionController = new(null!, modelContext);
 
-            var res = editionController.Get(editionName).Value.Roles;
+            var res = editionController.GetEditionById(editionId).Value.Roles;
             return res;
         }
 

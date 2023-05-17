@@ -3,7 +3,7 @@ import { Text } from "@nextui-org/react";
 
 export default function ListItem(props: {
   name: string;
-  value: any;
+  value?: any;
   subName?: string;
 }) {
   return (

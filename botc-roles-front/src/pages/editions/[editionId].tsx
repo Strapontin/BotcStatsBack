@@ -1,10 +1,10 @@
 import { Link } from "@nextui-org/react";
 import { Fragment } from "react";
 
-export default function RoleIdPage() {
+export default function EditionIdPage() {
   return (
     <Fragment>
-      <Link href="/roles">Go to roles</Link>
+      <Link href="/editions">Go to editions</Link>
     </Fragment>
   );
 }

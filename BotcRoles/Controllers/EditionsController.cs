@@ -22,27 +22,26 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<EditionEntities>> Get()
+        public ActionResult<IEnumerable<EditionEntities>> GetEditions()
         {
-            var editionsDb = _db.Editions
+            var editions = _db.Editions
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
                 .Include(m => m.Games)
-                .ToList();
-
-            var editions = editionsDb
                 .Select(m => new EditionEntities(_db, m))
+                .ToList()
+                .OrderBy(m => m.Name.ToLowerRemoveDiacritics())
                 .ToList();
 
             return editions;
         }
 
         [HttpGet]
-        [Route("{editionName}")]
-        public ActionResult<EditionEntities> Get(string editionName)
+        [Route("{editionId}")]
+        public ActionResult<EditionEntities> GetEditionById(long editionId)
         {
             var edition = _db.Editions
-                .Where(m => m.Name == editionName)
+                .Where(m => m.EditionId == editionId)
                 .Include(m => m.RolesEdition)
                 .Select(m => new EditionEntities(_db, m))
                 .FirstOrDefault();
