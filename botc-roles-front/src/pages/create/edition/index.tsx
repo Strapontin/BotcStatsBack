@@ -1,11 +1,14 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import { Button, Container, Input, Spacer } from "@nextui-org/react";
-import { getAllEditions, getAllRoles } from "../../../../data/back-api";
+import {
+  createNewEdition,
+  getAllEditions,
+} from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, PlusCircle, XOctagon } from "react-feather";
-import { Role, RoleOrderBy, getNewEmptyRole } from "@/entities/Role";
+import { Check, XOctagon } from "react-feather";
+import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 
@@ -28,26 +31,19 @@ export default function CreateEdition() {
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
-    console.log(selectedRoles);
-    return;
+    if (await createNewEdition(editionName, selectedRoles.map(sr => sr.id))) {
+      editions.push(editionName);
+      setEditionName("");
+      setEditions(editions);
 
-    // if (characterType === undefined || alignment === undefined) return;
-
-    // if (await createNewEdition(editionName, characterType, alignment)) {
-    //   editions.push(editionName);
-    //   setEditionName("");
-    //   setEditions(editions);
-    //   setResetCharacterType(resetCharacterType + " ");
-    //   setResetAlignment(resetAlignment + " ");
-
-    //   updateMessage(false, `Module "${editionName}" enregistré correctement.`);
-    // } else {
-    //   //Erreur
-    //   updateMessage(
-    //     true,
-    //     "Une erreur est survenue lors de l'enregistrement du module."
-    //   );
-    // }
+      updateMessage(false, `Module "${editionName}" enregistré correctement.`);
+    } else {
+      //Erreur
+      updateMessage(
+        true,
+        "Une erreur est survenue lors de l'enregistrement du module."
+      );
+    }
   }
 
   function updateMessage(isError: boolean, message: string) {
@@ -70,17 +66,14 @@ export default function CreateEdition() {
 
   function canCreateEdition() {
     // Can create a edition when
-    //  - all params are set
+    //  - the name is set
     //  - the name is unique
-    return true;
     return (
       editionName !== "" &&
       editions.filter(
         (p) =>
           toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
       ).length === 0
-      // && characterType !== undefined &&
-      // alignment !== undefined
     );
   }
 
@@ -97,13 +90,14 @@ export default function CreateEdition() {
       return;
     }
 
-    if (
-      editions.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
-      ).length !== 0
-    ) {
-      updateMessage(true, `Le module '${editionName}' existe déjà.`);
+    const editionsWithSameName = editions.filter(
+      (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
+    );
+    if (editionsWithSameName.length !== 0) {
+      updateMessage(
+        true,
+        `Le module '${editionsWithSameName[0]}' existe déjà.`
+      );
       return;
     }
   }

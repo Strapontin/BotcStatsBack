@@ -13,14 +13,14 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class EditionHelper
     {
-        public static IActionResult PostEdition(ModelContext modelContext, string editionName, List<RoleEntities> roleEntities = null)
+        public static IActionResult PostEdition(ModelContext modelContext, string editionName, List<long> rolesId = null)
         {
             EditionsController editionController = new(null!, modelContext);
 
             var data = new
             {
-                name = editionName,
-                roles = roleEntities
+                editionName,
+                rolesId
             };
 
             var res = editionController.CreateEdition(JObject.FromObject(data));

@@ -9,7 +9,5 @@ export function toLowerRemoveDiacritics(string: string): string {
     .toLowerCase()
     .trim();
 
-  console.log(result);
-
   return result;
 }

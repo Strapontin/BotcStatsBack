@@ -106,11 +106,11 @@ namespace BotcRoles.Test
             string editionName = "EditionName";
             EditionHelper.DeleteAllEditions(modelContext);
 
-            List<RoleEntities> roles = new()
+            List<long> roles = new()
             {
-                new RoleEntities(modelContext, modelContext.Roles.First()),
-                new RoleEntities(modelContext, modelContext.Roles.Skip(1).First()),
-                new RoleEntities(modelContext, modelContext.Roles.Skip(2).First()),
+                modelContext.Roles.First().RoleId,
+                modelContext.Roles.Skip(1).First().RoleId,
+                modelContext.Roles.Skip(2).First().RoleId,
             };
 
             // Act
@@ -122,6 +122,32 @@ namespace BotcRoles.Test
 
             var editionId = EditionHelper.GetEdition(modelContext, editionName).Id;
             Assert.AreEqual(3, modelContext.RolesEdition.Count(re => re.EditionId == editionId));
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Post_Edition_And_Assign_Non_Existing_Roles_Should_Fail()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetContext(fileName);
+            string editionName = "EditionName";
+            EditionHelper.DeleteAllEditions(modelContext);
+
+            List<long> roles = new()
+            {
+                -1,
+                modelContext.Roles.Skip(1).First().RoleId,
+                modelContext.Roles.Skip(2).First().RoleId,
+            };
+
+            // Act
+            var res = EditionHelper.PostEdition(modelContext, editionName, roles);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
+            Assert.IsNull(EditionHelper.GetEdition(modelContext, editionName));
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }

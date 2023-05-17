@@ -16,7 +16,7 @@ export default function RolesSelector(props: {
   const [allRoles, setAllRoles] = useState<Role[]>([]);
   const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
 
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
     async function initRoles() {
@@ -30,8 +30,15 @@ export default function RolesSelector(props: {
   }, []);
 
   function onChangeInput(value: string) {
-    const visibleRolesToSet = allRoles.filter((r) =>
-      toLowerRemoveDiacritics(r.name).includes(toLowerRemoveDiacritics(value))
+    reSetVisibleRolesFromValue(value);
+  }
+
+  function reSetVisibleRolesFromValue(value: string) {
+    const visibleRolesToSet = allRoles.filter(
+      (r) =>
+        toLowerRemoveDiacritics(r.name).includes(
+          toLowerRemoveDiacritics(value)
+        ) && !props.selectedRoles.map((sr) => sr.id).includes(r.id)
     );
     setVisibleRoles(visibleRolesToSet);
     setFilter(value);
@@ -67,6 +74,11 @@ export default function RolesSelector(props: {
         allRoles.filter((ar) => !allSelectedroles.some((sr) => sr.id === ar.id))
       );
     }
+  }
+
+  function onFocusInput() {
+    reSetVisibleRolesFromValue(filter);
+    setShowRoles(true);
   }
 
   function blurInput(event: any) {
@@ -124,7 +136,7 @@ export default function RolesSelector(props: {
           bordered
           value={filter}
           onChange={(event) => onChangeInput(event.target.value)}
-          onFocus={(event) => setTimeout(() => setShowRoles(true), 0)}
+          onFocus={(event) => setTimeout(() => onFocusInput(), 0)}
           onBlur={(event) => blurInput(event)}
           ref={inputFilterRole}
         ></Input>

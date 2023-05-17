@@ -112,16 +112,16 @@ export default function CreatePlayer() {
       return;
     }
 
-    if (
-      players.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p.pseudo) === toLowerRemoveDiacritics(newPseudo) &&
-          toLowerRemoveDiacritics(p.name) == toLowerRemoveDiacritics(newName)
-      ).length !== 0
-    ) {
+    const playersWithSameNameAndPseudo = players.filter(
+      (p) =>
+        toLowerRemoveDiacritics(p.pseudo) ===
+          toLowerRemoveDiacritics(newPseudo) &&
+        toLowerRemoveDiacritics(p.name) == toLowerRemoveDiacritics(newName)
+    );
+    if (playersWithSameNameAndPseudo.length !== 0) {
       updateMessage(
         true,
-        `Le joueur '${newName}' avec le pseudo '${newPseudo}' existe déjà.`
+        `Le joueur '${playersWithSameNameAndPseudo[0].name}' avec le pseudo '${playersWithSameNameAndPseudo[0].pseudo}' existe déjà.`
       );
       return;
     }

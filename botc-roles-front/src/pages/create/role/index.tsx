@@ -8,6 +8,7 @@ import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { RoleOrderBy } from "@/entities/Role";
 
 export default function CreateRole() {
   const [roleName, setRoleName] = useState("");
@@ -21,7 +22,7 @@ export default function CreateRole() {
   const [roles, setRoles] = useState<string[]>([]);
   useEffect(() => {
     async function initRoles() {
-      const tempRoles = (await getAllRoles()).map((role) => {
+      const tempRoles = (await getAllRoles(RoleOrderBy.None)).map((role) => {
         return role.name;
       });
       setRoles(tempRoles);
@@ -96,12 +97,11 @@ export default function CreateRole() {
       return;
     }
 
-    if (
-      roles.filter(
-        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
-      ).length !== 0
-    ) {
-      updateMessage(true, `Le rôle '${roleName}' existe déjà.`);
+    const roleWithSameName = roles.filter(
+      (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
+    );
+    if (roleWithSameName.length !== 0) {
+      updateMessage(true, `Le rôle '${roleWithSameName[0]}' existe déjà.`);
       return;
     }
   }

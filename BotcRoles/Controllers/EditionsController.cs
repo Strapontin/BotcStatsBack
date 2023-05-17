@@ -57,7 +57,7 @@ namespace BotcRoles.Controllers
             try
             {
                 // Get Edition name and test errors
-                string? name = data["name"]?.ToString();
+                string? name = data["editionName"]?.ToString();
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     return BadRequest($"Le nom du edition est vide.");
@@ -69,16 +69,16 @@ namespace BotcRoles.Controllers
 
 
                 // Try to convert to Role object from database to ensure it exists
-                List<RoleEntities>? roles = data["roles"]?.ToObject<List<RoleEntities>>();
+                List<long>? rolesId = data["rolesId"]?.ToObject<List<long>>();
                 List<Role> rolesDb = new();
-                if (roles != null)
+                if (rolesId != null)
                 {
-                    foreach (var role in roles)
+                    foreach (var roleId in rolesId)
                     {
-                        Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == role.Id);
+                        Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == roleId);
                         if (roleDb == null)
                         {
-                            return BadRequest($"Le rôle avec l'id '{role.Id}' n'a pas été trouvé.");
+                            return BadRequest($"Le rôle avec l'id '{roleId}' n'a pas été trouvé.");
                         }
                         rolesDb.Add(roleDb);
                     }
