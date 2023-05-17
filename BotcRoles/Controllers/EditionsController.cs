@@ -43,6 +43,7 @@ namespace BotcRoles.Controllers
             var edition = _db.Editions
                 .Where(m => m.EditionId == editionId)
                 .Include(m => m.RolesEdition)
+                    .ThenInclude(rm => rm.Role)
                 .Select(m => new EditionEntities(_db, m))
                 .FirstOrDefault();
 
