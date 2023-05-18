@@ -49,6 +49,8 @@ namespace BotcRoles.Models
             modelBuilder.ApplyConfiguration(new RoleEditionEntityTypeConfiguration());
         }
 
+        DateTime _dtCreated1 = DateTime.Now;
+        DateTime _dtCreated2 = DateTime.Now.AddMinutes(1);
         private void InitDatabase()
         {
             if (!Players.Any())
@@ -156,8 +158,8 @@ namespace BotcRoles.Models
 
         private void InitGames()
         {
-            Games.Add(new Game(Editions.First(), Players.First()));
-            Games.Add(new Game(Editions.First(), Players.Skip(1).First()) { WinningAlignment = Enums.Alignment.Evil });
+            Games.Add(new Game(Editions.First(), Players.First(), _dtCreated1, DateTime.Now, "some notes", Enums.Alignment.Good));
+            Games.Add(new Game(Editions.First(), Players.Skip(1).First(), _dtCreated2, DateTime.Now, "some other notes", Enums.Alignment.Evil));
             this.SaveChanges();
         }
 

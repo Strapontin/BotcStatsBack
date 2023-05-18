@@ -12,7 +12,7 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class DBHelper
     {
-        private static readonly string _dbPath = "E:\\Anthony\\Devs\\Devs\\BotcRoles\\BotcRoles\\DB\\BotcRoles_TestDatabases";
+        private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcRoles\BotcRoles\DB\BotcRoles_TestDatabases";
 
         public static string GetCurrentMethodName()
         {
@@ -22,7 +22,13 @@ namespace BotcRoles.Test.HelperMethods
             return stackFrame.GetMethod()!.Name;
         }
 
-        public static ModelContext GetContext(string methodName)
+        public static ModelContext GetCleanContext(string methodName)
+        {
+            DeleteCreatedDatabase(GetContext(methodName));
+            return GetContext(methodName);
+        }
+
+        private static ModelContext GetContext(string methodName)
         {
             if (!Directory.Exists(_dbPath))
             {
@@ -40,6 +46,7 @@ namespace BotcRoles.Test.HelperMethods
                 .Build();
 
             ModelContext modelContext = new(new DbContextOptions<ModelContext>(), config);
+
             return modelContext;
         }
 

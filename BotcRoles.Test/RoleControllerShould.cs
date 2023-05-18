@@ -14,7 +14,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
             RoleHelper.DeleteAllRoles(modelContext);
 
@@ -38,7 +38,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             var roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
             // Act
@@ -55,7 +55,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act
@@ -71,7 +71,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = string.Empty;
 
             // Act
@@ -86,7 +86,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act
@@ -101,7 +101,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act

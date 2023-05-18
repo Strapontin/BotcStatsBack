@@ -15,7 +15,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
             // Act
             var res = EditionHelper.GetEditions(modelContext);
@@ -31,7 +31,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
             var editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
@@ -49,9 +49,8 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
-            EditionHelper.DeleteAllEditions(modelContext);
 
             // Act
             var res = EditionHelper.PostEdition(modelContext, editionName);
@@ -72,9 +71,8 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
-            EditionHelper.DeleteAllEditions(modelContext);
 
             // Act
             EditionHelper.PostEdition(modelContext, editionName);
@@ -89,7 +87,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = string.Empty;
 
             // Act
@@ -104,7 +102,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
             EditionHelper.DeleteAllEditions(modelContext);
 
@@ -134,7 +132,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
             EditionHelper.DeleteAllEditions(modelContext);
 

@@ -4,6 +4,7 @@ using BotcRoles.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
@@ -22,12 +23,13 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<GameEntities>> Get()
+        public ActionResult<IEnumerable<GameEntities>> GetGames()
         {
             var games = _db.Games
                 .Include(g => g.Edition)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
+                .OrderByDescending(g => g.DatePlayed)
                 .Select(g => new GameEntities(_db, g))
                 .ToList();
 
@@ -36,12 +38,11 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("{gameId}")]
-        public ActionResult<GameEntities> Get(long gameId)
+        public ActionResult<GameEntities> GetGameById(long gameId)
         {
             var game = _db.Games
                 .Where(g => g.GameId == gameId)
                 .Include(g => g.Edition)
-                    .ThenInclude(g => g.Games)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Player)
@@ -54,25 +55,81 @@ namespace BotcRoles.Controllers
         }
 
         [HttpPost]
-        [Route("createGame")]
-        public IActionResult Post(long EditionId, long storyTellerId)
+        [Route("")]
+        public IActionResult CreateGame([FromBody] JObject data)
         {
             try
             {
-                var Edition = _db.Editions.Find(EditionId);
-                var storyTeller = _db.Players.Find(storyTellerId);
-
-                if (Edition == null)
+                if (!long.TryParse(data["editionId"].ToString(), out long editionId))
                 {
-                    return BadRequest($"Le Edition avec l'id '{Edition}' n'a pas été trouvé.");
+                    return BadRequest($"Une partie doit avoir un module.");
+                }
+                var edition = _db.Editions.FirstOrDefault(e => e.EditionId == editionId);
+                if (edition == null)
+                {
+                    return BadRequest($"Le module avec l'id '{editionId}' n'a pas été trouvé");
                 }
 
+                if (!long.TryParse(data["storyTellerId"].ToString(), out long storyTellerId))
+                {
+                    return BadRequest($"Une partie doit avoir un conteur.");
+                }
+                var storyTeller = _db.Players.FirstOrDefault(e => e.PlayerId == storyTellerId);
                 if (storyTeller == null)
                 {
-                    return BadRequest($"Le joueur avec l'id '{storyTeller}' n'a pas été trouvé.");
+                    return BadRequest($"Le module avec l'id '{storyTellerId}' n'a pas été trouvé");
                 }
 
-                _db.Add(new Game(Edition, storyTeller));
+                if (!DateTime.TryParse(data["datePlayed"].ToString(), out DateTime datePlayed))
+                {
+                    return BadRequest($"La date n'est pas correcte.");
+                }
+
+                var notes = data["notes"].ToString();
+
+                if (!int.TryParse(data["winningAlignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
+                {
+                    return BadRequest($"Une erreur a été rencontrée avec le paramètre 'winningAlignment'.");
+                }
+                Alignment winningAlignment = (Alignment)alignmentInt;
+
+
+                // Try to convert to Role object from database to ensure it exists
+                Dictionary<long, long>? playersIdRolesId = data["playersIdRolesId"]?.ToObject<Dictionary<long, long>>();
+                if (playersIdRolesId == null)
+                {
+                    return BadRequest($"Aucun joueur-rôle trouvé.");
+                }
+
+                List<PlayerRoleGame> playersRoles = new();
+                foreach (var playerIdRoleId in playersIdRolesId)
+                {
+                    Player? playerDb = _db.Players.FirstOrDefault(p => p.PlayerId == playerIdRoleId.Key);
+                    if (playerDb == null)
+                    {
+                        return BadRequest($"Le joueur avec l'id '{playerIdRoleId.Key}' n'a pas été trouvé.");
+                    }
+
+                    Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == playerIdRoleId.Value);
+                    if (roleDb == null)
+                    {
+                        return BadRequest($"Le rôle avec l'id '{playerIdRoleId.Value}' n'a pas été trouvé.");
+                    }
+
+                    playersRoles.Add(new PlayerRoleGame(playerDb, roleDb, null));
+                }
+
+                DateTime dateCreated = DateTime.Now;
+
+                Game game = new (edition, storyTeller, dateCreated, datePlayed, notes, winningAlignment);
+                _db.Add(game);
+                _db.SaveChanges();
+
+                // Get game db
+                var gameDb = _db.Games.First(g => g.DateCreated == dateCreated);
+
+                playersRoles = playersRoles.Select(pr => new PlayerRoleGame(pr.Player, pr.Role, gameDb)).ToList();
+                _db.AddRange(playersRoles);
                 _db.SaveChanges();
 
                 return Created("", null);

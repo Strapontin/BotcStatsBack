@@ -12,12 +12,14 @@ namespace BotcRoles.Models
     {
         public Game() { }
 
-        public Game(Edition edition, Player storyTeller)
+        public Game(Edition edition, Player storyTeller, DateTime dateCreated, DateTime datePlayed, string notes, Alignment winningAlignment)
         {
-            CreationDate = DateTime.Now;
-
             Edition = edition;
             StoryTeller = storyTeller;
+            DateCreated = dateCreated;
+            DatePlayed = datePlayed;
+            Notes = notes;
+            WinningAlignment = winningAlignment;
         }
 
         public long GameId { get; set; }
@@ -29,7 +31,8 @@ namespace BotcRoles.Models
         public long StoryTellerId { get; set; }
         public Player StoryTeller { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DatePlayed { get; set; }
         public string? Notes { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }

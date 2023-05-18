@@ -9,7 +9,7 @@ namespace BotcRoles.Entities
             this.Id = game.GameId;
             this.Edition = new EditionEntities(db, game.Edition);
             this.StoryTeller = new PlayerEntities(db, game.StoryTeller);
-            this.CreationDate = game.CreationDate;
+            this.DatePlayed = game.DatePlayed;
             this.Notes = game.Notes;
             this.WinningAlignment = game.WinningAlignment;
 
@@ -22,7 +22,7 @@ namespace BotcRoles.Entities
         public long Id { get; set; }
         public EditionEntities Edition { get; set; }
         public PlayerEntities StoryTeller { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime DatePlayed { get; set; }
         public string Notes { get; set; }
         public Alignment WinningAlignment { get; set; }
 

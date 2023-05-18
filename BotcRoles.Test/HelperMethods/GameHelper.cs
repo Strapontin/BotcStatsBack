@@ -3,6 +3,7 @@ using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,22 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class GameHelper
     {
-        public static IActionResult PostGame(ModelContext modelContext, long editionId, long storyTellerId)
+        public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storyTellerId, DateTime? datePlayed,
+            Alignment? winningAlignment, Dictionary<long, long> playersIdRolesId, string notes = null)
         {
             GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.Post(editionId, storyTellerId);
+            var data = new
+            {
+                editionId,
+                storyTellerId,
+                datePlayed,
+                notes,
+                winningAlignment,
+                playersIdRolesId
+            };
+
+            var res = gameController.CreateGame(JObject.FromObject(data));
             return res;
         }
 
@@ -25,64 +37,30 @@ namespace BotcRoles.Test.HelperMethods
         {
             GamesController gameController = new(null!, modelContext);
 
-            return gameController.Get().Value;
+            return gameController.GetGames().Value;
         }
 
         public static GameEntities GetGame(ModelContext modelContext, long gameId)
         {
             GamesController gameController = new(null!, modelContext);
 
-            var res = gameController.Get(gameId);
+            var res = gameController.GetGameById(gameId);
             return res.Value;
         }
 
-        //public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
-        //{
-        //    GamesController gameController = new(null!, modelContext);
 
-        //    var res = gameController.Delete(gameId);
-        //    return res;
-        //}
+        public static Dictionary<long, long> GetCorrectPlayersIdRolesId(ModelContext modelContext)
+        {
+            var result = new Dictionary<long, long>()
+            {
+                {modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId},
+                {modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId},
+                {modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId},
+                {modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId},
+                {modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId},
+            };
 
-        //public static void CreateEditionAndStoryTellerForGame(ModelContext modelContext, string editionName, out long editionId, string storyTellerName, out long storyTellerId)
-        //{
-        //    EditionHelper.PostEdition(modelContext, editionName);
-        //    editionId = EditionHelper.GetEditions(modelContext).First().Id;
-
-        //    PlayerHelper.PostPlayer(modelContext, storyTellerName);
-        //    storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
-        //}
-
-        //public static IActionResult AddPlayerInGame(ModelContext modelContext, long gameId, long? playerId)
-        //{
-        //    GamesController gameController = new(null!, modelContext);
-
-        //    var res = gameController.AddPlayerInGame(gameId, playerId);
-        //    return res;
-        //}
-
-        //public static IEnumerable<Player>? GetPlayersInGame(ModelContext modelContext, long gameId)
-        //{
-        //    GamesController gameController = new(null!, modelContext);
-
-        //    var res = gameController.GetPlayers(gameId);
-        //    return res;
-        //}
-
-        //public static IActionResult ChangePlayerRoleAndAlignmentInGame(ModelContext modelContext, long gameId, long playerId, long roleId, Alignment finalAlignment)
-        //{
-        //    GamesController gameController = new(null!, modelContext);
-
-        //    var res = gameController.ChangePlayerRoleAndAlignmentInGame(gameId, playerId, roleId, finalAlignment);
-        //    return res;
-        //}
-
-        //public static IEnumerable<PlayerRoleGame>? GetPlayerRoleFromGame(ModelContext modelContext, long gameId, long playerId)
-        //{
-        //    GamesController gameController = new(null!, modelContext);
-
-        //    var res = gameController.GetPlayerRoleFromGame(gameId, playerId);
-        //    return res;
-        //}
+            return result;
+        }
     }
 }

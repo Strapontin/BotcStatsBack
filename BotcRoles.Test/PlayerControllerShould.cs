@@ -13,7 +13,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
             string pseudo = "";
 
@@ -42,7 +42,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
 
             // Act
@@ -58,7 +58,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
             string pseudo1 = "pseudo1";
             string pseudo2 = "pseudo2";
@@ -76,7 +76,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = string.Empty;
 
             // Act

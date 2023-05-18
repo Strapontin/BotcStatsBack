@@ -60,11 +60,11 @@ namespace BotcRoles.Controllers
                 string? name = data["editionName"]?.ToString();
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    return BadRequest($"Le nom du edition est vide.");
+                    return BadRequest($"Le nom du module est vide.");
                 }
                 if (_db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
                 {
-                    return BadRequest($"Un edition avec le nom '{name}' existe déjà.");
+                    return BadRequest($"Un module avec le nom '{name}' existe déjà.");
                 }
 
 
@@ -86,7 +86,7 @@ namespace BotcRoles.Controllers
 
                 // Save edition with name
                 Edition edition = new(name);
-                var test = _db.Add(edition);
+                _db.Add(edition);
                 _db.SaveChanges();
 
                 // Get edition db
