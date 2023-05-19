@@ -88,6 +88,7 @@ export default function PlayerSelector(props: {
       event.relatedTarget.classList.contains("nextui-input-clear-button")
     ) {
       onChangeInput("");
+      inputFilterPlayer.current?.focus();
     } else if (
       event.relatedTarget.classList.contains(
         Classes["container-players-values"]

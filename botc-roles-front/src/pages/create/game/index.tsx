@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { Button, Container, Input, Spacer } from "@nextui-org/react";
-import { createNewGame, getAllGames } from "../../../../data/back-api";
+import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
+import { createNewGame } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -17,7 +17,9 @@ import PlayerSelector from "@/components/player-selector/PlayerSelector";
 export default function CreateGame() {
   const [inputKey, setInputKey] = useState(0);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
-  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
+  const [storyTeller, setStoryTeller] = useState<Player>(getNewEmptyPlayer());
+  const [datePlayed, setDatePlayed] = useState("");
+  const [notes, setNotes] = useState("");
   const [alignment, setAlignment] = useState();
   const [message, setMessage] = useState(<Fragment />);
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
@@ -94,52 +96,32 @@ export default function CreateGame() {
       {message}
       <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
-        {/* <Input
-          key={inputKey}
-          clearable
-          bordered
-          labelPlaceholder="Nom du module"
-          aria-label="Nom du module"
-          // value={gameName}
-          // onChange={(event) => gameNameChanged(event.target.value)}
-        /> */}
         <EditionSelector
           selectedEdition={edition}
           setSelectedEdition={setEdition}
         />
         <Spacer y={1.75} />
-        {/* <Input
-          key={inputKey + 1}
-          clearable
-          bordered
-          labelPlaceholder="Nom du conteur"
-          aria-label="Nom du conteur"
-          // value={gameName}
-          // onChange={(event) => gameNameChanged(event.target.value)}
-        /> */}
         <PlayerSelector
-          selectedPlayer={player}
-          setSelectedPlayer={setPlayer}
+          selectedPlayer={storyTeller}
+          setSelectedPlayer={setStoryTeller}
         />
         <Spacer y={1.75} />
         <Input
+          css={{ textAlign: "left" }} // Usefull so the label isn't centered
           key={inputKey + 2}
-          clearable
+          type="date"
           bordered
-          labelPlaceholder="Date à laquelle la partie a été jouée"
+          label="Date à laquelle la partie a été jouée"
           aria-label="Date à laquelle la partie a été jouée"
-          // value={gameName}
-          // onChange={(event) => gameNameChanged(event.target.value)}
+          onChange={(event) => setDatePlayed(event.target.value)}
         />
         <Spacer y={1.75} />
-        <Input
+        <Textarea
           key={inputKey + 3}
-          clearable
           bordered
           labelPlaceholder="Notes"
           aria-label="Notes"
-          // value={gameName}
-          // onChange={(event) => gameNameChanged(event.target.value)}
+          onChange={(event) => setNotes(event.target.value)}
         />
         <Spacer y={1.75} />
         <DropdownAlignment
