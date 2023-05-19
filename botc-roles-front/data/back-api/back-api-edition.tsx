@@ -41,7 +41,7 @@ export async function createNewEdition(
     body: JSON.stringify({ editionName, rolesId }),
   });
 
-  console.log("createPlayer");
+  console.log("createNewEdition");
 
   if (!response.ok) {
     const res = await response.json();

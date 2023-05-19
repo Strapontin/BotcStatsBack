@@ -22,3 +22,5 @@ export async function getGameById(apiUrl: string, id: number) {
   console.log("getGameById");
   return game;
 }
+
+export async function createNewGame() {}

@@ -15,7 +15,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 25rem;
-  max-width: 250px;
+  width: 300px;
   margin: auto;
 }
 
@@ -24,6 +24,7 @@
   padding: 0;
   display: flex;
   justify-content: left;
+  width: 100%;
 }
 
 .role-item span {

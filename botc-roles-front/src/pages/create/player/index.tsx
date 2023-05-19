@@ -14,6 +14,7 @@ import classes from "../index.module.css";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function CreatePlayer() {
+  const [inputKey, setInputKey] = useState(0);
   const [prenom, setPrenom] = useState("");
   const [pseudo, setPseudo] = useState("");
   const [message, setMessage] = useState(<Fragment />);
@@ -54,6 +55,7 @@ export default function CreatePlayer() {
         false,
         `Joueur "${prenom}${pseudoMsg}" enregistré correctement.`
       );
+      setInputKey(inputKey + 2);
     } else {
       //Erreur
       updateMessage(
@@ -135,20 +137,22 @@ export default function CreatePlayer() {
       <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <Input
+          key={inputKey}
           clearable
           bordered
           labelPlaceholder="Prénom"
           aria-label="Prénom"
           onChange={(event) => prenomChanged(event.target.value)}
-        ></Input>
+        />
         <Spacer y={1.75} />
         <Input
+          key={inputKey + 1}
           clearable
           bordered
           labelPlaceholder="Pseudo"
           aria-label="Pseudo"
           onChange={(event) => pseudoChanged(event.target.value)}
-        ></Input>
+        />
         <Spacer y={3} />
       </Container>
 

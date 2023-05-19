@@ -8,21 +8,18 @@ import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { RoleOrderBy } from "@/entities/Role";
 
 export default function CreateRole() {
+  const [inputKey, setInputKey] = useState(0);
   const [roleName, setRoleName] = useState("");
   const [characterType, setCharacterType] = useState();
   const [alignment, setAlignment] = useState();
   const [message, setMessage] = useState(<Fragment />);
 
-  const [resetCharacterType, setResetCharacterType] = useState("characterType");
-  const [resetAlignment, setResetAlignment] = useState("alignment");
-
   const [roles, setRoles] = useState<string[]>([]);
   useEffect(() => {
     async function initRoles() {
-      const tempRoles = (await getAllRoles(RoleOrderBy.None)).map((role) => {
+      const tempRoles = (await getAllRoles()).map((role) => {
         return role.name;
       });
       setRoles(tempRoles);
@@ -39,10 +36,9 @@ export default function CreateRole() {
       roles.push(roleName);
       setRoleName("");
       setRoles(roles);
-      setResetCharacterType(resetCharacterType + " ");
-      setResetAlignment(resetAlignment + " ");
 
       updateMessage(false, `Rôle "${roleName}" enregistré correctement.`);
+      setInputKey(inputKey + 1);
     } else {
       //Erreur
       updateMessage(
@@ -114,19 +110,20 @@ export default function CreateRole() {
       <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <Input
+          key={inputKey}
           clearable
           bordered
           labelPlaceholder="Nom"
           aria-label="Nom"
           onChange={(event) => roleNameChanged(event.target.value)}
-        ></Input>
+        />
         <Spacer y={1.75} />
         <DropdownCharacterType
-          key={resetCharacterType}
+          key={inputKey + 1}
           setCharacterType={setCharacterType}
         />
         <Spacer y={1.75} />
-        <DropdownAlignment key={resetAlignment} setAlignment={setAlignment} />
+        <DropdownAlignment key={inputKey + 2} setAlignment={setAlignment} />
         <Spacer y={3} />
       </Container>
 

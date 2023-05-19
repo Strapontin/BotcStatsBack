@@ -14,6 +14,7 @@ namespace BotcRoles.Test
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
             var modelContext = DBHelper.GetCleanContext(fileName);
+            modelContext.Players.RemoveRange(modelContext.Players);
             string playerName = "PlayerName";
             string pseudo = "";
 

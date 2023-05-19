@@ -1,10 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import { Button, Container, Input, Spacer } from "@nextui-org/react";
-import {
-  createNewEdition,
-  getAllEditions,
-} from "../../../../data/back-api";
+import { createNewEdition, getAllEditions } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -13,6 +10,7 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 
 export default function CreateEdition() {
+  const [inputKey, setInputKey] = useState(0);
   const [editionName, setEditionName] = useState("");
   const [message, setMessage] = useState(<Fragment />);
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
@@ -31,12 +29,19 @@ export default function CreateEdition() {
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
-    if (await createNewEdition(editionName, selectedRoles.map(sr => sr.id))) {
+    if (
+      await createNewEdition(
+        editionName,
+        selectedRoles.map((sr) => sr.id)
+      )
+    ) {
       editions.push(editionName);
       setEditionName("");
       setEditions(editions);
 
       updateMessage(false, `Module "${editionName}" enregistré correctement.`);
+      setInputKey(inputKey + 1);
+      setSelectedRoles([]);
     } else {
       //Erreur
       updateMessage(
@@ -110,13 +115,13 @@ export default function CreateEdition() {
       <Spacer y={2} />
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <Input
+          key={inputKey}
           clearable
           bordered
           labelPlaceholder="Nom"
           aria-label="Nom"
-          value={editionName}
           onChange={(event) => editionNameChanged(event.target.value)}
-        ></Input>
+        />
         <Spacer y={3} />
         <RolesSelector
           selectedRoles={selectedRoles}

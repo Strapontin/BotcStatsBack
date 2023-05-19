@@ -25,8 +25,10 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<RoleEntities>> GetRoles()
         {
             var roles = _db.Roles
-                //.OrderBy(r => r.Name)
                 .Select(r => new RoleEntities(_db, r))
+                .ToList()
+                .OrderBy(r => r.CharacterType)
+                .ThenBy(r => r.Name.ToLowerRemoveDiacritics())
                 .ToList();
 
             return roles;

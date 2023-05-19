@@ -27,10 +27,10 @@ namespace BotcRoles.Controllers
         {
             var players = _db.Players
                 .Include(p => p.PlayerRoleGames)
-                .OrderByDescending(p => p.PlayerRoleGames.Count)
-                .ThenBy(p => p.Name)
-                .ThenBy(p => p.Pseudo)
                 .Select(p => new PlayerEntities(_db, p))
+                .ToList()
+                .OrderBy(p => p.Name.ToLowerRemoveDiacritics())
+                .ThenBy(p => p.Pseudo.ToLowerRemoveDiacritics())
                 .ToList();
             return players;
         }

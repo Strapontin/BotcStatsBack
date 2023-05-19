@@ -2,6 +2,7 @@ import { Alignment } from "@/entities/enums/alignment";
 import {
   getAllGames as queryAllGames,
   getGameById as queryGameById,
+  createNewGame as queryCreateNewGame,
 } from "./back-api/back-api-game";
 import {
   getAllPlayers as queryAllPlayers,
@@ -19,8 +20,6 @@ import {
   createNewEdition as queryCreateNewEdition,
 } from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
-import { RoleOrderBy } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -32,6 +31,10 @@ export async function getAllGames() {
 
 export async function getGameById(id: number) {
   return queryGameById(apiUrl, id);
+}
+
+export async function createNewGame() {
+  return queryCreateNewGame();
 }
 
 /* Players */
@@ -53,26 +56,26 @@ export async function createNewPlayer(
 
 /* Roles */
 
-export async function getAllRoles(orderBy: RoleOrderBy) {
+export async function getAllRoles() {
   var result = await queryAllRoles(apiUrl);
 
-  console.log(orderBy);
-  switch (orderBy) {
-    case RoleOrderBy.Name | RoleOrderBy.CharacterType:
-      return result.sort((a, b) => {
-        if (a.characterType === b.characterType) {
-          return toLowerRemoveDiacritics(a.name) <
-            toLowerRemoveDiacritics(b.name)
-            ? -1
-            : 1;
-        }
-        return a.characterType < b.characterType ? -1 : 1;
-      });
+  // switch (orderBy) {
+  //   case RoleOrderBy.Name | RoleOrderBy.CharacterType:
+  //     return result.sort((a, b) => {
+  //       if (a.characterType === b.characterType) {
+  //         return toLowerRemoveDiacritics(a.name) <
+  //           toLowerRemoveDiacritics(b.name)
+  //           ? -1
+  //           : 1;
+  //       }
+  //       return a.characterType < b.characterType ? -1 : 1;
+  //     });
 
-    default:
-    case RoleOrderBy.None:
-      return result;
-  }
+  //   default:
+  //   case RoleOrderBy.None:
+  //     return result;
+  //   }
+  return result;
 }
 
 export async function getRoleById(roleId: number) {

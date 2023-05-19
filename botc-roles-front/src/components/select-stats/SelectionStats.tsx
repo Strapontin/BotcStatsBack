@@ -19,7 +19,7 @@ export default function SelectionStats() {
           }}
           aria-label="Static Actions"
         >
-          <Dropdown.Item key="/create/partie">
+          <Dropdown.Item key="/create/game">
             Ajouter une nouvelle partie
           </Dropdown.Item>
           <Dropdown.Item key="/create/edition">

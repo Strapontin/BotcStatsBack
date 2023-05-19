@@ -1,4 +1,4 @@
-import { Role, RoleOrderBy } from "@/entities/Role";
+import { Role } from "@/entities/Role";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./RolesSelector.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
@@ -20,9 +20,7 @@ export default function RolesSelector(props: {
 
   useEffect(() => {
     async function initRoles() {
-      const tempRoles = await getAllRoles(
-        RoleOrderBy.CharacterType & RoleOrderBy.Name
-      );
+      const tempRoles = await getAllRoles();
       setAllRoles(tempRoles);
       setVisibleRoles(tempRoles);
     }
@@ -140,7 +138,6 @@ export default function RolesSelector(props: {
           onBlur={(event) => blurInput(event)}
           ref={inputFilterRole}
         ></Input>
-        <Spacer x={0.75} />
       </div>
       {showRoles && <Spacer y={0.75} />}
       {showRoles && (

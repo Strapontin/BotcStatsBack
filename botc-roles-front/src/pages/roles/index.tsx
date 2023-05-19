@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Role, RoleOrderBy } from "@/entities/Role";
+import { Role } from "@/entities/Role";
 import Container from "@/components/list-stats/Container";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
@@ -12,7 +12,7 @@ export default function RolesPage() {
 
   useEffect(() => {
     async function initRoles() {
-      const r = await getAllRoles(RoleOrderBy.CharacterType | RoleOrderBy.Name);
+      const r = await getAllRoles();
       setRoles(r);
     }
     initRoles();
