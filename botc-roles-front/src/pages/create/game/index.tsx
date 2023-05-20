@@ -6,15 +6,14 @@ import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
-import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
 import EditionSelector from "@/components/edition-selector/EditionSelector";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import PlayerSelector from "@/components/player-selector/PlayerSelector";
 import PlayerRolesSelector from "@/components/player-role-selector/PlayerRolesSelector";
 import { PlayerRole } from "@/entities/PlayerRole";
+import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
+import { Alignment } from "@/entities/enums/alignment";
 
 export default function CreateGame() {
   const [inputKey, setInputKey] = useState(0);
@@ -22,7 +21,7 @@ export default function CreateGame() {
   const [storyTeller, setStoryTeller] = useState<Player>(getNewEmptyPlayer());
   const [datePlayed, setDatePlayed] = useState("");
   const [notes, setNotes] = useState("");
-  const [alignment, setAlignment] = useState();
+  const [winningAlignment, setWinningAlignment] = useState<Alignment>();
   const [message, setMessage] = useState(<Fragment />);
   const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
     []
@@ -34,25 +33,33 @@ export default function CreateGame() {
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
   async function createGame() {
-    // if (
-    //   await createNewGame(
-    //     gameName,
-    //     selectedRoles.map((sr) => sr.id)
-    //   )
-    // ) {
-    //   games.push(gameName);
-    //   setGameName("");
-    //   setGames(games);
-    //   updateMessage(false, `Module "${gameName}" enregistré correctement.`);
-    // setInputKey(inputKey + 2);
-    // setSelectedRoles([]);
-    // } else {
-    //   //Erreur
-    //   updateMessage(
-    //     true,
-    //     "Une erreur est survenue lors de l'enregistrement du module."
-    //   );
-    // }
+    if (winningAlignment === undefined) return;
+
+    if (
+      await createNewGame(
+        edition.id,
+        storyTeller.id,
+        datePlayed,
+        notes,
+        winningAlignment,
+        selectedPlayerRoles
+      )
+    ) {
+      setEdition(getNewEmptyEdition());
+      setStoryTeller(getNewEmptyPlayer());
+      setDatePlayed("");
+      setNotes("");
+      setWinningAlignment(undefined);
+      setSelectedPlayerRoles([]);
+      setInputKey(inputKey + 2);
+      updateMessage(false, `La partie a été enregistrée correctement.`);
+    } else {
+      //Erreur
+      updateMessage(
+        true,
+        "Une erreur est survenue lors de l'enregistrement du module."
+      );
+    }
   }
 
   function updateMessage(isError: boolean, message: string) {
@@ -74,27 +81,27 @@ export default function CreateGame() {
   }
 
   function canCreateGame() {
-    return false;
-    // // Can create a game when
-    // //  - the name is set
-    // //  - the name is unique
-    // return (
-    //   gameName !== "" &&
-    //   games.filter(
-    //     (p) =>
-    //       toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(gameName)
-    //   ).length === 0
-    // );
+    // Can create a game when
+    //  - the edition is set
+    //  - the storyTeller is set
+    //  - the date is set
+    //  - the winningAlignment is set
+    return (
+      edition.id !== -1 &&
+      storyTeller.id !== -1 &&
+      datePlayed !== "" &&
+      winningAlignment !== undefined
+    );
   }
 
-  function checkError() {
-    setMessage(<Fragment />);
+  // function checkError() {
+  //   setMessage(<Fragment />);
 
-    // if (gameName.trim() === "") {
-    //   updateMessage(true, "Le nom du module ne doit pas être vide.");
-    //   return;
-    // }
-  }
+  //   if (edition.id === -1) {
+  //     updateMessage(true, "Vous devez choisir un module.");
+  //     return;
+  //   }
+  // }
 
   function editionSelected(edition: Edition) {
     setEdition(edition);
@@ -139,7 +146,7 @@ export default function CreateGame() {
         <DropdownAlignment
           key={inputKey + 4}
           text="Alignement gagnant"
-          setAlignment={setAlignment}
+          setAlignment={setWinningAlignment}
         />
         <Spacer y={3} />
         <PlayerRolesSelector

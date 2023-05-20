@@ -70,7 +70,7 @@ namespace BotcRoles.Controllers
                     return BadRequest($"Le module avec l'id '{editionId}' n'a pas été trouvé");
                 }
 
-                if (!long.TryParse(data["storyTellerId"].ToString(), out long storyTellerId))
+                if (!long.TryParse(data["storyTellerId"]?.ToString(), out long storyTellerId))
                 {
                     return BadRequest($"Une partie doit avoir un conteur.");
                 }
@@ -95,7 +95,7 @@ namespace BotcRoles.Controllers
 
 
                 // Try to convert to Role object from database to ensure it exists
-                Dictionary<long, long>? playersIdRolesId = data["playersIdRolesId"]?.ToObject<Dictionary<long, long>>();
+                List<PlayerIdRoleId>? playersIdRolesId = data["playersIdRolesId"]?.ToObject<List<PlayerIdRoleId>>();
                 if (playersIdRolesId == null)
                 {
                     return BadRequest($"Aucun joueur-rôle trouvé.");
@@ -104,16 +104,16 @@ namespace BotcRoles.Controllers
                 List<PlayerRoleGame> playersRoles = new();
                 foreach (var playerIdRoleId in playersIdRolesId)
                 {
-                    Player? playerDb = _db.Players.FirstOrDefault(p => p.PlayerId == playerIdRoleId.Key);
+                    Player? playerDb = _db.Players.FirstOrDefault(p => p.PlayerId == playerIdRoleId.PlayerId);
                     if (playerDb == null)
                     {
-                        return BadRequest($"Le joueur avec l'id '{playerIdRoleId.Key}' n'a pas été trouvé.");
+                        return BadRequest($"Le joueur avec l'id '{playerIdRoleId.PlayerId}' n'a pas été trouvé.");
                     }
 
-                    Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == playerIdRoleId.Value);
+                    Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == playerIdRoleId.RoleId);
                     if (roleDb == null)
                     {
-                        return BadRequest($"Le rôle avec l'id '{playerIdRoleId.Value}' n'a pas été trouvé.");
+                        return BadRequest($"Le rôle avec l'id '{playerIdRoleId.RoleId}' n'a pas été trouvé.");
                     }
 
                     playersRoles.Add(new PlayerRoleGame(playerDb, roleDb, null));

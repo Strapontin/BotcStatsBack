@@ -15,7 +15,7 @@ namespace BotcRoles.Test.HelperMethods
     public static class GameHelper
     {
         public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storyTellerId, DateTime? datePlayed,
-            Alignment? winningAlignment, Dictionary<long, long> playersIdRolesId, string notes = null)
+            Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, string notes = null)
         {
             GamesController gameController = new(null!, modelContext);
 
@@ -49,15 +49,15 @@ namespace BotcRoles.Test.HelperMethods
         }
 
 
-        public static Dictionary<long, long> GetCorrectPlayersIdRolesId(ModelContext modelContext)
+        public static List<PlayerIdRoleId> GetCorrectPlayersIdRolesId(ModelContext modelContext)
         {
-            var result = new Dictionary<long, long>()
+            var result = new List<PlayerIdRoleId>()
             {
-                {modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId},
-                {modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId},
-                {modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId},
-                {modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId},
-                {modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId},
+                new (modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId),
+                new (modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId),
+                new (modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId),
+                new (modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId),
+                new (modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId),
             };
 
             return result;

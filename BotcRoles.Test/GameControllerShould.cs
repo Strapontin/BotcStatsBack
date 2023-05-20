@@ -220,7 +220,7 @@ namespace BotcRoles.Test
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
             var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            playersIdRolesId.Add(-1, modelContext.Roles.First().RoleId);
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId));
 
             // Act
             var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId);
@@ -241,7 +241,7 @@ namespace BotcRoles.Test
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
             var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            playersIdRolesId.Add(modelContext.Players.OrderBy(p => p.PlayerId).Last().PlayerId, -1);
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(modelContext.Players.OrderBy(p => p.PlayerId).Last().PlayerId, -1));
 
             // Act
             var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId);
@@ -265,28 +265,6 @@ namespace BotcRoles.Test
 
             // Act
             var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId);
-
-            // Assert
-            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
-
-            DBHelper.DeleteCreatedDatabase(modelContext);
-        }
-
-
-        [Test]
-        public void Post_And_Get_Game()
-        {
-            // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetCleanContext(fileName);
-
-            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-            long playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
-            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            return;
-
-            // Act
-            var res = GameHelper.PostGame(modelContext, editionId, playerId, DateTime.Now, Alignment.Good, playersIdRolesId);
 
             // Assert
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);

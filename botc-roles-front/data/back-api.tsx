@@ -20,6 +20,7 @@ import {
   createNewEdition as queryCreateNewEdition,
 } from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
+import { PlayerRole } from "@/entities/PlayerRole";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -33,8 +34,28 @@ export async function getGameById(id: number) {
   return queryGameById(apiUrl, id);
 }
 
-export async function createNewGame() {
-  return queryCreateNewGame();
+export async function createNewGame(
+  editionId: number,
+  storyTellerId: number,
+  datePlayed: string,
+  notes: string,
+  winningAlignment: Alignment,
+  playersRoles: PlayerRole[]
+) {
+  const playersIdRolesId = playersRoles.map((pr) => ({
+    playerId: pr.player.id,
+    roleId: pr.role.id,
+  }));
+
+  return queryCreateNewGame(
+    apiUrl,
+    editionId,
+    storyTellerId,
+    datePlayed,
+    notes,
+    winningAlignment,
+    playersIdRolesId
+  );
 }
 
 /* Players */
