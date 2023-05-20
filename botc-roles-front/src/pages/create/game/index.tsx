@@ -27,6 +27,9 @@ export default function CreateGame() {
   const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
     []
   );
+  const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
+    []
+  );
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
@@ -93,6 +96,11 @@ export default function CreateGame() {
     // }
   }
 
+  function editionSelected(edition: Edition) {
+    setEdition(edition);
+    setRolesInSelectedEdition(edition.roles);
+  }
+
   return (
     <Fragment>
       {title}
@@ -102,7 +110,7 @@ export default function CreateGame() {
       <Container fluid css={{ display: "flex", flexDirection: "column" }}>
         <EditionSelector
           selectedEdition={edition}
-          setSelectedEdition={setEdition}
+          setSelectedEdition={(edition: Edition) => editionSelected(edition)}
         />
         <Spacer y={1.75} />
         <PlayerSelector
@@ -137,6 +145,7 @@ export default function CreateGame() {
         <PlayerRolesSelector
           selectedPlayerRoles={selectedPlayerRoles}
           setSelectedPlayerRoles={setSelectedPlayerRoles}
+          rolesInSelectedEdition={rolesInSelectedEdition}
         />
         <Spacer y={3} />
       </Container>

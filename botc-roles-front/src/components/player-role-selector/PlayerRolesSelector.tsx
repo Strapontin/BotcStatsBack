@@ -6,25 +6,31 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItem from "../list-stats/ListItem";
 import Container from "../list-stats/Container";
-import { Player } from "@/entities/Player";
+import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import { getAllPlayers } from "../../../data/back-api";
-import { Role } from "@/entities/Role";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import ListItemRole from "../list-stats/ListItemRole";
 
 export default function PlayerRolesSelector(props: {
   selectedPlayerRoles: PlayerRole[];
   setSelectedPlayerRoles: any;
+  rolesInSelectedEdition: Role[];
 }) {
-  const inputFilterPlayer = useRef<HTMLInputElement>(null);
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+  const inputFilterPlayer = useRef<HTMLInputElement>(null);
   const [showPlayers, setShowPlayers] = useState(false);
   const [visiblePlayers, setVisiblePlayers] = useState<Player[]>([]);
   const [playerFilter, setPlayerFilter] = useState("");
+  const [playerSelected, setPlayerSelected] = useState<Player>(
+    getNewEmptyPlayer()
+  );
 
   const inputFilterRole = useRef<HTMLInputElement>(null);
   const [showRoles, setShowRoles] = useState(false);
   const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
   const [roleFilter, setRoleFilter] = useState("");
+  const [roleSelected, setRoleSelected] = useState<Role>(getNewEmptyRole());
 
   useEffect(() => {
     async function initPlayers() {
@@ -35,7 +41,31 @@ export default function PlayerRolesSelector(props: {
     initPlayers();
   }, []);
 
-  function removeSelectedPlayerRole(playerId: number) {}
+  useEffect(() => {
+    if (playerSelected.id !== -1 && roleSelected.id !== -1) {
+      setPlayerFilter("");
+      setPlayerSelected(getNewEmptyPlayer());
+      setRoleFilter("");
+      setRoleSelected(getNewEmptyRole());
+
+      var allSelectedPlayerRoles = props.selectedPlayerRoles;
+      const playerRole: PlayerRole = {
+        player: playerSelected,
+        role: roleSelected,
+      };
+
+      allSelectedPlayerRoles.push(playerRole);
+      props.setSelectedPlayerRoles(allSelectedPlayerRoles);
+    }
+  }, [playerSelected, roleSelected, props]);
+
+  function removeSelectedPlayerRole(playerId: number, roleId: number) {
+    const prToSet = props.selectedPlayerRoles.filter(
+      (spr) => spr.player.id !== playerId || spr.role.id !== roleId
+    );
+
+    props.setSelectedPlayerRoles(prToSet);
+  }
 
   function onFocusPlayerInput() {
     setShowPlayers(true);
@@ -45,6 +75,7 @@ export default function PlayerRolesSelector(props: {
   function onFocusRoleInput() {
     setShowPlayers(false);
     setShowRoles(true);
+    roleFilterChanged(roleFilter); // Usefull to updates the roles for the selected module
   }
 
   function playerFilterChanged(filter: string) {
@@ -64,7 +95,21 @@ export default function PlayerRolesSelector(props: {
     );
   }
 
-  function canBlur(event: any) {
+  function roleFilterChanged(filter: string) {
+    setRoleFilter(filter);
+
+    setShowRoles(true);
+    setVisibleRoles(
+      props.rolesInSelectedEdition.filter((r) =>
+        toLowerRemoveDiacritics(r.name).includes(
+          toLowerRemoveDiacritics(filter)
+        )
+      )
+    );
+  }
+
+  function canBlur(event: any, itemClass: string) {
+    // console.log(event);
     if (
       event === undefined ||
       event === null ||
@@ -73,41 +118,40 @@ export default function PlayerRolesSelector(props: {
       event.relatedTarget.classList === undefined ||
       event.relatedTarget.classList === null
     ) {
-      console.log(0);
+      // console.log(0);
       return true;
     }
+    // console.log(event.relatedTarget.classList.contains(itemClass));
+    // console.log(itemClass);
 
     if (
-      (!event.relatedTarget.classList.contains(Classes["player-item"]) ||
-        !event.relatedTarget.classList.contains(Classes["role-item"])) &&
+      event.relatedTarget.classList.contains(itemClass) &&
       !event.relatedTarget.classList.contains("nextui-input-clear-button") &&
       !event.relatedTarget.classList.contains(
         Classes["container-players-values"]
       ) &&
       !event.relatedTarget.classList.contains(Classes["container-roles-values"])
     ) {
-      console.log(1);
+      // console.log(1);
       return false;
     } else if (
       event.relatedTarget.classList.contains("nextui-input-clear-button")
     ) {
-      // onChangeInput("");
-      console.log(2);
+      // console.log(2);
       return false;
     } else if (
       event.relatedTarget.classList.contains(Classes["container-roles-values"])
     ) {
-      // inputFilterRole.current?.focus();
-      console.log(3);
+      // console.log(3);
       return false;
     }
 
-    console.log(4);
-    // return true;
+    // console.log(4);
+    return true;
   }
 
   function blurPlayerInput(event: any) {
-    if (!canBlur(event)) {
+    if (!canBlur(event, Classes["player-item"])) {
       inputFilterPlayer.current?.focus();
     } else {
       setShowPlayers(false);
@@ -115,15 +159,32 @@ export default function PlayerRolesSelector(props: {
   }
 
   function blurRoleInput(event: any) {
-    setShowRoles(false);
+    if (!canBlur(event, Classes["role-item"])) {
+      inputFilterRole.current?.focus();
+    } else {
+      setShowRoles(false);
+    }
   }
 
   function onSelectPlayer(playerId: number) {
     const playerSelected = allPlayers.find((p) => p.id === playerId);
 
     if (playerSelected !== undefined) {
+      setPlayerSelected(playerSelected);
       setPlayerFilter(playerSelected.name);
       setShowPlayers(false);
+    }
+  }
+
+  function onSelectRole(roleId: number) {
+    const roleSelected = props.rolesInSelectedEdition.find(
+      (r) => r.id === roleId
+    );
+
+    if (roleSelected !== undefined) {
+      setRoleSelected(roleSelected);
+      setRoleFilter(roleSelected.name);
+      setShowRoles(false);
     }
   }
 
@@ -131,23 +192,26 @@ export default function PlayerRolesSelector(props: {
     <Fragment>
       <div className={Classes["players-roles-selected"]}>
         {props.selectedPlayerRoles.map((pr) => (
-          <Fragment key={pr.player.id}>
+          <Fragment key={pr.player.id.toString() + pr.role.id}>
             <div className={Classes["player-role-selected"]}>
               <ListItemPlayerRole
                 playerName={pr.player.name}
-                pseudo={pr.player.name}
+                pseudo={pr.player.pseudo}
                 roleName={pr.role.name}
                 characterType={pr.role.characterType}
               />
               <X
                 className={Classes.delete}
-                onClick={() => removeSelectedPlayerRole(pr.player.id)}
+                onClick={() =>
+                  removeSelectedPlayerRole(pr.player.id, pr.role.id)
+                }
               />
             </div>
             <Spacer x={1.25} />
           </Fragment>
         ))}
       </div>
+      <Spacer x={2} />
       <div className={Classes["inputs-container"]}>
         <Input
           css={{ flex: 1 }}
@@ -168,7 +232,7 @@ export default function PlayerRolesSelector(props: {
           clearable
           bordered
           value={roleFilter}
-          onChange={(event) => setRoleFilter(event.target.value)}
+          onChange={(event) => roleFilterChanged(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusRoleInput(), 0)}
           onBlur={(event) => blurRoleInput(event)}
           ref={inputFilterRole}
@@ -187,6 +251,23 @@ export default function PlayerRolesSelector(props: {
               />
               <Spacer y={1} />
             </div>
+          ))}
+        </div>
+      )}
+      {showRoles && (
+        // tabIndex are necessary to catch the class in the blur event of the inputs
+        <div tabIndex={0} className={Classes["container-roles-values"]}>
+          {visibleRoles.map((r) => (
+            <Fragment key={r.id}>
+              <Button
+                tabIndex={1}
+                className={Classes["role-item"]}
+                onPress={() => onSelectRole(r.id)}
+              >
+                <ListItemRole image={r.name} characterType={r.characterType} />
+              </Button>
+              <Spacer y={1} />
+            </Fragment>
           ))}
         </div>
       )}

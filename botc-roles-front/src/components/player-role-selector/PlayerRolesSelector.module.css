@@ -15,7 +15,8 @@
   margin: auto 0 auto 1rem;
 }
 
-.container-players-values {
+.container-players-values,
+.container-roles-values {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 25rem;
@@ -24,26 +25,22 @@
   padding: 1rem;
 }
 
-.player-item {
-  width: 99%;
+.player-item,
+.role-item {
+  width: 100%;
   margin: auto;
 }
 
-/* 
-
 .role-item {
-  margin: auto;
   padding: 0;
   display: flex;
   justify-content: left;
-  width: 100%;
 }
 
 .role-item span {
   width: 100%;
 }
 
-.role-selected {
+.player-role-selected {
   display: flex;
-  flex-direction: row;
-} */
+}
