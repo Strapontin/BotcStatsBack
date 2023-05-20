@@ -10,6 +10,10 @@
   border-radius: 10px;
 }
 
+.list-item.clickable {
+  cursor: pointer;
+}
+
 .left-side {
   display: flex;
   flex-direction: column;

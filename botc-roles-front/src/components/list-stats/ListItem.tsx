@@ -8,6 +8,7 @@ export default function ListItem(props: {
   onPress?: any;
 }) {
   var timeStamp: number;
+  const clickableClass = props.onPress !== undefined ? "clickable" : "";
 
   function onTouchStart(e: any) {
     timeStamp = e.timeStamp;
@@ -25,7 +26,7 @@ export default function ListItem(props: {
 
   return (
     <div
-      className={classes["list-item"]}
+      className={classes["list-item"] + " " + classes.clickable}
       onClick={props.onPress}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}

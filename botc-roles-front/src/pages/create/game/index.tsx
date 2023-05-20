@@ -13,6 +13,8 @@ import EditionSelector from "@/components/edition-selector/EditionSelector";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import PlayerSelector from "@/components/player-selector/PlayerSelector";
+import PlayerRolesSelector from "@/components/player-role-selector/PlayerRolesSelector";
+import { PlayerRole } from "@/entities/PlayerRole";
 
 export default function CreateGame() {
   const [inputKey, setInputKey] = useState(0);
@@ -22,7 +24,9 @@ export default function CreateGame() {
   const [notes, setNotes] = useState("");
   const [alignment, setAlignment] = useState();
   const [message, setMessage] = useState(<Fragment />);
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+  const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
+    []
+  );
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
@@ -105,7 +109,7 @@ export default function CreateGame() {
           selectedPlayer={storyTeller}
           setSelectedPlayer={setStoryTeller}
         />
-        <Spacer y={1.75} />
+        <Spacer y={0.6} />
         <Input
           css={{ textAlign: "left" }} // Usefull so the label isn't centered
           key={inputKey + 2}
@@ -130,9 +134,9 @@ export default function CreateGame() {
           setAlignment={setAlignment}
         />
         <Spacer y={3} />
-        <RolesSelector
-          selectedRoles={selectedRoles}
-          setSelectedRoles={setSelectedRoles}
+        <PlayerRolesSelector
+          selectedPlayerRoles={selectedPlayerRoles}
+          setSelectedPlayerRoles={setSelectedPlayerRoles}
         />
         <Spacer y={3} />
       </Container>

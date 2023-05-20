@@ -43,7 +43,7 @@ export default function RolesSelector(props: {
   }
 
   function onSelectRole(idRoleSelected: number) {
-    const roleSelected = visibleRoles.find((role) => role.id == idRoleSelected);
+    const roleSelected = visibleRoles.find((role) => role.id === idRoleSelected);
 
     if (roleSelected !== undefined) {
       const roles = props.selectedRoles;

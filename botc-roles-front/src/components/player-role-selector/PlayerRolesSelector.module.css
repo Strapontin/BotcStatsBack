@@ -1,0 +1,49 @@
+.inputs-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inputs-container > div {
+  flex: 0 1 48%;
+}
+
+.delete {
+  cursor: pointer;
+  color: rgba(255, 0, 0, 0.75);
+  margin: auto 0 auto 1rem;
+}
+
+.container-players-values {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 25rem;
+  width: 300px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.player-item {
+  width: 99%;
+  margin: auto;
+}
+
+/* 
+
+.role-item {
+  margin: auto;
+  padding: 0;
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}
+
+.role-item span {
+  width: 100%;
+}
+
+.role-selected {
+  display: flex;
+  flex-direction: row;
+} */

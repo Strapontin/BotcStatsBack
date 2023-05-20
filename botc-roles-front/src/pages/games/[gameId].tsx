@@ -12,6 +12,7 @@ import ImageIconName from "@/components/ui/image-icon-name";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { getGameById } from "../../../data/back-api";
+import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);
@@ -64,14 +65,11 @@ export default function GamePage() {
             href={`/players/${prg.player.name}`}
             color="text"
           >
-            <ListItem
-              name={prg.player.name}
-              value={
-                <ImageIconName
-                  name={prg.role.name}
-                  characterType={prg.role.characterType}
-                />
-              }
+            <ListItemPlayerRole
+              playerName={prg.player.name}
+              pseudo={prg.player.pseudo}
+              roleName={prg.role.name}
+              characterType={prg.role.characterType}
             />
           </Link>
         ))}
