@@ -1,4 +1,5 @@
 export enum Alignment {
+  None = -1,
   Good = 0,
   Evil = 1,
 }
@@ -9,7 +10,7 @@ export function alignmentToString(alignment: Alignment) {
 
 export function alignmentList(): { key: number; value: string }[] {
   const alignments = Object.values(Alignment)
-    .filter((ct) => typeof ct !== "number")
+    .filter((ct) => typeof ct !== "number" && ct !== Alignment[Alignment.None])
     .map((key: any) => ({
       key: +Alignment[key],
       value: translate(key),

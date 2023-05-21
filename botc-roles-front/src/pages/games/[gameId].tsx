@@ -8,7 +8,6 @@ import PlayerName from "@/components/ui/playerName";
 import DateUi from "@/components/ui/date-ui";
 import ListItemLarge from "@/components/list-stats/ListItemLarge";
 import { Link, Spacer } from "@nextui-org/react";
-import ImageIconName from "@/components/ui/image-icon-name";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { getGameById } from "../../../data/back-api";

@@ -32,7 +32,11 @@ export default function DropdownAlignment(props: {
           onAction={(key) => selectAlignment(+key)}
         >
           {alignmentList().map((item) => (
-            <Dropdown.Item key={item.key}>{item.value}</Dropdown.Item>
+            <Dropdown.Item
+              key={item.key}
+            >
+              {item.value}
+            </Dropdown.Item>
           ))}
         </Dropdown.Menu>
       </Dropdown>
