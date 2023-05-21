@@ -3,6 +3,7 @@ import {
   getAllGames as queryAllGames,
   getGameById as queryGameById,
   createNewGame as queryCreateNewGame,
+  editGame as queryEditGame,
 } from "./back-api/back-api-game";
 import {
   getAllPlayers as queryAllPlayers,
@@ -49,6 +50,32 @@ export async function createNewGame(
 
   return queryCreateNewGame(
     apiUrl,
+    editionId,
+    storyTellerId,
+    datePlayed,
+    notes,
+    winningAlignment,
+    playersIdRolesId
+  );
+}
+
+export async function editGame(
+  gameId: number,
+  editionId: number,
+  storyTellerId: number,
+  datePlayed: string,
+  notes: string,
+  winningAlignment: Alignment,
+  playersRoles: PlayerRole[]
+) {
+  const playersIdRolesId = playersRoles.map((pr) => ({
+    playerId: pr.player.id,
+    roleId: pr.role.id,
+  }));
+
+  return queryEditGame(
+    apiUrl,
+    gameId,
     editionId,
     storyTellerId,
     datePlayed,

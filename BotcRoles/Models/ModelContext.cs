@@ -158,8 +158,8 @@ namespace BotcRoles.Models
 
         private void InitGames()
         {
-            Games.Add(new Game(Editions.First(), Players.First(), _dtCreated1, DateTime.Now, "some notes", Enums.Alignment.Good));
-            Games.Add(new Game(Editions.First(), Players.Skip(1).First(), _dtCreated2, DateTime.Now, "some other notes", Enums.Alignment.Evil));
+            Games.Add(new Game(Editions.First(), Players.First(), _dtCreated1, "some notes", Enums.Alignment.Good));
+            Games.Add(new Game(Editions.First(), Players.Skip(1).First(), _dtCreated2, "some other notes", Enums.Alignment.Evil));
             this.SaveChanges();
         }
 

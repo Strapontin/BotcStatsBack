@@ -5,7 +5,7 @@ import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
-import { DateToString } from "@/helper/date";
+import { dateToString } from "@/helper/date";
 import { getAllGames } from "../../../data/back-api";
 
 export default function GamesListPage() {
@@ -37,7 +37,7 @@ export default function GamesListPage() {
     return (
       <Link key={game.id} href={`/games/${game.id}`} color="text">
         <ListItem
-          name={DateToString(game.datePlayed)}
+          name={dateToString(game.datePlayed)}
           value={
             <Fragment>
               Contée par{" "}

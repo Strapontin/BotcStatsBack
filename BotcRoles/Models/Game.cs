@@ -12,11 +12,11 @@ namespace BotcRoles.Models
     {
         public Game() { }
 
-        public Game(Edition edition, Player storyTeller, DateTime dateCreated, DateTime datePlayed, string notes, Alignment winningAlignment)
+        public Game(Edition edition, Player storyTeller, DateTime datePlayed, string notes, Alignment winningAlignment, DateTime? dateCreated = null)
         {
             Edition = edition;
             StoryTeller = storyTeller;
-            DateCreated = dateCreated;
+            DateCreated = dateCreated ?? DateTime.Now;
             DatePlayed = datePlayed;
             Notes = notes;
             WinningAlignment = winningAlignment;

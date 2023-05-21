@@ -64,3 +64,16 @@ export async function createNewGame(
 
   return true;
 }
+
+export async function editGame(
+  apiUrl: string,
+  gameId: number,
+  editionId: number,
+  storyTellerId: number,
+  datePlayed: string,
+  notes: string,
+  winningAlignment: Alignment,
+  playersIdRolesId: { playerId: number; roleId: number }[]
+): Promise<boolean> {
+  return false;
+}

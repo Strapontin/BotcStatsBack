@@ -1,58 +1,102 @@
-import { Fragment, useEffect, useState } from "react";
-import { Game } from "@/entities/Game";
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
+import { Fragment, useState } from "react";
 import Title from "@/components/ui/title";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
-import PlayerName from "@/components/ui/playerName";
+import { editGame } from "../../../../data/back-api";
+import { Text } from "@nextui-org/react";
+import classes from "../index.module.css";
+import { Check, XOctagon } from "react-feather";
+import { PlayerRole } from "@/entities/PlayerRole";
+import { Alignment, alignmentList } from "@/entities/enums/alignment";
+import GameCreateEdit from "@/components/game-create-edit/GameCreateEdit";
+import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
-import { getAllGames } from "../../../../data/back-api";
 
-export default function EditGamePage() {
-  const [games, setGames] = useState<Game[]>([]);
-  const title = "Modifier une partie";
+export default function CreateGame() {
+  const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
+  const [message, setMessage] = useState(<Fragment />);
+  const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
+    []
+  );
+  const [game, setGame] = useState<Game>(getNewEmptyGame());
 
-  useEffect(() => {
-    async function initGames() {
-      const p = await getAllGames();
-      setGames(p);
+  const title = <Title>Création d{"'"}une nouvelle partie</Title>;
+
+  async function btnEditGame() {
+    if (!canCreateGame()) return;
+
+    if (
+      await editGame(
+        game.id,
+        game.edition.id,
+        game.storyTeller.id,
+        dateToString(game.datePlayed),
+        game.notes,
+        game.winningAlignment,
+        selectedPlayerRoles
+      )
+    ) {
+      setGame(getNewEmptyGame());
+      setSelectedPlayerRoles([]);
+      setGameCreateEditKey(gameCreateEditKey + 1);
+      updateMessage(false, `La partie a été enregistrée correctement.`);
+    } else {
+      //Erreur
+      updateMessage(
+        true,
+        "Une erreur est survenue lors de l'enregistrement du module."
+      );
     }
-    initGames();
-  }, []);
-
-  if (games.length === 0) {
-    return (
-      <Fragment>
-        <Title>{title}</Title>
-        <Spacer y={3} />
-        <Loading />
-      </Fragment>
-    );
   }
 
-  function line(game: Game) {
-    const pseudo =
-      game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
+  function updateMessage(isError: boolean, message: string) {
+    if (isError) {
+      setMessage(
+        <Text span className={classes.red}>
+          <XOctagon className={classes.icon} />
+          {message}
+        </Text>
+      );
+    } else {
+      setMessage(
+        <Text span className={classes.green}>
+          <Check className={classes.icon} />
+          {message}
+        </Text>
+      );
+    }
+  }
 
-    return (
-      <Link key={game.id} href={`/edit/games/${game.id}`} color="text">
-        <ListItem
-          name={dateToString(game.datePlayed)}
-          value={
-            <Fragment>
-              Contée par{" "}
-              {<PlayerName name={`${game.storyTeller.name}${pseudo}`} />}
-            </Fragment>
-          }
-        ></ListItem>
-      </Link>
-    );
+  function canCreateGame() {
+    if (game.edition.id === -1) {
+      updateMessage(true, "Un module est obligatoire.");
+      return false;
+    }
+    if (game.storyTeller.id === -1) {
+      updateMessage(true, "Un conteur est obligatoire.");
+      return false;
+    }
+    if (dateToString(game.datePlayed) === "") {
+      updateMessage(
+        true,
+        "La date à laquelle la partie a été jouée est obligatoire."
+      );
+      return false;
+    }
+    if (game.winningAlignment === Alignment.None) {
+      updateMessage(true, "L'alignement gagnant est obligatoire.");
+      return false;
+    }
+
+    return true;
   }
 
   return (
-    <Fragment>
-      <Title>{title}</Title>
-      <Container>{games.map((game: Game) => line(game))}</Container>
-    </Fragment>
+    <GameCreateEdit
+      key={gameCreateEditKey}
+      title={title}
+      game={game}
+      setGame={setGame}
+      message={message}
+      btnPressed={btnEditGame}
+    />
   );
 }

@@ -63,7 +63,7 @@ export default function GameCreateEdit(props: {
   }
 
   function selectedPlayerRolesChanged(selectedPlayerRoles: PlayerRole[]) {
-    const newGame = { ...props.game, selectedPlayerRoles: selectedPlayerRoles };
+    const newGame = { ...props.game, playerRoles: selectedPlayerRoles };
     props.setGame(newGame);
   }
 

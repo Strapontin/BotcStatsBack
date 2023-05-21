@@ -30,7 +30,7 @@ export default function CreateGame() {
         dateToString(game.datePlayed),
         game.notes,
         game.winningAlignment,
-        selectedPlayerRoles
+        game.playerRoles
       )
     ) {
       setGame(getNewEmptyGame());

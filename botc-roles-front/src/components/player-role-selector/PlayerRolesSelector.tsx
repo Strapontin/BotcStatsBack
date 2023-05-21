@@ -5,7 +5,6 @@ import { X } from "react-feather";
 import { PlayerRole } from "@/entities/PlayerRole";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItem from "../list-stats/ListItem";
-import Container from "../list-stats/Container";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import { getAllPlayers } from "../../../data/back-api";
 import { Role, getNewEmptyRole } from "@/entities/Role";
@@ -42,6 +41,7 @@ export default function PlayerRolesSelector(props: {
   }, []);
 
   useEffect(() => {
+    // Automatically adding a player role if a player and a role are set
     if (playerSelected.id !== -1 && roleSelected.id !== -1) {
       setPlayerFilter("");
       setPlayerSelected(getNewEmptyPlayer());
@@ -60,11 +60,14 @@ export default function PlayerRolesSelector(props: {
   }, [playerSelected, roleSelected, props]);
 
   function removeSelectedPlayerRole(playerId: number, roleId: number) {
-    const prToSet = props.selectedPlayerRoles.filter(
-      (spr) => spr.player.id !== playerId || spr.role.id !== roleId
+    const index = props.selectedPlayerRoles.findIndex(
+      (spr) => spr.player.id === playerId && spr.role.id === roleId
     );
+    if (index > -1) {
+      props.selectedPlayerRoles.splice(index, 1);
+    }
 
-    props.setSelectedPlayerRoles(prToSet);
+    props.setSelectedPlayerRoles(props.selectedPlayerRoles);
   }
 
   function onFocusPlayerInput() {
@@ -191,8 +194,8 @@ export default function PlayerRolesSelector(props: {
   return (
     <Fragment>
       <div className={Classes["players-roles-selected"]}>
-        {props.selectedPlayerRoles.map((pr) => (
-          <Fragment key={pr.player.id.toString() + pr.role.id}>
+        {props.selectedPlayerRoles.map((pr, index) => (
+          <Fragment key={pr.player.id + "-" + pr.role.id + index}>
             <div className={Classes["player-role-selected"]}>
               <ListItemPlayerRole
                 playerName={pr.player.name}
