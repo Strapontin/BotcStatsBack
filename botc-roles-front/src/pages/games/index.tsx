@@ -30,22 +30,36 @@ export default function GamesListPage() {
     );
   }
 
+  function line(game: Game) {
+    const pseudo =
+      game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
+
+    return (
+      <Link key={game.id} href={`/games/${game.id}`} color="text">
+        <ListItem
+          name={DateToString(game.datePlayed)}
+          value={
+            <Fragment>
+              Contée par{" "}
+              {
+                <PlayerName
+                  name={`${game.storyTeller.name}${pseudo}`}
+                />
+              }
+            </Fragment>
+          }
+        ></ListItem>
+      </Link>
+    );
+  }
+
   return (
     <Fragment>
       <Title>{title}</Title>
       <Container>
-        {games.map((game: Game) => (
-          <Link key={game.id} href={`/games/${game.id}`} color="text">
-            <ListItem
-              name={DateToString(game.creationDate)}
-              value={
-                <Fragment>
-                  Contée par {<PlayerName name={game.storyTeller.name} />}
-                </Fragment>
-              }
-            ></ListItem>
-          </Link>
-        ))}
+        {games.map(
+          (game: Game) => line(game)
+        )}
       </Container>
     </Fragment>
   );

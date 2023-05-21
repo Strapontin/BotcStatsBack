@@ -7,7 +7,7 @@ export type Game = {
   id: number;
   edition: Edition;
   storyTeller: Player;
-  creationDate: Date;
+  datePlayed: Date;
   notes: string;
   winningAlignment: Alignment;
 

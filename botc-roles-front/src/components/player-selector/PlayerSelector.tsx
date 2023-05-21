@@ -45,7 +45,6 @@ export default function PlayerSelector(props: {
   }
 
   function onSelectPlayer(idPlayerSelected: number) {
-    console.log(idPlayerSelected);
     const playerSelected = allPlayers.find(
       (player) => player.id == idPlayerSelected
     );

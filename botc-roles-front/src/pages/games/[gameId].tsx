@@ -30,11 +30,14 @@ export default function GamePage() {
     return <Title>Chargement {gameId}...</Title>;
   }
 
+  const storyTellerPseudo =
+    game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
+
   const title = (
     <Title>
-      Détails de la partie du <DateUi date={game.creationDate} /> contée par{" "}
+      Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
       <Link href={`/players/${game.storyTeller.name}`} color="text">
-        <PlayerName name={game.storyTeller.name} />
+        <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
       </Link>
     </Title>
   );
@@ -46,11 +49,11 @@ export default function GamePage() {
         <ListItem name="Module" value={game.edition.name} />
         <ListItem
           name="Conteur"
-          value={<PlayerName name={game.storyTeller.name} />}
+          value={<PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />}
         />
         <ListItem
           name="Date de la partie"
-          value={<DateUi date={game.creationDate} />}
+          value={<DateUi date={game.datePlayed} />}
         />
         <ListItem
           name="Alignement gagnant"
