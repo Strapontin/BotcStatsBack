@@ -5,7 +5,7 @@ import { Loading, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { Alignment, alignmentList } from "@/entities/enums/alignment";
-import GameCreateEdit from "@/components/game-create-edit/GameCreateEdit";
+import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
 import { useRouter } from "next/router";

@@ -5,10 +5,10 @@ import { Player } from "@/entities/Player";
 import { Alignment } from "@/entities/enums/alignment";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
-import EditionSelector from "../edition-selector/EditionSelector";
-import PlayerSelector from "../player-selector/PlayerSelector";
-import DropdownAlignment from "../dropdown-alignment/DropdownAlignment";
-import PlayerRolesSelector from "../player-role-selector/PlayerRolesSelector";
+import EditionSelector from "../../edition-selector/EditionSelector";
+import PlayerSelector from "../../player-selector/PlayerSelector";
+import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
+import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
 import { Game } from "@/entities/Game";
 import { dateToStringOrderByFormat } from "@/helper/date";
 

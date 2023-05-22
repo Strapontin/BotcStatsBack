@@ -1,19 +1,17 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { Button, Container, Input, Spacer } from "@nextui-org/react";
 import { createNewEdition, getAllEditions } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
-import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
+import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
+import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 
 export default function CreateEdition() {
-  const [inputKey, setInputKey] = useState(0);
-  const [editionName, setEditionName] = useState("");
+  const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const [editions, setEditions] = useState<string[]>([]);
   useEffect(() => {
@@ -26,22 +24,37 @@ export default function CreateEdition() {
     initEditions();
   }, []);
 
+  // Updates message on component refreshes
+  useEffect(() => {
+    if (edition.name === "" && edition.roles.length === 0) return;
+    if (toLowerRemoveDiacritics(edition.name) === "") {
+      updateMessage(true, "Un nom est obligatoire.");
+    } else if (
+      editions.filter(
+        (p) =>
+          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+      ).length !== 0
+    ) {
+      updateMessage(true, "Un module avec ce nom existe déjà.");
+    } else {
+      setMessage(<Fragment />);
+    }
+  }, [edition, editions]);
+
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
+    if (!canCreateEdition()) return;
+
     if (
       await createNewEdition(
-        editionName,
-        selectedRoles.map((sr) => sr.id)
+        edition.name,
+        edition.roles.map((r) => r.id)
       )
     ) {
-      editions.push(editionName);
-      setEditionName("");
-      setEditions(editions);
-
-      updateMessage(false, `Module "${editionName}" enregistré correctement.`);
-      setInputKey(inputKey + 1);
-      setSelectedRoles([]);
+      setEdition(getNewEmptyEdition());
+      setEditionCreateEditKey(editionCreateEditKey + 1);
+      updateMessage(false, `Le module a été enregistrée correctement.`);
     } else {
       //Erreur
       updateMessage(
@@ -70,76 +83,33 @@ export default function CreateEdition() {
   }
 
   function canCreateEdition() {
-    // Can create a edition when
-    //  - the name is set
-    //  - the name is unique
-    return (
-      editionName !== "" &&
+    if (toLowerRemoveDiacritics(edition.name) === "") {
+      updateMessage(true, "Un nom est obligatoire.");
+      return false;
+    }
+
+    if (
       editions.filter(
         (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
-      ).length === 0
-    );
-  }
-
-  function editionNameChanged(value: string) {
-    setEditionName(value);
-    checkError(value);
-  }
-
-  function checkError(editionName: string) {
-    setMessage(<Fragment />);
-
-    if (editionName.trim() === "") {
-      updateMessage(true, "Le nom du module ne doit pas être vide.");
-      return;
+          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+      ).length !== 0
+    ) {
+      updateMessage(true, "Un module avec ce nom existe déjà.");
+      return false;
     }
 
-    const editionsWithSameName = editions.filter(
-      (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(editionName)
-    );
-    if (editionsWithSameName.length !== 0) {
-      updateMessage(
-        true,
-        `Le module '${editionsWithSameName[0]}' existe déjà.`
-      );
-      return;
-    }
+    return true;
   }
 
   return (
-    <Fragment>
-      {title}
-      <Spacer y={2} />
-      {message}
-      <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
-        <Input
-          key={inputKey}
-          clearable
-          bordered
-          labelPlaceholder="Nom"
-          aria-label="Nom"
-          onChange={(event) => editionNameChanged(event.target.value)}
-        />
-        <Spacer y={3} />
-        <RolesSelector
-          selectedRoles={selectedRoles}
-          setSelectedRoles={setSelectedRoles}
-        />
-        <Spacer y={3} />
-      </Container>
-
-      <Button
-        shadow
-        ghost
-        color="success"
-        onPress={createEdition}
-        disabled={!canCreateEdition()}
-      >
-        Créer un module
-      </Button>
-      <Spacer y={3} />
-    </Fragment>
+    <EditionCreateEdit
+      key={editionCreateEditKey}
+      title={title}
+      edition={edition}
+      setEdition={setEdition}
+      message={message}
+      btnPressed={createEdition}
+      btnText="Créer un module"
+    />
   );
 }
