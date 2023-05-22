@@ -18,6 +18,7 @@ export default function GameCreateEdit(props: {
   setGame: any;
   message: JSX.Element;
   btnPressed: any;
+  btnText: string;
 }) {
   const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
     []
@@ -98,12 +99,14 @@ export default function GameCreateEdit(props: {
           bordered
           labelPlaceholder="Notes"
           aria-label="Notes"
+          initialValue={props.game.notes}
           onChange={(event) => notesChanged(event.target.value)}
         />
         <Spacer y={1.75} />
         <DropdownAlignment
-          text="Alignement gagnant"
+          alignment={props.game.winningAlignment}
           setAlignment={winningAlignmentChanged}
+          defaultText="Alignement gagnant"
         />
         <Spacer y={3} />
         <PlayerRolesSelector
@@ -121,7 +124,7 @@ export default function GameCreateEdit(props: {
         onPress={props.btnPressed}
         disabled={!btnEnabled()}
       >
-        Créer un module
+        {props.btnText}
       </Button>
       <Spacer y={3} />
     </Fragment>

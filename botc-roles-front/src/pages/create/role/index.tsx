@@ -8,12 +8,13 @@ import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Alignment } from "@/entities/enums/alignment";
 
 export default function CreateRole() {
   const [inputKey, setInputKey] = useState(0);
   const [roleName, setRoleName] = useState("");
   const [characterType, setCharacterType] = useState();
-  const [alignment, setAlignment] = useState();
+  const [alignment, setAlignment] = useState(Alignment.None);
   const [message, setMessage] = useState(<Fragment />);
 
   const [roles, setRoles] = useState<string[]>([]);
@@ -123,7 +124,12 @@ export default function CreateRole() {
           setCharacterType={setCharacterType}
         />
         <Spacer y={1.75} />
-        <DropdownAlignment key={inputKey + 2} setAlignment={setAlignment} />
+        <DropdownAlignment
+          key={inputKey + 2}
+          setAlignment={setAlignment}
+          alignment={alignment}
+          defaultText="Alignement"
+        />
         <Spacer y={3} />
       </Container>
 

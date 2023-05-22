@@ -19,8 +19,8 @@ export default function GamePage() {
 
   useEffect(() => {
     async function initGame() {
-      const p = await getGameById(gameId);
-      setGame(p);
+      const g = await getGameById(gameId);
+      setGame(g);
     }
     initGame();
   }, [gameId]);

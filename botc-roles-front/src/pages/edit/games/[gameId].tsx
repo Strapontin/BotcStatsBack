@@ -1,24 +1,41 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { editGame } from "../../../../data/back-api";
-import { Text } from "@nextui-org/react";
+import { editGame, getGameById } from "../../../../data/back-api";
+import { Loading, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
-import { PlayerRole } from "@/entities/PlayerRole";
 import { Alignment, alignmentList } from "@/entities/enums/alignment";
 import GameCreateEdit from "@/components/game-create-edit/GameCreateEdit";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
+import { useRouter } from "next/router";
 
 export default function CreateGame() {
+  const gameId: number = Number(useRouter().query.gameId);
+
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
-  const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
-    []
-  );
   const [game, setGame] = useState<Game>(getNewEmptyGame());
 
-  const title = <Title>Création d{"'"}une nouvelle partie</Title>;
+  useEffect(() => {
+    if (gameId === undefined || isNaN(gameId)) return;
+
+    async function initGame() {
+      const g = await getGameById(gameId);
+      setGame(g);
+    }
+    initGame();
+  }, [gameId]);
+
+  if (game.id === -1) {
+    return (
+      <Fragment>
+        <Loading />
+      </Fragment>
+    );
+  }
+
+  const title = <Title>Modification d{"'"}une partie existante</Title>;
 
   async function btnEditGame() {
     if (!canCreateGame()) return;
@@ -31,11 +48,10 @@ export default function CreateGame() {
         dateToString(game.datePlayed),
         game.notes,
         game.winningAlignment,
-        selectedPlayerRoles
+        game.playerRoles
       )
     ) {
       setGame(getNewEmptyGame());
-      setSelectedPlayerRoles([]);
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);
     } else {
@@ -97,6 +113,7 @@ export default function CreateGame() {
       setGame={setGame}
       message={message}
       btnPressed={btnEditGame}
+      btnText="Modifier la partie"
     />
   );
 }

@@ -17,7 +17,7 @@ namespace BotcRoles.Test.HelperMethods
         public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storyTellerId, DateTime? datePlayed,
             Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, string notes = null)
         {
-            GamesController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
             var data = new
             {
@@ -29,22 +29,42 @@ namespace BotcRoles.Test.HelperMethods
                 playersIdRolesId
             };
 
-            var res = gameController.CreateGame(JObject.FromObject(data));
+            var res = gamesController.CreateGame(JObject.FromObject(data));
+            return res;
+        }
+
+        public static IActionResult UpdateGame(ModelContext modelContext, long? gameId, long? editionId, long? storyTellerId, DateTime? datePlayed,
+            Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, string notes = null)
+        {
+            GamesController gamesController = new(null!, modelContext);
+
+            var data = new
+            {
+                gameId,
+                editionId,
+                storyTellerId,
+                datePlayed,
+                notes,
+                winningAlignment,
+                playersIdRolesId
+            };
+
+            var res = gamesController.UpdateGame(JObject.FromObject(data));
             return res;
         }
 
         public static IEnumerable<GameEntities> GetGames(ModelContext modelContext)
         {
-            GamesController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
-            return gameController.GetGames().Value;
+            return gamesController.GetGames().Value;
         }
 
         public static GameEntities GetGame(ModelContext modelContext, long gameId)
         {
-            GamesController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
-            var res = gameController.GetGameById(gameId);
+            var res = gamesController.GetGameById(gameId);
             return res.Value;
         }
 
@@ -61,6 +81,11 @@ namespace BotcRoles.Test.HelperMethods
             };
 
             return result;
+        }
+
+        public static void DeleteAllGames(ModelContext modelContext)
+        {
+            modelContext.RemoveRange(modelContext.Games);
         }
     }
 }

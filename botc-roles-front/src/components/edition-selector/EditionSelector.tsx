@@ -16,7 +16,7 @@ export default function EditionSelector(props: {
   const [allEditions, setAllEditions] = useState<Edition[]>([]);
   const [visibleEditions, setVisibleEditions] = useState<Edition[]>([]);
 
-  const [filter, setFilter] = useState<string>("");
+  const [filter, setFilter] = useState<string>(props.selectedEdition.name);
 
   useEffect(() => {
     async function initEditions() {

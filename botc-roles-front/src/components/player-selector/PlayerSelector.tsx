@@ -16,7 +16,7 @@ export default function PlayerSelector(props: {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [visiblePlayers, setVisiblePlayers] = useState<Player[]>([]);
 
-  const [filter, setFilter] = useState<string>("");
+  const [filter, setFilter] = useState<string>(props.selectedPlayer.name);
 
   useEffect(() => {
     async function initPlayers() {

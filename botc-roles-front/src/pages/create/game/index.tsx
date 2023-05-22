@@ -4,7 +4,6 @@ import { createNewGame } from "../../../../data/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
-import { PlayerRole } from "@/entities/PlayerRole";
 import { Alignment, alignmentList } from "@/entities/enums/alignment";
 import GameCreateEdit from "@/components/game-create-edit/GameCreateEdit";
 import { Game, getNewEmptyGame } from "@/entities/Game";
@@ -13,9 +12,6 @@ import { dateToString } from "@/helper/date";
 export default function CreateGame() {
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
-  const [selectedPlayerRoles, setSelectedPlayerRoles] = useState<PlayerRole[]>(
-    []
-  );
   const [game, setGame] = useState<Game>(getNewEmptyGame());
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
@@ -34,7 +30,6 @@ export default function CreateGame() {
       )
     ) {
       setGame(getNewEmptyGame());
-      setSelectedPlayerRoles([]);
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);
     } else {
@@ -96,6 +91,7 @@ export default function CreateGame() {
       setGame={setGame}
       message={message}
       btnPressed={createGame}
+      btnText="Créer une partie"
     />
   );
 }

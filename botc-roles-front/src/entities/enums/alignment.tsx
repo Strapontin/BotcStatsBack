@@ -19,6 +19,17 @@ export function alignmentList(): { key: number; value: string }[] {
   return alignments;
 }
 
+export function getAlignmentTextById(
+  id: number,
+  defaultValue: string = ""
+): string {
+  const result = alignmentList()[id];
+  if (result === undefined) {
+    return defaultValue;
+  }
+  return result.value;
+}
+
 function translate(name: string) {
   return name === "Good" ? "Gentil" : name === "Evil" ? "Maléfique" : "";
 }

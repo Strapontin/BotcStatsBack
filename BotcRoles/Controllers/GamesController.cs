@@ -73,13 +73,6 @@ namespace BotcRoles.Controllers
                 _db.Add(game);
                 _db.SaveChanges();
 
-                //// Get game db
-                //var gameDb = _db.Games.First(g => g.DateCreated == dateCreated);
-
-                //game.PlayerRoleGames.ForEach(pr => game = gameDb);
-                //_db.AddRange(game.PlayerRoleGames);
-                //_db.SaveChanges();
-
                 return Created("", null);
             }
             catch (Exception ex)
@@ -184,11 +177,45 @@ namespace BotcRoles.Controllers
         //    }
         //}
 
-        //[HttpPut]
-        //[Route("{gameId}")]
-        //public IActionResult UpdateGame([FromBody] JObject data)
-        //{
+        [HttpPut]
+        [Route("{gameId}")]
+        public IActionResult UpdateGame([FromBody] JObject data)
+        {
+            try
+            {
+                if (!long.TryParse(data["gameId"].ToString(), out long gameId))
+                {
+                    return BadRequest($"Aucun id de partie trouvé.");
+                }
+                var game = _db.Games.FirstOrDefault(g => g.GameId == gameId);
 
-        //}
+                if (game == null)
+                {
+                    return BadRequest($"La partie avec l'id {gameId} n'a pas été trouvée");
+                }
+
+                var gameTemp = GetGameDataFromBody(data, out string error);
+
+                if (error != null)
+                {
+                    return BadRequest(error);
+                }
+
+                game.Edition = gameTemp.Edition;
+                game.StoryTeller = gameTemp.StoryTeller;
+                game.DatePlayed = gameTemp.DatePlayed;
+                game.Notes = gameTemp.Notes;
+                game.WinningAlignment = gameTemp.WinningAlignment;
+                game.PlayerRoleGames = gameTemp.PlayerRoleGames;
+
+                _db.SaveChanges();
+
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
     }
 }
