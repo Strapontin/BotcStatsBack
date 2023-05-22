@@ -1,5 +1,5 @@
 import { Edition } from "@/entities/Edition";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
 import { Player } from "@/entities/Player";
 import { Alignment } from "@/entities/enums/alignment";
@@ -23,6 +23,11 @@ export default function GameCreateEdit(props: {
   const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
     []
   );
+
+  useEffect(() => {
+    console.log(props.game);
+    setRolesInSelectedEdition(props.game.edition.roles);
+  }, [props.game]);
 
   function btnEnabled() {
     // Can create a props.game when

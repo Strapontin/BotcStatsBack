@@ -51,7 +51,8 @@ export default function CreateGame() {
         game.playerRoles
       )
     ) {
-      setGame(getNewEmptyGame());
+      const g = await getGameById(gameId);
+      setGame(g);
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);
     } else {

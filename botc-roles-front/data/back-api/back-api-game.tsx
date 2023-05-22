@@ -75,5 +75,33 @@ export async function editGame(
   winningAlignment: Alignment,
   playersIdRolesId: { playerId: number; roleId: number }[]
 ): Promise<boolean> {
-  return false;
+  const response = await fetch(`${apiUrl}/Games`, {
+    method: "PUT",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify({
+      gameId,
+      editionId,
+      storyTellerId,
+      datePlayed,
+      notes,
+      winningAlignment,
+      playersIdRolesId,
+    }),
+  });
+
+  console.log("updateNewGame");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
 }

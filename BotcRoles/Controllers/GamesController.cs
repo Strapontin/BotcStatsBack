@@ -43,6 +43,8 @@ namespace BotcRoles.Controllers
             var game = _db.Games
                 .Where(g => g.GameId == gameId)
                 .Include(g => g.Edition)
+                    .ThenInclude(e => e.RolesEdition)
+                        .ThenInclude(re => re.Role)
                 .Include(g => g.StoryTeller)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Player)
@@ -178,7 +180,7 @@ namespace BotcRoles.Controllers
         //}
 
         [HttpPut]
-        [Route("{gameId}")]
+        [Route("")]
         public IActionResult UpdateGame([FromBody] JObject data)
         {
             try
@@ -206,6 +208,10 @@ namespace BotcRoles.Controllers
                 game.DatePlayed = gameTemp.DatePlayed;
                 game.Notes = gameTemp.Notes;
                 game.WinningAlignment = gameTemp.WinningAlignment;
+
+                _db.RemoveRange(_db.PlayerRoleGames.Where(prg => prg.GameId == game.GameId));
+                _db.SaveChanges();
+
                 game.PlayerRoleGames = gameTemp.PlayerRoleGames;
 
                 _db.SaveChanges();
