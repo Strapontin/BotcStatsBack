@@ -3,7 +3,7 @@ import {
   getAllGames as queryAllGames,
   getGameById as queryGameById,
   createNewGame as queryCreateNewGame,
-  editGame as queryEditGame,
+  updateGame as queryUpdateGame,
 } from "./back-api/back-api-game";
 import {
   getAllPlayers as queryAllPlayers,
@@ -19,9 +19,11 @@ import {
   getAllEditions as queryAllEditions,
   getEditionById as queryEditionById,
   createNewEdition as queryCreateNewEdition,
+  updateEdition as queryUpdateEdition,
 } from "./back-api/back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
 import { PlayerRole } from "@/entities/PlayerRole";
+import { Role } from "@/entities/Role";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -59,7 +61,7 @@ export async function createNewGame(
   );
 }
 
-export async function editGame(
+export async function updateGame(
   gameId: number,
   editionId: number,
   storyTellerId: number,
@@ -73,7 +75,7 @@ export async function editGame(
     roleId: pr.role.id,
   }));
 
-  return queryEditGame(
+  return queryUpdateGame(
     apiUrl,
     gameId,
     editionId,
@@ -150,4 +152,16 @@ export async function getEditionById(editionId: number) {
 
 export async function createNewEdition(editionName: string, rolesId: number[]) {
   return queryCreateNewEdition(apiUrl, editionName, rolesId);
+}
+
+export async function updateEdition(
+  editionId: number,
+  name: string,
+  roles: Role[]
+) {
+  const rolesId = roles.map((r) => ({
+    roleId: r.id,
+  }));
+
+  return queryUpdateEdition(apiUrl, editionId, name, rolesId);
 }

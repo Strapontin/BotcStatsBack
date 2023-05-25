@@ -31,16 +31,16 @@ export default function SelectionStats() {
           <Dropdown.Item key="/create/player">
             Ajouter un nouveau joueur
           </Dropdown.Item>
-          <Dropdown.Item withDivider key="/edit/games">
+          <Dropdown.Item withDivider key="/update/games">
             Modifier une partie
           </Dropdown.Item>
-          <Dropdown.Item  key="/edit/editions">
+          <Dropdown.Item  key="/update/editions">
             Modifier un module
           </Dropdown.Item>
-          <Dropdown.Item  key="/edit/roles">
+          <Dropdown.Item  key="/update/roles">
             Modifier un rôle
           </Dropdown.Item>
-          <Dropdown.Item  key="/edit/players">
+          <Dropdown.Item  key="/update/players">
             Modifier un joueur
           </Dropdown.Item>
           <Dropdown.Item withDivider key="/games-player">

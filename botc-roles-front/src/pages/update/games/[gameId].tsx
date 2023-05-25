@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { editGame, getGameById } from "../../../../data/back-api";
+import { updateGame, getGameById } from "../../../../data/back-api";
 import { Loading, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -10,7 +10,7 @@ import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
 import { useRouter } from "next/router";
 
-export default function CreateGame() {
+export default function UpdateGamePage() {
   const gameId: number = Number(useRouter().query.gameId);
 
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
@@ -37,11 +37,11 @@ export default function CreateGame() {
 
   const title = <Title>Modification d{"'"}une partie existante</Title>;
 
-  async function btnEditGame() {
-    if (!canCreateGame()) return;
+  async function btnUpdateGame() {
+    if (!canUpdateGame()) return;
 
     if (
-      await editGame(
+      await updateGame(
         game.id,
         game.edition.id,
         game.storyTeller.id,
@@ -54,12 +54,12 @@ export default function CreateGame() {
       const g = await getGameById(gameId);
       setGame(g);
       setGameCreateEditKey(gameCreateEditKey + 1);
-      updateMessage(false, `La partie a été enregistrée correctement.`);
+      updateMessage(false, `La partie a été modifiée correctement.`);
     } else {
       //Erreur
       updateMessage(
         true,
-        "Une erreur est survenue lors de l'enregistrement du module."
+        "Une erreur est survenue lors de la modification de la partie."
       );
     }
   }
@@ -82,7 +82,7 @@ export default function CreateGame() {
     }
   }
 
-  function canCreateGame() {
+  function canUpdateGame() {
     if (game.edition.id === -1) {
       updateMessage(true, "Un module est obligatoire.");
       return false;
@@ -113,7 +113,7 @@ export default function CreateGame() {
       game={game}
       setGame={setGame}
       message={message}
-      btnPressed={btnEditGame}
+      btnPressed={btnUpdateGame}
       btnText="Modifier la partie"
     />
   );

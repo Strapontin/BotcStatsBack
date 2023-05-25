@@ -63,7 +63,6 @@ namespace BotcRoles.Controllers
             try
             {
                 var game = GetGameDataFromBody(data, out string error);
-
                 if (error != null)
                 {
                     return BadRequest(error);
@@ -82,6 +81,69 @@ namespace BotcRoles.Controllers
                 return StatusCode(500, ex.InnerException);
             }
         }
+
+        //[HttpDelete]
+        //[Route("{gameId}")]
+        //public IActionResult Delete(long gameId)
+        //{
+        //    try
+        //    {
+        //        _db.Games.Remove(_db.Games.First(g => g.GameId == gameId));
+        //        _db.SaveChanges();
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.InnerException);
+        //    }
+        //}
+
+        [HttpPut]
+        [Route("")]
+        public IActionResult UpdateGame([FromBody] JObject data)
+        {
+            try
+            {
+                if (!long.TryParse(data["gameId"].ToString(), out long gameId))
+                {
+                    return BadRequest($"Aucun id de partie trouvé.");
+                }
+                var game = _db.Games.FirstOrDefault(g => g.GameId == gameId);
+
+                if (game == null)
+                {
+                    return BadRequest($"La partie avec l'id {gameId} n'a pas été trouvée.");
+                }
+
+                var gameTemp = GetGameDataFromBody(data, out string error);
+
+                if (error != null)
+                {
+                    return BadRequest(error);
+                }
+
+                game.Edition = gameTemp.Edition;
+                game.StoryTeller = gameTemp.StoryTeller;
+                game.DatePlayed = gameTemp.DatePlayed;
+                game.Notes = gameTemp.Notes;
+                game.WinningAlignment = gameTemp.WinningAlignment;
+
+                _db.RemoveRange(_db.PlayerRoleGames.Where(prg => prg.GameId == game.GameId));
+                _db.SaveChanges();
+
+                game.PlayerRoleGames = gameTemp.PlayerRoleGames;
+
+                _db.SaveChanges();
+
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        #region Private methods
 
         private Game GetGameDataFromBody(JObject data, out string error)
         {
@@ -163,65 +225,6 @@ namespace BotcRoles.Controllers
             return game;
         }
 
-        //[HttpDelete]
-        //[Route("{gameId}")]
-        //public IActionResult Delete(long gameId)
-        //{
-        //    try
-        //    {
-        //        _db.Games.Remove(_db.Games.First(g => g.GameId == gameId));
-        //        _db.SaveChanges();
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.InnerException);
-        //    }
-        //}
-
-        [HttpPut]
-        [Route("")]
-        public IActionResult UpdateGame([FromBody] JObject data)
-        {
-            try
-            {
-                if (!long.TryParse(data["gameId"].ToString(), out long gameId))
-                {
-                    return BadRequest($"Aucun id de partie trouvé.");
-                }
-                var game = _db.Games.FirstOrDefault(g => g.GameId == gameId);
-
-                if (game == null)
-                {
-                    return BadRequest($"La partie avec l'id {gameId} n'a pas été trouvée");
-                }
-
-                var gameTemp = GetGameDataFromBody(data, out string error);
-
-                if (error != null)
-                {
-                    return BadRequest(error);
-                }
-
-                game.Edition = gameTemp.Edition;
-                game.StoryTeller = gameTemp.StoryTeller;
-                game.DatePlayed = gameTemp.DatePlayed;
-                game.Notes = gameTemp.Notes;
-                game.WinningAlignment = gameTemp.WinningAlignment;
-
-                _db.RemoveRange(_db.PlayerRoleGames.Where(prg => prg.GameId == game.GameId));
-                _db.SaveChanges();
-
-                game.PlayerRoleGames = gameTemp.PlayerRoleGames;
-
-                _db.SaveChanges();
-
-                return Created("", null);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.InnerException);
-            }
-        }
+        #endregion
     }
 }

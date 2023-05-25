@@ -42,34 +42,25 @@ namespace BotcRoles.Test.HelperMethods
             return res.Value;
         }
 
-        //public static IActionResult AddRoleInEdition(ModelContext modelContext, long editionId, long roleId)
-        //{
-        //    EditionsController editionController = new(null!, modelContext);
-
-        //    var res = editionController.AddRoleInEdition(editionId, roleId);
-        //    return res;
-        //}
-
-        public static IEnumerable<RoleEntities> GetRolesFromEdition(ModelContext modelContext, long editionId)
-        {
-            EditionsController editionController = new(null!, modelContext);
-
-            var res = editionController.GetEditionById(editionId).Value.Roles;
-            return res;
-        }
-
         public static void DeleteAllEditions(ModelContext modelContext)
         {
             modelContext.Editions.RemoveRange(modelContext.Editions);
             modelContext.SaveChanges();
         }
 
-        //public static IActionResult RemoveRoleFromEdition(ModelContext modelContext, long editionId, long roleId)
-        //{
-        //    EditionsController editionController = new(null!, modelContext);
+        internal static IActionResult UpdateEdition(ModelContext modelContext, long editionId, string editionName, List<long> rolesId)
+        {
+            EditionsController editionsController = new(null!, modelContext);
 
-        //    var res = editionController.RemoveRoleFromEdition(editionId, roleId);
-        //    return res;
-        //}
+            var data = new
+            {
+                editionId,
+                editionName,
+                rolesId,
+            };
+
+            var res = editionsController.UpdateEdition(JObject.FromObject(data));
+            return res;
+        }
     }
 }

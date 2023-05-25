@@ -153,162 +153,32 @@ namespace BotcRoles.Test
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
-        //[Test]
-        //public void Add_And_Get_Role_In_Edition()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
-        //    string roleName = "RoleName";
+        [Test]
+        public void Can_Update_Edition()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            EditionHelper.DeleteAllEditions(modelContext);
+            string editionName = "editionName";
+            List<long> rolesId = modelContext.Roles.Take(5).Select(r => r.RoleId).ToList();
+            var res = EditionHelper.PostEdition(modelContext, editionName);
 
-        //    try
-        //    {
-        //        EditionHelper.PostEdition(modelContext, editionName);
-        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            // Act
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
 
-        //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
-        //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
+            string newName = "newName";
+            res = EditionHelper.UpdateEdition(modelContext, editionId, newName, rolesId);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-        //        // Act
-        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
+            var edition = EditionHelper.GetEdition(modelContext, editionId);
+            Assert.AreEqual(editionId, edition.Id);
+            Assert.AreEqual(newName, edition.Name);
+            Assert.AreEqual(5, edition.Roles.Count);
+            Assert.True(edition.Roles.All(r => !string.IsNullOrWhiteSpace(r.Name)));
 
-        //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-        //        // Act
-        //        var rolesInEdition = EditionHelper.GetRolesFromEdition(modelContext, editionId);
-
-        //        // Assert
-        //        Assert.AreEqual(roleName, rolesInEdition.First().Role.Name);
-        //    }
-        //    finally
-        //    {
-        //        DBHelper.DeleteCreatedDatabase(modelContext);
-        //    }
-        //}
-
-        //[Test]
-        //public void Cant_Add_Twice_Same_Role_In_Edition()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
-        //    string roleName = "RoleName";
-
-        //    try
-        //    {
-        //        EditionHelper.PostEdition(modelContext, editionName);
-        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-
-        //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
-        //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
-
-        //        // Act
-        //        var res1 = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
-        //        var res2 = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
-
-        //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res1).StatusCode);
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res2).StatusCode);
-        //    }
-        //    finally
-        //    {
-        //        DBHelper.DeleteCreatedDatabase(modelContext);
-        //    }
-        //}
-
-        //[Test]
-        //public void Cant_Add_Role_In_Edition_With_Wrong_EditionId()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
-        //    string roleName = "RoleName";
-
-        //    try
-        //    {
-        //        EditionHelper.PostEdition(modelContext, editionName);
-        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-
-        //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
-        //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
-
-        //        // Act
-        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId + 1, roleId);
-
-        //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
-        //    }
-        //    finally
-        //    {
-        //        DBHelper.DeleteCreatedDatabase(modelContext);
-        //    }
-        //}
-
-        //[Test]
-        //public void Cant_Add_Role_In_Edition_With_Wrong_RoleId()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
-        //    string roleName = "RoleName";
-
-        //    try
-        //    {
-        //        EditionHelper.PostEdition(modelContext, editionName);
-        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-
-        //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
-        //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
-
-        //        // Act
-        //        var res = EditionHelper.AddRoleInEdition(modelContext, editionId, roleId + 1);
-
-        //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
-        //    }
-        //    finally
-        //    {
-        //        DBHelper.DeleteCreatedDatabase(modelContext);
-        //    }
-        //}
-
-        //[Test]
-        //public void Remove_Role_From_Edition()
-        //{
-        //    // Arrange
-        //    string fileName = DBHelper.GetCurrentMethodName() + ".db";
-        //    var modelContext = DBHelper.GetContext(fileName);
-        //    string editionName = "EditionName";
-        //    string roleName = "RoleName";
-
-        //    try
-        //    {
-        //        EditionHelper.PostEdition(modelContext, editionName);
-        //        long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-
-        //        RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Good);
-        //        long roleId = RoleHelper.GetRoles(modelContext).First().Id;
-
-        //        EditionHelper.AddRoleInEdition(modelContext, editionId, roleId);
-
-        //        // Act
-        //        var res = EditionHelper.RemoveRoleFromEdition(modelContext, editionId, roleId);
-
-        //        // Assert
-        //        Assert.AreEqual(StatusCodes.Status200OK, ((ObjectResult)res).StatusCode);
-
-        //        var roles = EditionHelper.GetRolesFromEdition(modelContext, editionId);
-        //        Assert.IsEmpty(roles);
-        //    }
-        //    finally
-        //    {
-        //        DBHelper.DeleteCreatedDatabase(modelContext);
-        //    }
-        //}
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
     }
 }

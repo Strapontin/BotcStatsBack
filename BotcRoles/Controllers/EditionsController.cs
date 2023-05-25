@@ -56,44 +56,63 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                // Get Edition name and test errors
-                string? name = data["editionName"]?.ToString();
-                if (string.IsNullOrWhiteSpace(name))
+                var edition = GetEditionDataFromBody(data, out string error);
+                if (error != null)
                 {
-                    return BadRequest($"Le nom du module est vide.");
-                }
-                if (_db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
-                {
-                    return BadRequest($"Un module avec le nom '{name}' existe déjà.");
-                }
-
-
-                // Try to convert to Role object from database to ensure it exists
-                List<long>? rolesId = data["rolesId"]?.ToObject<List<long>>();
-                List<Role> rolesDb = new();
-                if (rolesId != null)
-                {
-                    foreach (var roleId in rolesId)
-                    {
-                        Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == roleId);
-                        if (roleDb == null)
-                        {
-                            return BadRequest($"Le rôle avec l'id '{roleId}' n'a pas été trouvé.");
-                        }
-                        rolesDb.Add(roleDb);
-                    }
+                    return BadRequest(error);
                 }
 
                 // Save edition with name
-                Edition edition = new(name);
+                //Edition edition = new(name);
                 _db.Add(edition);
                 _db.SaveChanges();
 
-                // Get edition db
-                var editionDb = _db.Editions.First(edition => edition.Name == name);
+                //// Get edition db
+                //var editionDb = _db.Editions.First(edition => edition.Name == name);
 
-                var rolesEditionDb = rolesDb.Select(rdb => new RoleEdition(rdb, editionDb));
-                _db.AddRange(rolesEditionDb);
+                //var rolesEditionDb = rolesDb.Select(rdb => new RoleEdition(rdb, editionDb));
+                //_db.AddRange(rolesEditionDb);
+                //_db.SaveChanges();
+
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpPut]
+        [Route("")]
+        public IActionResult UpdateEdition([FromBody] JObject data)
+        {
+            try
+            {
+                if (!long.TryParse(data["editionId"].ToString(), out long editionId))
+                {
+                    return BadRequest($"Aucun id de module trouvé.");
+                }
+                var edition = _db.Editions.FirstOrDefault(e => e.EditionId == editionId);
+
+                if (edition == null)
+                {
+                    return BadRequest($"Le module avec l'id {editionId} n'a pas été trouvé.");
+                }
+
+                var editionTemp = GetEditionDataFromBody(data, out string error);
+
+                if (error != null)
+                {
+                    return BadRequest(error);
+                }
+
+                edition.Name = editionTemp.Name;
+
+                _db.RemoveRange(_db.RolesEdition.Where(re => re.EditionId == edition.EditionId));
+                _db.SaveChanges();
+
+                edition.RolesEdition = editionTemp.RolesEdition;
+
                 _db.SaveChanges();
 
                 return Created("", null);
@@ -104,80 +123,50 @@ namespace BotcRoles.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("{editionId}/roles")]
-        //public ActionResult<IEnumerable<Entities.Role>> GetRolesFromEdition(long editionId)
-        //{
-        //    var roles = _db.RolesEdition
-        //        .Where(rm => rm.EditionId == editionId)
-        //        .Select(rm => new Entities.Role(rm))
-        //        .ToList();
+        #region Private methods
 
-        //    return roles;
-        //}
+        private Edition GetEditionDataFromBody(JObject data, out string error)
+        {
+            error = null;
 
-        ////[HttpPost]
-        ////[Route("{editionId}")]
-        ////public IActionResult AddRoleInEdition(long editionId, [FromQuery] long roleId)
-        ////{
-        ////    try
-        ////    {
-        ////        var edition = _db.Editions
-        ////            .Where(m => m.EditionId == editionId)
-        ////            .Include(m => m.RolesEdition)
-        ////            .FirstOrDefault();
+            string? name = data["editionName"]?.ToString();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                error = $"Le nom du module est vide.";
+                return null;
+            }
+            if (_db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
+            {
+                error = $"Un module avec le nom '{name}' existe déjà.";
+                return null;
+            }
 
-        ////        var role = _db.Roles.Find(roleId);
 
-        ////        if (edition == null)
-        ////        {
-        ////            return BadRequest($"Le edition avec l'id '{editionId}' n'a pas été trouvé.");
-        ////        }
+            // Try to convert to Role object from database to ensure it exists
+            List<long>? rolesId = data["rolesId"]?.ToObject<List<long>>();
+            List<RoleEdition> rolesEditionDb = new();
+            if (rolesId != null)
+            {
+                foreach (var roleId in rolesId)
+                {
+                    Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == roleId);
+                    if (roleDb == null)
+                    {
+                        error = $"Le rôle avec l'id '{roleId}' n'a pas été trouvé.";
+                        return null;
+                    }
+                    rolesEditionDb.Add(new(roleDb, null));
+                }
+            }
 
-        ////        if (role == null)
-        ////        {
-        ////            return BadRequest($"Le role avec l'id '{roleId}' n'a pas été trouvé.");
-        ////        }
+            Edition edition = new(name)
+            {
+                RolesEdition = rolesEditionDb,
+            };
 
-        ////        if (edition.RolesEdition.Any(rm => rm.RoleId == roleId))
-        ////        {
-        ////            return BadRequest($"Ce rôle existe déjà dans ce edition.");
-        ////        }
+            return edition;
+        }
 
-        ////        _db.Add(new RoleEdition(role, edition));
-        ////        _db.SaveChanges();
-
-        ////        return Created("", null);
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        return StatusCode(500, ex.InnerException);
-        ////    }
-        ////}
-
-        ////[HttpDelete]
-        ////[Route("{editionId}")]
-        ////public IActionResult RemoveRoleFromEdition(long editionId, [FromQuery] long roleId)
-        ////{
-        ////    try
-        ////    {
-        ////        var roleEdition = _db.RolesEdition.Where(rm => rm.EditionId == editionId &&
-        ////                                                    rm.RoleId == roleId).FirstOrDefault();
-
-        ////        if (roleEdition == null)
-        ////        {
-        ////            return BadRequest($"Le role n'existe pas dans ce edition.");
-        ////        }
-
-        ////        _db.RolesEdition.Remove(roleEdition);
-        ////        _db.SaveChanges();
-
-        ////        return Ok();
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        return StatusCode(500, ex.InnerException);
-        ////    }
-        ////}
+        #endregion
     }
 }

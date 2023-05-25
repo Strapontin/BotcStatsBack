@@ -51,3 +51,36 @@ export async function createNewEdition(
 
   return true;
 }
+
+export async function updateEdition(
+  apiUrl: string,
+  editionId: number,
+  name: string,
+  rolesId: { roleId: number }[]
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Editions`, {
+    method: "PUT",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify({
+      editionId,
+      name,
+      rolesId,
+    }),
+  });
+
+  console.log("updateEdition");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}

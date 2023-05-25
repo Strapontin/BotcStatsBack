@@ -8,9 +8,9 @@ import PlayerName from "@/components/ui/playerName";
 import { dateToString } from "@/helper/date";
 import { getAllGames } from "../../../../data/back-api";
 
-export default function EditGamesPage() {
+export default function UpdateGamesPage() {
   const [games, setGames] = useState<Game[]>([]);
-  const title = "Modifier une partie";
+  const title = <Title>Modifier une partie</Title>;
 
   useEffect(() => {
     async function initGames() {
@@ -23,7 +23,7 @@ export default function EditGamesPage() {
   if (games.length === 0) {
     return (
       <Fragment>
-        <Title>{title}</Title>
+        {title}
         <Spacer y={3} />
         <Loading />
       </Fragment>
@@ -35,7 +35,7 @@ export default function EditGamesPage() {
       game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
 
     return (
-      <Link key={game.id} href={`/edit/games/${game.id}`} color="text">
+      <Link key={game.id} href={`/update/games/${game.id}`} color="text">
         <ListItem
           name={dateToString(game.datePlayed)}
           value={
@@ -51,7 +51,7 @@ export default function EditGamesPage() {
 
   return (
     <Fragment>
-      <Title>{title}</Title>
+      {title}
       <Container>{games.map((game: Game) => line(game))}</Container>
     </Fragment>
   );

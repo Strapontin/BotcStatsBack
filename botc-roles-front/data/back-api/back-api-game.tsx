@@ -65,7 +65,7 @@ export async function createNewGame(
   return true;
 }
 
-export async function editGame(
+export async function updateGame(
   apiUrl: string,
   gameId: number,
   editionId: number,
@@ -96,7 +96,7 @@ export async function editGame(
     }),
   });
 
-  console.log("updateNewGame");
+  console.log("updateGame");
 
   if (!response.ok) {
     console.log(response);

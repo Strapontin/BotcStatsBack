@@ -43,6 +43,7 @@ export default function EditionCreateEdit(props: {
           bordered
           labelPlaceholder="Nom"
           aria-label="Nom"
+          initialValue={props.edition.name}
           onChange={(event) => editionNameChanged(event.target.value)}
         />
         <Spacer y={3} />
