@@ -180,5 +180,32 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Update_Edition_With_Same_Name()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            EditionHelper.DeleteAllEditions(modelContext);
+            string editionName = "editionName";
+            List<long> rolesId = modelContext.Roles.Take(5).Select(r => r.RoleId).ToList();
+            var res = EditionHelper.PostEdition(modelContext, editionName);
+
+            // Act
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
+
+            res = EditionHelper.UpdateEdition(modelContext, editionId, editionName, rolesId);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var edition = EditionHelper.GetEdition(modelContext, editionId);
+            Assert.AreEqual(editionId, edition.Id);
+            Assert.AreEqual(editionName, edition.Name);
+            Assert.AreEqual(5, edition.Roles.Count);
+            Assert.True(edition.Roles.All(r => !string.IsNullOrWhiteSpace(r.Name)));
+
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
     }
 }

@@ -159,9 +159,7 @@ export async function updateEdition(
   name: string,
   roles: Role[]
 ) {
-  const rolesId = roles.map((r) => ({
-    roleId: r.id,
-  }));
+  const rolesId = roles.map((r) => r.id);
 
   return queryUpdateEdition(apiUrl, editionId, name, rolesId);
 }

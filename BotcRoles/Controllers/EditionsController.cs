@@ -99,7 +99,7 @@ namespace BotcRoles.Controllers
                     return BadRequest($"Le module avec l'id {editionId} n'a pas été trouvé.");
                 }
 
-                var editionTemp = GetEditionDataFromBody(data, out string error);
+                var editionTemp = GetEditionDataFromBody(data, out string error, edition.Name);
 
                 if (error != null)
                 {
@@ -125,7 +125,7 @@ namespace BotcRoles.Controllers
 
         #region Private methods
 
-        private Edition GetEditionDataFromBody(JObject data, out string error)
+        private Edition GetEditionDataFromBody(JObject data, out string error, string editionName = null)
         {
             error = null;
 
@@ -135,7 +135,8 @@ namespace BotcRoles.Controllers
                 error = $"Le nom du module est vide.";
                 return null;
             }
-            if (_db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
+            if ((string.IsNullOrWhiteSpace(editionName) || editionName.ToLowerRemoveDiacritics() != name.ToLowerRemoveDiacritics()) &&
+                _db.Editions.ToList().Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics()))
             {
                 error = $"Un module avec le nom '{name}' existe déjà.";
                 return null;

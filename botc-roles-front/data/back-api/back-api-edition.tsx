@@ -55,8 +55,8 @@ export async function createNewEdition(
 export async function updateEdition(
   apiUrl: string,
   editionId: number,
-  name: string,
-  rolesId: { roleId: number }[]
+  editionName: string,
+  rolesId: number[]
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions`, {
     method: "PUT",
@@ -70,7 +70,7 @@ export async function updateEdition(
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
       editionId,
-      name,
+      editionName,
       rolesId,
     }),
   });

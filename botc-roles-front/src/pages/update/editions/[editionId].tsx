@@ -1,6 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { updateEdition, getEditionById } from "../../../../data/back-api";
+import {
+  updateEdition,
+  getEditionById,
+  getAllEditions,
+} from "../../../../data/back-api";
 import { Loading, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -12,38 +16,70 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 export default function UpdateEditionPage() {
   const editionId: number = Number(useRouter().query.editionId);
 
+  const [oldEditionName, setOldEditionName] = useState("");
+
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const [editions, setEditions] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (editionId === undefined || isNaN(editionId)) return;
-
-    async function initEdition() {
-      const g = await getEditionById(editionId);
-      setEdition(g);
-    }
-    initEdition();
-  }, [editionId]);
-  
-  // Updates message on component refreshes
-  useEffect(() => {
-    if (edition.name === "" && edition.roles.length === 0) return;
-    if (toLowerRemoveDiacritics(edition.name) === "") {
+  const canUpdateEdition = useCallback(() => {
+    if (edition.name === "") {
       updateMessage(true, "Un nom est obligatoire.");
+      return false;
     } else if (
       editions.filter(
         (p) =>
+          toLowerRemoveDiacritics(p) !==
+            toLowerRemoveDiacritics(oldEditionName) &&
           toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
+      return false;
     } else {
-      setMessage(<Fragment />);
+      updateMessage(false, "");
+      return true;
     }
-  }, [edition, editions]);
+  }, [edition, editions, oldEditionName]);
+
+  useEffect(() => {
+    if (editionId === undefined || isNaN(editionId)) return;
+
+    async function initEdition() {
+      const e = await getEditionById(editionId);
+      setEdition(e);
+      setOldEditionName(e.name);
+    }
+    initEdition();
+
+    async function initEditions() {
+      const e = (await getAllEditions()).map((e) => e.name);
+      setEditions(e);
+    }
+    initEditions();
+  }, [editionId]);
+
+  // Updates message on component refreshes
+  useEffect(() => {
+    if (edition.name === "" && edition.roles.length === 0) return;
+
+    canUpdateEdition();
+    // if (toLowerRemoveDiacritics(edition.name) === "") {
+    //   updateMessage(true, "Un nom est obligatoire.");
+    // } else if (
+    //   editions.filter(
+    //     (p) =>
+    //       toLowerRemoveDiacritics(p) !== oldEditionName &&
+    //       toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+    //   ).length !== 0
+    // ) {
+    //   updateMessage(true, "Un module avec ce nom existe déjà.");
+    // } else {
+    //   setMessage(<Fragment />);
+    // }
+  }, [edition, canUpdateEdition]);
 
   if (edition.id === -1) {
     return (
@@ -53,7 +89,7 @@ export default function UpdateEditionPage() {
     );
   }
 
-  const title = <Title>Modification du module {`'${edition.name}'`}</Title>;
+  const title = <Title>Modification du module {`'${oldEditionName}'`}</Title>;
 
   async function btnUpdateEdition() {
     if (!canUpdateEdition()) return;
@@ -62,7 +98,10 @@ export default function UpdateEditionPage() {
       const g = await getEditionById(editionId);
       setEdition(g);
       setEditionCreateEditKey(editionCreateEditKey + 1);
-      updateMessage(false, `Le module a été modifié correctement.`);
+      setTimeout(
+        () => updateMessage(false, `Le module '${edition.name}' a été modifié correctement.`),
+        50
+      );
     } else {
       //Erreur
       updateMessage(
@@ -73,7 +112,9 @@ export default function UpdateEditionPage() {
   }
 
   function updateMessage(isError: boolean, message: string) {
-    if (isError) {
+    if (message === "") {
+      setMessage(<Fragment />);
+    } else if (isError) {
       setMessage(
         <Text span className={classes.red}>
           <XOctagon className={classes.icon} />
@@ -88,25 +129,6 @@ export default function UpdateEditionPage() {
         </Text>
       );
     }
-  }
-
-  function canUpdateEdition() {
-    if (edition.name === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-      return false;
-    }
-
-    if (
-      editions.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
-      return false;
-    }
-
-    return true;
   }
 
   return (
