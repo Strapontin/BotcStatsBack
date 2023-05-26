@@ -19,6 +19,7 @@ export default function ListItem(props: {
   }
 
   function onTouchEnd(e: any) {
+    if (!props.onPress) return;
     if (e.timeStamp - timeStamp < 500) {
       props.onPress();
     }
