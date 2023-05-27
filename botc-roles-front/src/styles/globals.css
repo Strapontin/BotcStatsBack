@@ -25,8 +25,16 @@ html {
   color: rgb(197, 0, 0);
 }
 
+.traveller {
+  color: rgb(154, 77, 159);
+}
+
+.fabled {
+  color: rgb(168, 153, 50);
+}
+
 .green {
-  color: #988F2A;
+  color: #988f2a;
 }
 
 .red {
@@ -40,7 +48,7 @@ html {
   align-items: center;
 }
 
-.h-auto{
+.h-auto {
   height: auto;
 }
 

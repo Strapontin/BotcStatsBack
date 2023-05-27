@@ -81,7 +81,7 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                if (!long.TryParse(data["editionId"].ToString(), out long editionId))
+                if (!long.TryParse(data["editionId"]?.ToString(), out long editionId))
                 {
                     return BadRequest($"Aucun id de module trouvé.");
                 }

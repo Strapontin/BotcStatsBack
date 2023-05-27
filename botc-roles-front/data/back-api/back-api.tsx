@@ -14,6 +14,7 @@ import {
   getAllRoles as queryAllRoles,
   getRoleById as queryRoleById,
   createNewRole as queryCreateNewRole,
+  updateRole as queryUpdateRole,
 } from "./back-api-role";
 import {
   getAllEditions as queryAllEditions,
@@ -141,9 +142,7 @@ export async function createNewRole(
 }
 
 export async function updateRole(role: Role) {
-  // const rolesId = roles.map((r) => r.id);
-
-  return false;
+  return queryUpdateRole(apiUrl, role);
 }
 
 /* Edition */

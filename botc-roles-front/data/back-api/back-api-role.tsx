@@ -54,3 +54,32 @@ export async function createNewRole(
 
   return true;
 }
+
+export async function updateRole(apiUrl: string, role: Role): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Roles`, {
+    method: "PUT",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify({
+      roleId: role.id,
+      roleName: role.name,
+      characterType: role.characterType,
+      alignment: role.alignment,
+    }),
+  });
+
+  console.log("updateRole");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}

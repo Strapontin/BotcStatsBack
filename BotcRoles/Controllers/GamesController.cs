@@ -104,7 +104,7 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                if (!long.TryParse(data["gameId"].ToString(), out long gameId))
+                if (!long.TryParse(data["gameId"]?.ToString(), out long gameId))
                 {
                     return BadRequest($"Aucun id de partie trouvé.");
                 }
@@ -149,7 +149,7 @@ namespace BotcRoles.Controllers
         {
             error = null;
 
-            if (!long.TryParse(data["editionId"].ToString(), out long editionId))
+            if (!long.TryParse(data["editionId"]?.ToString(), out long editionId))
             {
                 error = $"Une partie doit avoir un module.";
                 return null;
@@ -173,13 +173,13 @@ namespace BotcRoles.Controllers
                 return null;
             }
 
-            if (!DateTime.TryParse(data["datePlayed"].ToString(), out DateTime datePlayed))
+            if (!DateTime.TryParse(data["datePlayed"]?.ToString(), out DateTime datePlayed))
             {
                 error = $"La date n'est pas correcte.";
                 return null;
             }
 
-            var notes = data["notes"].ToString();
+            var notes = data["notes"]?.ToString();
 
             if (!int.TryParse(data["winningAlignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
             {

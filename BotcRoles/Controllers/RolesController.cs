@@ -75,7 +75,7 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                if (!long.TryParse(data["roleId"].ToString(), out long roleId))
+                if (!long.TryParse(data["roleId"]?.ToString(), out long roleId))
                 {
                     return BadRequest($"Aucun id de role trouvé.");
                 }
@@ -115,11 +115,11 @@ namespace BotcRoles.Controllers
             string? roleName = data["roleName"]?.ToString().Trim();
             if (string.IsNullOrWhiteSpace(roleName))
             {
-                error = $"Le nom du role est vide.";
+                error = $"Le nom du rôle est vide.";
                 return null;
             }
-
-            if (_db.Roles.ToList().Any(r => r.Name.ToLowerRemoveDiacritics() == roleName.ToLowerRemoveDiacritics()))
+            if ((string.IsNullOrWhiteSpace(oldRoleName) || oldRoleName.ToLowerRemoveDiacritics() != roleName.ToLowerRemoveDiacritics()) &&
+                _db.Roles.ToList().Any(r => r.Name.ToLowerRemoveDiacritics() == roleName.ToLowerRemoveDiacritics()))
             {
                 error = $"Un rôle avec le nom '{roleName}' existe déjà.";
                 return null;
