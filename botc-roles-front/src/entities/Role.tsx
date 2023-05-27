@@ -19,8 +19,8 @@ export function getNewEmptyRole() {
   const role: Role = {
     id: -1,
     name: "",
-    characterType: 0,
-    alignment: 0,
+    characterType: CharacterType.None,
+    alignment: Alignment.None,
     timesPlayedByPlayer: 0,
     timesWonByPlayer: 0,
     timesLostByPlayer: 0,

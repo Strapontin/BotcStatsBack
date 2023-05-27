@@ -9,15 +9,17 @@ import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Alignment } from "@/entities/enums/alignment";
+import { CharacterType } from "@/entities/enums/characterType";
+import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 
 export default function CreateRole() {
-  const [inputKey, setInputKey] = useState(0);
-  const [roleName, setRoleName] = useState("");
-  const [characterType, setCharacterType] = useState();
-  const [alignment, setAlignment] = useState(Alignment.None);
+  const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
+  const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const [roles, setRoles] = useState<string[]>([]);
+
   useEffect(() => {
     async function initRoles() {
       const tempRoles = (await getAllRoles()).map((role) => {
@@ -28,18 +30,44 @@ export default function CreateRole() {
     initRoles();
   }, []);
 
+  // Updates message on component refreshes
+  useEffect(() => {
+    if (
+      role.name === "" &&
+      role.characterType === CharacterType.None &&
+      role.alignment === Alignment.None
+    )
+      return;
+
+    if (toLowerRemoveDiacritics(role.name) === "") {
+      updateMessage(true, "Un nom est obligatoire.");
+    } else if (
+      roles.filter(
+        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(role.name)
+      ).length !== 0
+    ) {
+      updateMessage(true, "Un module avec ce nom existe déjà.");
+    } else {
+      setMessage(<Fragment />);
+    }
+  }, [role, roles]);
+
   const title = <Title>Création d{"'"}un nouveau rôle</Title>;
 
   async function createRole() {
-    if (characterType === undefined || alignment === undefined) return;
+    if (
+      role.characterType === undefined ||
+      role.characterType === CharacterType.None ||
+      role.alignment === undefined ||
+      role.alignment === Alignment.None
+    )
+      return;
 
-    if (await createNewRole(roleName, characterType, alignment)) {
-      roles.push(roleName);
-      setRoleName("");
-      setRoles(roles);
+    if (await createNewRole(role.name, role.characterType, role.alignment)) {
+      setRole(getNewEmptyRole());
 
-      updateMessage(false, `Rôle "${roleName}" enregistré correctement.`);
-      setInputKey(inputKey + 1);
+      updateMessage(false, `Rôle "${role.name}" enregistré correctement.`);
+      setRoleCreateEditKey(roleCreateEditKey + 1);
     } else {
       //Erreur
       updateMessage(
@@ -67,82 +95,15 @@ export default function CreateRole() {
     }
   }
 
-  function canCreateRole() {
-    // Can create a role when
-    //  - all params are set
-    //  - the name is unique
-    return (
-      roleName !== "" &&
-      roles.filter(
-        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
-      ).length === 0 &&
-      characterType !== undefined &&
-      alignment !== undefined
-    );
-  }
-
-  function roleNameChanged(value: string) {
-    setRoleName(value);
-    checkError(value);
-  }
-
-  function checkError(roleName: string) {
-    setMessage(<Fragment />);
-
-    if (roleName === "") {
-      updateMessage(true, "Le nom du rôle ne doit pas être vide.");
-      return;
-    }
-
-    const roleWithSameName = roles.filter(
-      (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(roleName)
-    );
-    if (roleWithSameName.length !== 0) {
-      updateMessage(true, `Le rôle '${roleWithSameName[0]}' existe déjà.`);
-      return;
-    }
-  }
-
   return (
-    <Fragment>
-      {title}
-      <Spacer y={2} />
-      {message}
-      <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
-        <Input
-          key={inputKey}
-          clearable
-          bordered
-          labelPlaceholder="Nom"
-          aria-label="Nom"
-          onChange={(event) => roleNameChanged(event.target.value)}
-        />
-        <Spacer y={1.75} />
-        <DropdownCharacterType
-          key={inputKey + 1}
-          setCharacterType={setCharacterType}
-        />
-        <Spacer y={1.75} />
-        <DropdownAlignment
-          key={inputKey + 2}
-          setAlignment={setAlignment}
-          alignment={alignment}
-          defaultText="Alignement"
-        />
-        <Spacer y={3} />
-      </Container>
-
-      <Button
-        shadow
-        ghost
-        color="success"
-        onPress={createRole}
-        disabled={!canCreateRole()}
-      >
-        Créer un rôle
-      </Button>
-      <Spacer y={3} />
-    </Fragment>
+    <RoleCreateEdit
+      key={roleCreateEditKey}
+      title={title}
+      role={role}
+      setRole={setRole}
+      message={message}
+      btnPressed={createRole}
+      btnText="Créer un module"
+    />
   );
 }

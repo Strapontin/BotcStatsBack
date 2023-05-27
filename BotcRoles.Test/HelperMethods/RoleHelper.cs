@@ -18,7 +18,7 @@ namespace BotcRoles.Test.HelperMethods
         {
             RolesController roleController = new(null!, modelContext);
 
-            JObject rolePost = JObject.FromObject(new { roleName, characterType, alignment});
+            JObject rolePost = JObject.FromObject(new { roleName, characterType, alignment });
 
             var res = roleController.AddRole(rolePost);
             return res;
@@ -42,6 +42,22 @@ namespace BotcRoles.Test.HelperMethods
         {
             modelContext.Roles.RemoveRange(modelContext.Roles);
             modelContext.SaveChanges();
+        }
+
+        internal static IActionResult UpdateRole(ModelContext modelContext, long roleId, string roleName, CharacterType characterType, Alignment alignment)
+        {
+            RolesController rolesController = new(null!, modelContext);
+
+            var data = new
+            {
+                roleId,
+                roleName,
+                characterType,
+                alignment,
+            };
+
+            var res = rolesController.UpdateRole(JObject.FromObject(data));
+            return res;
         }
     }
 }

@@ -1,16 +1,27 @@
 import { Dropdown } from "@nextui-org/react";
 import { Fragment, useState } from "react";
-import { characterTypeList } from "@/entities/enums/characterType";
+import {
+  CharacterType,
+  characterTypeList,
+  getCharacterTypeTextById,
+} from "@/entities/enums/characterType";
 
 export default function DropdownCharacterType(props: {
   setCharacterType: any;
+  characterType: CharacterType;
+  defaultText?: string;
 }) {
-  const [characterTypeSelected, setCharacterTypeSelected] =
-    useState("Type de personnage");
+  const characterTypeText = getCharacterTypeTextById(
+    props.characterType,
+    props.defaultText
+  );
+
+  // const [characterTypeSelected, setCharacterTypeSelected] =
+  //   useState("Type de personnage");
 
   function selectCharacterType(key: number) {
     props.setCharacterType(key);
-    setCharacterTypeSelected(characterTypeList()[key].value);
+    // setCharacterTypeSelected(characterTypeList()[key].value);
   }
 
   return (
@@ -22,7 +33,7 @@ export default function DropdownCharacterType(props: {
           iconRight
           css={{ display: "flex", justifyContent: "left" }}
         >
-          {characterTypeSelected}
+          {characterTypeText}
         </Dropdown.Button>
         <Dropdown.Menu
           aria-label="Static Actions"

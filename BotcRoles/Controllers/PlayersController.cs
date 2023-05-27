@@ -56,8 +56,8 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                string? playerName = data["playerName"]?.ToString();
-                string? pseudo = data["pseudo"]?.ToString();
+                string? playerName = data["playerName"]?.ToString().Trim();
+                string? pseudo = data["pseudo"]?.ToString().Trim();
 
                 if (string.IsNullOrWhiteSpace(playerName))
                 {

@@ -67,13 +67,6 @@ namespace BotcRoles.Controllers
                 _db.Add(edition);
                 _db.SaveChanges();
 
-                //// Get edition db
-                //var editionDb = _db.Editions.First(edition => edition.Name == name);
-
-                //var rolesEditionDb = rolesDb.Select(rdb => new RoleEdition(rdb, editionDb));
-                //_db.AddRange(rolesEditionDb);
-                //_db.SaveChanges();
-
                 return Created("", null);
             }
             catch (Exception ex)
@@ -129,7 +122,7 @@ namespace BotcRoles.Controllers
         {
             error = null;
 
-            string? name = data["editionName"]?.ToString();
+            string? name = data["editionName"]?.ToString().Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
                 error = $"Le nom du module est vide.";

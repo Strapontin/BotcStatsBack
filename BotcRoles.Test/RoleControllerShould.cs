@@ -110,5 +110,36 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Update_Role()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            RoleHelper.DeleteAllRoles(modelContext);
+            string roleName = "roleName";
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Fabled, Alignment.Evil);
+
+            // Act
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            string newName = "newName";
+            CharacterType characterType = CharacterType.Townsfolk;
+            Alignment alignment = Alignment.Good;
+            res = RoleHelper.UpdateRole(modelContext, roleId, newName, characterType, alignment);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var role = RoleHelper.GetRoleById(modelContext, roleId);
+            Assert.AreEqual(roleId, role.Id);
+            Assert.AreEqual(newName, role.Name);
+            Assert.AreEqual(characterType, role.CharacterType);
+            Assert.AreEqual(alignment, role.Alignment);
+            Assert.AreEqual(1, modelContext.Roles.Count());
+
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
     }
 }
