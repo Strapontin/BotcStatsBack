@@ -3,7 +3,7 @@ import Title from "@/components/ui/title";
 import { Button, Container, Input, Spacer } from "@nextui-org/react";
 import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
 import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
-import { createNewRole, getAllRoles } from "../../../../data/back-api";
+import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";

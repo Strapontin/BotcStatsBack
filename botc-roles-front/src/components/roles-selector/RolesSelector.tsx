@@ -4,7 +4,7 @@ import Classes from "./RolesSelector.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
-import { getAllRoles } from "../../../data/back-api";
+import { getAllRoles } from "../../../data/back-api/back-api";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function RolesSelector(props: {

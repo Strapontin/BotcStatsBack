@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { getAllEditions } from "../../../../data/back-api";
+import { getAllEditions } from "../../../../data/back-api/back-api";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import Container from "@/components/list-stats/Container";
 import { Edition } from "@/entities/Edition";

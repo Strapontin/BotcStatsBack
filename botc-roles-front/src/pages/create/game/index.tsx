@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import Title from "@/components/ui/title";
-import { createNewGame } from "../../../../data/back-api";
+import { createNewGame } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";

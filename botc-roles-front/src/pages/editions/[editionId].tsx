@@ -1,7 +1,7 @@
 import { Edition } from "@/entities/Edition";
 import { Link, Loading, Spacer } from "@nextui-org/react";
 import { Fragment, useEffect, useState } from "react";
-import { getEditionById } from "../../../data/back-api";
+import { getEditionById } from "../../../data/back-api/back-api";
 import { useRouter } from "next/router";
 import Title from "@/components/ui/title";
 import ListItemRole from "@/components/list-stats/ListItemRole";

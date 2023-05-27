@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { getAllRoles } from "../../../../data/back-api";
+import { getAllRoles } from "../../../../data/back-api/back-api";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import Container from "@/components/list-stats/Container";
 import { Role } from "@/entities/Role";
 import ListItem from "@/components/list-stats/ListItem";
+import ListItemRole from "@/components/list-stats/ListItemRole";
 
 export default function UpdateRolesPage() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -31,7 +32,10 @@ export default function UpdateRolesPage() {
   function line(role: Role) {
     return (
       <Link key={role.id} href={`/update/roles/${role.id}`} color="text">
-        <ListItem name={role.name}></ListItem>
+        <ListItemRole
+          image={role.name}
+          characterType={role.characterType}
+        ></ListItemRole>
       </Link>
     );
   }

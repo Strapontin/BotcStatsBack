@@ -4,23 +4,23 @@ import {
   getGameById as queryGameById,
   createNewGame as queryCreateNewGame,
   updateGame as queryUpdateGame,
-} from "./back-api/back-api-game";
+} from "./back-api-game";
 import {
   getAllPlayers as queryAllPlayers,
   getPlayerById as queryPlayerById,
   createNewPlayer as queryCreateNewPlayer,
-} from "./back-api/back-api-player";
+} from "./back-api-player";
 import {
   getAllRoles as queryAllRoles,
   getRoleById as queryRoleById,
   createNewRole as queryCreateNewRole,
-} from "./back-api/back-api-role";
+} from "./back-api-role";
 import {
   getAllEditions as queryAllEditions,
   getEditionById as queryEditionById,
   createNewEdition as queryCreateNewEdition,
   updateEdition as queryUpdateEdition,
-} from "./back-api/back-api-edition";
+} from "./back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
@@ -138,6 +138,12 @@ export async function createNewRole(
   alignment: Alignment
 ) {
   return queryCreateNewRole(apiUrl, roleName, characterType, alignment);
+}
+
+export async function updateRole(role: Role) {
+  // const rolesId = roles.map((r) => r.id);
+
+  return false;
 }
 
 /* Edition */

@@ -2,7 +2,7 @@ import { Player } from "@/entities/Player";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./PlayerSelector.module.css";
 import { Input, Spacer } from "@nextui-org/react";
-import { getAllPlayers } from "../../../data/back-api";
+import { getAllPlayers } from "../../../data/back-api/back-api";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import { toLowerRemoveDiacritics } from "@/helper/string";

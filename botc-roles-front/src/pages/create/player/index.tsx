@@ -7,7 +7,7 @@ import {
   PressEvent,
   Spacer,
 } from "@nextui-org/react";
-import { createNewPlayer, getAllPlayers } from "../../../../data/back-api";
+import { createNewPlayer, getAllPlayers } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
 import { XOctagon, Check } from "react-feather";
 import classes from "../index.module.css";

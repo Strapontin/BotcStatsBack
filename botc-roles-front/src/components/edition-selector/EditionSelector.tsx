@@ -2,7 +2,7 @@ import { Edition } from "@/entities/Edition";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./EditionSelector.module.css";
 import { Input, Spacer } from "@nextui-org/react";
-import { getAllEditions } from "../../../data/back-api";
+import { getAllEditions } from "../../../data/back-api/back-api";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import { toLowerRemoveDiacritics } from "@/helper/string";

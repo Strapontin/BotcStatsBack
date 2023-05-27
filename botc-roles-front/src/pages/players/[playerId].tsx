@@ -7,7 +7,7 @@ import Title from "@/components/ui/title";
 import { Collapse, Loading, Spacer } from "@nextui-org/react";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
-import { getPlayerById } from "../../../data/back-api";
+import { getPlayerById } from "../../../data/back-api/back-api";
 
 export default function PlayerPage() {
   const playerId = useRouter().query.playerId;

@@ -3,7 +3,7 @@ import { Role } from "@/entities/Role";
 import Container from "@/components/list-stats/Container";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllRoles } from "../../../data/back-api";
+import { getAllRoles } from "../../../data/back-api/back-api";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 
 export default function RolesPage() {

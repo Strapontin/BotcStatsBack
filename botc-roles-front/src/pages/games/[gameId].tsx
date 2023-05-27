@@ -10,7 +10,7 @@ import ListItemLarge from "@/components/list-stats/ListItemLarge";
 import { Link, Spacer } from "@nextui-org/react";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { getGameById } from "../../../data/back-api";
+import { getGameById } from "../../../data/back-api/back-api";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
 
 export default function GamePage() {

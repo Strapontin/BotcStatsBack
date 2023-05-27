@@ -4,7 +4,7 @@ import {
   updateEdition,
   getEditionById,
   getAllEditions,
-} from "../../../../data/back-api";
+} from "../../../../data/back-api/back-api";
 import { Loading, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -66,19 +66,6 @@ export default function UpdateEditionPage() {
     if (edition.name === "" && edition.roles.length === 0) return;
 
     canUpdateEdition();
-    // if (toLowerRemoveDiacritics(edition.name) === "") {
-    //   updateMessage(true, "Un nom est obligatoire.");
-    // } else if (
-    //   editions.filter(
-    //     (p) =>
-    //       toLowerRemoveDiacritics(p) !== oldEditionName &&
-    //       toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
-    //   ).length !== 0
-    // ) {
-    //   updateMessage(true, "Un module avec ce nom existe déjà.");
-    // } else {
-    //   setMessage(<Fragment />);
-    // }
   }, [edition, canUpdateEdition]);
 
   if (edition.id === -1) {
@@ -99,7 +86,11 @@ export default function UpdateEditionPage() {
       setEdition(g);
       setEditionCreateEditKey(editionCreateEditKey + 1);
       setTimeout(
-        () => updateMessage(false, `Le module '${edition.name}' a été modifié correctement.`),
+        () =>
+          updateMessage(
+            false,
+            `Le module '${edition.name}' a été modifié correctement.`
+          ),
         50
       );
     } else {

@@ -4,7 +4,7 @@ import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllPlayers } from "../../../data/back-api";
+import { getAllPlayers } from "../../../data/back-api/back-api";
 
 export default function GamesPlayedByPlayerPage() {
   const [players, setPlayers] = useState<Player[]>([]);

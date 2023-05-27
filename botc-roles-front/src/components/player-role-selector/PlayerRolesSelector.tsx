@@ -6,7 +6,7 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItem from "../list-stats/ListItem";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
-import { getAllPlayers } from "../../../data/back-api";
+import { getAllPlayers } from "../../../data/back-api/back-api";
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import ListItemRole from "../list-stats/ListItemRole";

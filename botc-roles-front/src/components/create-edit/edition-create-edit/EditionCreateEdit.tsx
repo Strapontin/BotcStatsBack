@@ -2,7 +2,7 @@ import { Edition } from "@/entities/Edition";
 import { Fragment, useEffect, useState } from "react";
 import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
 import { Role } from "@/entities/Role";
-import { getAllEditions } from "../../../../data/back-api";
+import { getAllEditions } from "../../../../data/back-api/back-api";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 

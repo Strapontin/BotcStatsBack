@@ -3,7 +3,7 @@ import { Edition } from "@/entities/Edition";
 import Container from "@/components/list-stats/Container";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllEditions } from "../../../data/back-api";
+import { getAllEditions } from "../../../data/back-api/back-api";
 import ListItem from "@/components/list-stats/ListItem";
 
 export default function EditionsPage() {
