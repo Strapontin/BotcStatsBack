@@ -63,7 +63,6 @@ namespace BotcRoles.Controllers
                 }
 
                 // Save edition with name
-                //Edition edition = new(name);
                 _db.Add(edition);
                 _db.SaveChanges();
 

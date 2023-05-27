@@ -37,5 +37,26 @@ namespace BotcRoles.Test.HelperMethods
             var res = playerController.GetPlayerById(playerId);
             return res.Value;
         }
+
+        public static void DeleteAllPlayers(ModelContext modelContext)
+        {
+            modelContext.Players.RemoveRange(modelContext.Players);
+            modelContext.SaveChanges();
+        }
+
+        public static IActionResult UpdatePlayer(ModelContext modelContext, long playerId, string playerName, string pseudo)
+        {
+            PlayersController playersController = new(null!, modelContext);
+
+            var data = new
+            {
+                playerId,
+                playerName,
+                pseudo,
+            };
+
+            var res = playersController.UpdatePlayer(JObject.FromObject(data));
+            return res;
+        }
     }
 }

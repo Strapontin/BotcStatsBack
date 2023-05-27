@@ -50,3 +50,34 @@ export async function createNewPlayer(
 
   return true;
 }
+
+export async function updatePlayer(
+  apiUrl: string,
+  player: Player
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Players`, {
+    method: "PUT",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify({
+      playerId: player.id,
+      playerName: player.name,
+      pseudo: player.pseudo,
+    }),
+  });
+
+  console.log("updatePlayer");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}

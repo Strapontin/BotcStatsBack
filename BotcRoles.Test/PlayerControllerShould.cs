@@ -86,5 +86,34 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Update_Player()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            PlayerHelper.DeleteAllPlayers(modelContext);
+            string roleName = "playerName";
+            var res = PlayerHelper.PostPlayer(modelContext, roleName);
+
+            // Act
+            var playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            string newName = "newName";
+            string pseudo = "pseudo";
+            res = PlayerHelper.UpdatePlayer(modelContext, playerId, newName, pseudo);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var role = PlayerHelper.GetPlayerById(modelContext, playerId);
+            Assert.AreEqual(playerId, role.Id);
+            Assert.AreEqual(newName, role.Name);
+            Assert.AreEqual(pseudo, role.Pseudo);
+            Assert.AreEqual(1, modelContext.Players.Count());
+
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
     }
 }

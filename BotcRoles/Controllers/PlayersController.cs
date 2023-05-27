@@ -56,21 +56,13 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                string? playerName = data["playerName"]?.ToString().Trim();
-                string? pseudo = data["pseudo"]?.ToString().Trim();
-
-                if (string.IsNullOrWhiteSpace(playerName))
+                var player = GetPlayerDataFromBody(data, out string error);
+                if (error != null)
                 {
-                    return BadRequest(JObject.FromObject(new { error = $"Le nom du joueur est vide." }));
+                    return BadRequest(error);
                 }
 
-                if (_db.Players.ToList().Any(p => p.Name.ToLowerRemoveDiacritics() == playerName.ToLowerRemoveDiacritics() &&
-                                             p.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics()))
-                {
-                    return BadRequest(JObject.FromObject(new { error = $"Un joueur avec le nom '{playerName}' et le pseudo '{pseudo}' existe déjà." }));
-                }
-
-                _db.Add(new Player(playerName, pseudo));
+                _db.Add(player);
                 _db.SaveChanges();
 
                 return Created("", null);
@@ -80,5 +72,72 @@ namespace BotcRoles.Controllers
                 return StatusCode(500, ex.InnerException);
             }
         }
+
+        [HttpPost]
+        [Route("")]
+        public IActionResult UpdatePlayer([FromBody] JObject data)
+        {
+            try
+            {
+                if (!long.TryParse(data["playerId"]?.ToString(), out long playerId))
+                {
+                    return BadRequest($"Aucun id de module trouvé.");
+                }
+                var player = _db.Players.FirstOrDefault(e => e.PlayerId == playerId);
+
+                if (player == null)
+                {
+                    return BadRequest($"Le joueur avec l'id {playerId} n'a pas été trouvé.");
+                }
+
+                var playerTemp = GetPlayerDataFromBody(data, out string error, player.Name);
+
+                if (error != null)
+                {
+                    return BadRequest(error);
+                }
+
+                player.Name = playerTemp.Name;
+                player.Pseudo = playerTemp.Pseudo;
+                _db.SaveChanges();
+
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        #region Private methods
+
+        private Player GetPlayerDataFromBody(JObject data, out string error, string playerName = null)
+        {
+            error = null;
+
+            string? name = data["playerName"]?.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                error = $"Le nom du joueur est vide.";
+                return null;
+            }
+
+            string? pseudo = data["pseudo"]?.ToString()?.Trim();
+
+            if ((string.IsNullOrWhiteSpace(playerName) || playerName.ToLowerRemoveDiacritics() != name.ToLowerRemoveDiacritics()) &&
+                _db.Players.ToList()
+                .Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics() &&
+                          (string.IsNullOrWhiteSpace(pseudo) || m.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics())))
+            {
+                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe déjà.";
+                return null;
+            }
+
+
+            Player player = new(name, pseudo);
+            return player;
+        }
+
+        #endregion   
     }
 }
