@@ -12,8 +12,6 @@ import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreate
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { CharacterType } from "@/entities/enums/characterType";
-import { Alignment } from "@/entities/enums/alignment";
 
 export default function UpdateRolePage() {
   const roleId: number = Number(useRouter().query.roleId);
@@ -79,7 +77,7 @@ export default function UpdateRolePage() {
         (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(role.name)
       ).length !== 0
     ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
+      updateMessage(true, "Un rôle avec ce nom existe déjà.");
     } else {
       setMessage(<Fragment />);
     }
@@ -93,7 +91,7 @@ export default function UpdateRolePage() {
     );
   }
 
-  const title = <Title>Modification du module {`'${oldRole.name}'`}</Title>;
+  const title = <Title>Modification du rôle {`'${oldRole.name}'`}</Title>;
 
   async function btnUpdateRole() {
     if (!canUpdateRole()) return;

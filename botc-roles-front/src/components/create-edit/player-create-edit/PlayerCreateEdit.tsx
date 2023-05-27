@@ -1,4 +1,4 @@
-import { Role } from "@/entities/Role";
+import { Player } from "@/entities/Player";
 import { Fragment, useEffect, useState } from "react";
 import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
 import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
@@ -6,31 +6,26 @@ import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment
 import { CharacterType } from "@/entities/enums/characterType";
 import { Alignment } from "@/entities/enums/alignment";
 
-export default function RoleCreateEdit(props: {
+export default function PlayerCreateEdit(props: {
   title: JSX.Element;
-  role: Role;
-  setRole: any;
+  player: Player;
+  setPlayer: any;
   message: JSX.Element;
   btnPressed: any;
   btnText: string;
 }) {
-  function roleNameChanged(roleName: string) {
-    const newRole = { ...props.role, name: roleName };
-    props.setRole(newRole);
+  function playerNameChanged(playerName: string) {
+    const newPlayer = { ...props.player, name: playerName };
+    props.setPlayer(newPlayer);
   }
 
-  function characterTypeChanged(characterType: CharacterType) {
-    const newRole = { ...props.role, characterType };
-    props.setRole(newRole);
-  }
-
-  function alignmentChanged(alignment: Alignment) {
-    const newRole = { ...props.role, alignment };
-    props.setRole(newRole);
+  function pseudoChanged(pseudo: string) {
+    const newPlayer = { ...props.player, pseudo };
+    props.setPlayer(newPlayer);
   }
 
   function canPressButton() {
-    if (props.role.name === "") {
+    if (props.player.name === "") {
       return false;
     }
     return true;
@@ -48,20 +43,17 @@ export default function RoleCreateEdit(props: {
           bordered
           labelPlaceholder="Nom"
           aria-label="Nom"
-          initialValue={props.role.name}
-          onChange={(event) => roleNameChanged(event.target.value)}
+          initialValue={props.player.name}
+          onChange={(event) => playerNameChanged(event.target.value)}
         />
         <Spacer y={1.75} />
-        <DropdownCharacterType
-          setCharacterType={characterTypeChanged}
-          characterType={props.role.characterType}
-          defaultText="Type de personnage"
-        />
-        <Spacer y={1.75} />
-        <DropdownAlignment
-          setAlignment={alignmentChanged}
-          alignment={props.role.alignment}
-          defaultText="Alignement"
+        <Input
+          clearable
+          bordered
+          labelPlaceholder="pseudo"
+          aria-label="pseudo"
+          initialValue={props.player.pseudo}
+          onChange={(event) => pseudoChanged(event.target.value)}
         />
         <Spacer y={3} />
       </Container>

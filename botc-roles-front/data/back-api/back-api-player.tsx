@@ -25,8 +25,7 @@ export async function getPlayerById(apiUrl: string, playerId: number) {
 
 export async function createNewPlayer(
   apiUrl: string,
-  playerName: string,
-  pseudo: string
+  player: Player
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players`, {
     method: "POST",
@@ -38,14 +37,14 @@ export async function createNewPlayer(
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
-    body: JSON.stringify({ playerName, pseudo }),
+    body: JSON.stringify({ playerName: player.name, pseudo: player.pseudo }),
   });
 
   console.log("createPlayer");
 
   if (!response.ok) {
     const res = await response.json();
-    console.log(res);
+    console.log(res.error);
     return false;
   }
 

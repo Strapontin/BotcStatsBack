@@ -25,6 +25,7 @@ import {
 import { CharacterType } from "@/entities/enums/characterType";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
+import { Player } from "@/entities/Player";
 
 const apiUrl = "http://192.168.1.48:7099";
 
@@ -98,11 +99,8 @@ export async function getPlayerById(playerId: number) {
   return queryPlayerById(apiUrl, playerId);
 }
 
-export async function createNewPlayer(
-  playerName: string,
-  pseudo: string
-): Promise<boolean> {
-  return queryCreateNewPlayer(apiUrl, playerName, pseudo);
+export async function createNewPlayer(player: Player): Promise<boolean> {
+  return queryCreateNewPlayer(apiUrl, player);
 }
 
 /* Roles */
