@@ -38,6 +38,14 @@ namespace BotcRoles.Test.HelperMethods
             return res.Value;
         }
 
+        public static IActionResult DeletePlayer(ModelContext modelContext, long playerId)
+        {
+            PlayersController playersController = new(null!, modelContext);
+            var res = playersController.DeletePlayer(playerId);
+
+            return res;
+        }
+
         public static void DeleteAllPlayers(ModelContext modelContext)
         {
             modelContext.Players.RemoveRange(modelContext.Players);

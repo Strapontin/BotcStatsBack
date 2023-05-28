@@ -20,6 +20,7 @@ namespace BotcRoles.Models
             DatePlayed = datePlayed;
             Notes = notes;
             WinningAlignment = winningAlignment;
+            IsHidden = false;
         }
 
         public long GameId { get; set; }
@@ -34,6 +35,7 @@ namespace BotcRoles.Models
         public DateTime DateCreated { get; set; }
         public DateTime DatePlayed { get; set; }
         public string? Notes { get; set; }
+        public bool IsHidden { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
 

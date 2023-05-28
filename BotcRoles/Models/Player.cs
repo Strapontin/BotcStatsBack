@@ -15,11 +15,13 @@ namespace BotcRoles.Models
         {
             Name = name;
             Pseudo = pseudo ?? "";
+            IsHidden = false;
         }
 
         public long PlayerId { get; set; }
         public string Name { get; set; }
         public string Pseudo { get; set; }
+        public bool IsHidden { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
         public List<Game> GamesStoryTelling { get; set; }

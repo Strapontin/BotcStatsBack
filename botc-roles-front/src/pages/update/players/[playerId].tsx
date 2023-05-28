@@ -5,11 +5,15 @@ import {
   getPlayerById,
   getAllPlayers,
 } from "../../../../data/back-api/back-api";
-import { Loading, Text } from "@nextui-org/react";
+import { Button, Checkbox, Loading, Modal, Row, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
-import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import {
+  Player,
+  getNewEmptyPlayer,
+  getPlayerPseudoString,
+} from "@/entities/Player";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
@@ -19,6 +23,7 @@ export default function UpdatePlayerPage() {
   const [oldPlayer, setOldPlayer] = useState<Player>(getNewEmptyPlayer());
 
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
+  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
@@ -152,15 +157,61 @@ export default function UpdatePlayerPage() {
     }
   }
 
+  function closePopupDelete() {
+    setPopupDeleteVisible(false);
+  }
+
+  const popup = (
+    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
+      <Modal.Header>
+        <Text id="modal-title" size={18}>
+          Voulez-vous vraiment supprimer le joueur
+          <Text b size={18}>
+            {oldPlayer.name}
+            {getPlayerPseudoString(oldPlayer.pseudo)} ?
+          </Text>
+        </Text>
+      </Modal.Header>
+      <Modal.Body>
+        <Row justify="space-between">
+          <Checkbox>
+            <Text size={14}>Remember me</Text>
+          </Checkbox>
+          <Text size={14}>Forgot password?</Text>
+        </Row>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button auto flat color="error" onPress={closePopupDelete}>
+          Close
+        </Button>
+        <Button auto onPress={closePopupDelete}>
+          Sign in
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   return (
-    <PlayerCreateEdit
-      key={playerCreateEditKey}
-      title={title}
-      player={player}
-      setPlayer={setPlayer}
-      message={message}
-      btnPressed={btnUpdatePlayer}
-      btnText="Modifier le joueur"
-    />
+    <Fragment>
+      <PlayerCreateEdit
+        key={playerCreateEditKey}
+        title={title}
+        player={player}
+        setPlayer={setPlayer}
+        message={message}
+        btnPressed={btnUpdatePlayer}
+        btnText="Modifier le joueur"
+      />
+
+      <Button
+        shadow
+        ghost
+        color="error"
+        onPress={() => setPopupDeleteVisible(true)}
+      >
+        Supprimer le joueur
+      </Button>
+      {popup}
+    </Fragment>
   );
 }

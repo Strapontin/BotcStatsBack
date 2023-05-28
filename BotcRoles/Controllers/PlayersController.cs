@@ -107,6 +107,37 @@ namespace BotcRoles.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("{playerId}")]
+        public IActionResult DeletePlayer(long playerId)
+        {
+            try
+            {
+                if (!_db.Players.Any(p => p.PlayerId == playerId))
+                {
+                    return NotFound();
+                }
+
+                if (_db.PlayerRoleGames.Any(prg => prg.PlayerId == playerId) ||
+                    _db.Games.Any(g => g.StoryTellerId == playerId))
+                {
+                    _db.Players.First(p => p.PlayerId == playerId).IsHidden = true;
+                    _db.SaveChanges();
+                }
+                else
+                {
+                    _db.Players.Remove(_db.Players.First(g => g.PlayerId == playerId));
+                    _db.SaveChanges();
+                }
+
+                return Accepted();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
         #region Private methods
 
         private Player GetPlayerDataFromBody(JObject data, out string error, string playerName = null)

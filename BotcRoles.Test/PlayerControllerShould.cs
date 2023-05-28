@@ -115,5 +115,51 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Delete_Player_Not_In_PlayerRoleGame()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            PlayerHelper.DeleteAllPlayers(modelContext);
+            DBHelper.DeleteAllPlayerRoleGame(modelContext);
+
+
+            string roleName = "playerName";
+            var res = PlayerHelper.PostPlayer(modelContext, roleName);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var playerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+
+            // Act
+            res = PlayerHelper.DeletePlayer(modelContext, playerId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, PlayerHelper.GetPlayers(modelContext).Count());
+        }
+
+        [Test]
+        public void Delete_Player_In_PlayerRoleGameOr_StoryTeller_Sets_Hidden()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+            DBHelper.CreateBasicDataInAllTables(modelContext);
+            PlayerHelper.PostPlayer(modelContext, "player2");
+            modelContext.PlayerRoleGames.Add(new Models.PlayerRoleGame(
+                modelContext.Players.First(p => p.Name == "player2"),
+                modelContext.Roles.First(),
+                modelContext.Games.First()));
+
+            foreach(var player in modelContext.Players)
+            {
+                var res = PlayerHelper.DeletePlayer(modelContext, player.PlayerId);
+                Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+            }
+
+            Assert.AreEqual(2, PlayerHelper.GetPlayers(modelContext).Count());
+            Assert.IsTrue(modelContext.Players.All(p => p.IsHidden));
+        }
     }
 }

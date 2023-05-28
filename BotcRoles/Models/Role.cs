@@ -17,12 +17,14 @@ namespace BotcRoles.Models
             Name = name;
             CharacterType = characterType;
             DefaultAlignment = defaultAlignment;
+            IsHidden = false;
         }
 
         public long RoleId { get; set; }
         public string Name { get; set; }
         public CharacterType CharacterType { get; set; }
         public Alignment DefaultAlignment { get; set; }
+        public bool IsHidden { get; set; }
 
         public List<RoleEdition> RolesEdition { get; set; }
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }

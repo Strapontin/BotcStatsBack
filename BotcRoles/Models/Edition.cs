@@ -14,10 +14,12 @@ namespace BotcRoles.Models
         public Edition(string name)
         {
             Name = name;
+            IsHidden = false;
         }
 
         public long EditionId { get; set; }
         public string Name { get; set; }
+        public bool IsHidden { get; set; }
 
         public List<RoleEdition> RolesEdition { get; set; }
         public List<Game> Games { get; set; }

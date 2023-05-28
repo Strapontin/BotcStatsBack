@@ -14,7 +14,7 @@ namespace BotcRoles.Models
 
         public string DbPath { get; }
 
-        public ModelContext(DbContextOptions<ModelContext> options, IConfiguration config) : base(options)
+        public ModelContext(DbContextOptions<ModelContext> options, IConfiguration config, bool initData = true) : base(options)
         {
             var path = config["Db_Path"];
             var name = config["Db_Name"];
@@ -29,7 +29,7 @@ namespace BotcRoles.Models
 
             this.Database.Migrate();
 
-            if (!dbExists)
+            if (!dbExists && initData)
             {
                 InitDatabase();
             }
