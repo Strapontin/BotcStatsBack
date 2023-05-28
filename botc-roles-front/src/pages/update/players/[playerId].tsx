@@ -22,7 +22,7 @@ export default function UpdatePlayerPage() {
   const [message, setMessage] = useState(<Fragment />);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
-  const [players, setPlayers] = useState<string[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const canUpdatePlayer = useCallback(() => {
     if (player.name === "") {
@@ -31,31 +31,36 @@ export default function UpdatePlayerPage() {
     } else if (
       players.filter(
         (p) =>
-          toLowerRemoveDiacritics(p) !==
-            toLowerRemoveDiacritics(oldPlayer.name) &&
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(player.name)
+          toLowerRemoveDiacritics(p.name) ===
+            toLowerRemoveDiacritics(player.name) &&
+          toLowerRemoveDiacritics(p.pseudo) ===
+            toLowerRemoveDiacritics(player.pseudo)
       ).length !== 0
     ) {
-      updateMessage(true, "Un joueur avec ce nom existe déjà.");
+      const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
+      updateMessage(
+        true,
+        `Le joueur "${player.name}${pseudoMsg}" existe déjà.`
+      );
       return false;
     } else {
       updateMessage(false, "");
       return true;
     }
-  }, [player, players, oldPlayer]);
+  }, [player, players]);
 
   useEffect(() => {
     if (playerId === undefined || isNaN(playerId)) return;
 
     async function initPlayer() {
-      const e = await getPlayerById(playerId);
-      setPlayer(e);
-      setOldPlayer(e);
+      const p = await getPlayerById(playerId);
+      setPlayer(p);
+      setOldPlayer(p);
     }
     initPlayer();
 
     async function initPlayers() {
-      const e = (await getAllPlayers()).map((e) => e.name);
+      const e = await getAllPlayers();
       setPlayers(e);
     }
     initPlayers();
@@ -64,21 +69,29 @@ export default function UpdatePlayerPage() {
   // Updates message on component refreshes
   useEffect(() => {
     if (
-      player.name === oldPlayer.name &&
-      player.characterType === oldPlayer.characterType &&
-      player.alignment === oldPlayer.alignment
-    )
+      (player.name === "" && player.pseudo === "") ||
+      (player.name === oldPlayer.name && player.pseudo === oldPlayer.pseudo)
+    ) {
+      updateMessage(false, "");
       return;
+    }
 
     if (toLowerRemoveDiacritics(player.name) === "") {
       updateMessage(true, "Un nom est obligatoire.");
     } else if (
       players.filter(
         (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(player.name)
+          toLowerRemoveDiacritics(p.name) ===
+            toLowerRemoveDiacritics(player.name) &&
+          toLowerRemoveDiacritics(p.pseudo) ===
+            toLowerRemoveDiacritics(player.pseudo)
       ).length !== 0
     ) {
-      updateMessage(true, "Un joueur avec ce nom existe déjà.");
+      const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
+      updateMessage(
+        true,
+        `Le joueur "${player.name}${pseudoMsg}" existe déjà.`
+      );
     } else {
       setMessage(<Fragment />);
     }
@@ -101,11 +114,12 @@ export default function UpdatePlayerPage() {
       const r = await getPlayerById(playerId);
       setPlayer(r);
       setPlayerCreateEditKey(playerCreateEditKey + 1);
+      const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
       setTimeout(
         () =>
           updateMessage(
             false,
-            `Le joueur '${player.name}' a été modifié correctement.`
+            `Le joueur "${player.name}${pseudoMsg}" a été modifié correctement.`
           ),
         50
       );

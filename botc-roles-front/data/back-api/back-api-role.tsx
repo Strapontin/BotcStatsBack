@@ -31,7 +31,7 @@ export async function createNewRole(
   characterType: CharacterType,
   alignment: Alignment
 ): Promise<boolean> {
-  const response = await fetch(`${apiUrl}/Roles`, {
+  const response = await fetch(`${apiUrl}/Players/role`, {
     method: "POST",
     mode: "cors",
     cache: "no-cache",

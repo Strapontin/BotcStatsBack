@@ -19,12 +19,13 @@ export default function CreatePlayer() {
   const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
+    console.log("playerId")
     async function initPlayers() {
       const tempPlayers = await getAllPlayers();
       setPlayers(tempPlayers);
     }
     initPlayers();
-  }, []);
+  }, [playerCreateEditKey]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -41,7 +42,6 @@ export default function CreatePlayer() {
             toLowerRemoveDiacritics(player.pseudo)
       ).length !== 0
     ) {
-      console.log(players);
       const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
       updateMessage(
         true,

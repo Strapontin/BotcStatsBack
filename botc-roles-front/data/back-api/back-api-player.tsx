@@ -17,7 +17,7 @@ export async function getPlayerById(apiUrl: string, playerId: number) {
   if (playerId === undefined || playerId === null || isNaN(playerId)) return;
 
   const response = await fetch(`${apiUrl}/Players/${playerId}`);
-  const player: Player = await response.json();
+  const player = await response.json();
 
   console.log("getPlayerById");
   return player;

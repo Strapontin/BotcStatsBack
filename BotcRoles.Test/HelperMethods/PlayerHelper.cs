@@ -19,7 +19,7 @@ namespace BotcRoles.Test.HelperMethods
 
             JObject playerPost = JObject.FromObject(new { playerName, pseudo });
 
-            var res = playerController.PostPlayer(playerPost);
+            var res = playerController.AddPlayer(playerPost);
             return res;
         }
 

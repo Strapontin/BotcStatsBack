@@ -1,7 +1,6 @@
 using BotcRoles.Entities;
 using BotcRoles.Helper;
 using BotcRoles.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -49,10 +48,9 @@ namespace BotcRoles.Controllers
             return player == null ? NotFound() : player;
         }
 
-        //[Authorize(AuthenticationSchemes = "Discord")]
         [HttpPost]
         [Route("")]
-        public IActionResult PostPlayer([FromBody] JObject data)
+        public IActionResult AddPlayer([FromBody] JObject data)
         {
             try
             {
@@ -73,7 +71,7 @@ namespace BotcRoles.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("")]
         public IActionResult UpdatePlayer([FromBody] JObject data)
         {
@@ -129,7 +127,7 @@ namespace BotcRoles.Controllers
                 .Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics() &&
                           (string.IsNullOrWhiteSpace(pseudo) || m.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics())))
             {
-                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe déjà.";
+                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe déj?.";
                 return null;
             }
 
