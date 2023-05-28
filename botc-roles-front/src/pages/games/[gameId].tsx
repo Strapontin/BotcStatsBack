@@ -12,6 +12,7 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { getGameById } from "../../../data/back-api/back-api";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
+import { getPlayerPseudoString } from "@/entities/Player";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);
@@ -29,8 +30,7 @@ export default function GamePage() {
     return <Title>Chargement {gameId}...</Title>;
   }
 
-  const storyTellerPseudo =
-    game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
+  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
 
   const title = (
     <Title>
@@ -48,7 +48,9 @@ export default function GamePage() {
         <ListItem name="Module" value={game.edition.name} />
         <ListItem
           name="Conteur"
-          value={<PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />}
+          value={
+            <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
+          }
         />
         <ListItem
           name="Date de la partie"

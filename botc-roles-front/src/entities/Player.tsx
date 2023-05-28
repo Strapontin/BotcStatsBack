@@ -25,3 +25,10 @@ export function getNewEmptyPlayer() {
   };
   return edition;
 }
+
+export function getPlayerPseudoString(pseudo: string) {
+  const pseudoFormatted =
+    pseudo !== undefined && pseudo.length > 0 ? ` (${pseudo})` : "";
+
+  return pseudoFormatted;
+}

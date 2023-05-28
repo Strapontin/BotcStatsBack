@@ -7,6 +7,7 @@ import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
 import { dateToString } from "@/helper/date";
 import { getAllGames } from "../../../../data/back-api/back-api";
+import { getPlayerPseudoString } from "@/entities/Player";
 
 export default function UpdateGamesPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -31,9 +32,6 @@ export default function UpdateGamesPage() {
   }
 
   function line(game: Game) {
-    const pseudo =
-      game.storyTeller.pseudo !== "" ? ` (${game.storyTeller.pseudo})` : "";
-
     return (
       <Link key={game.id} href={`/update/games/${game.id}`} color="text">
         <ListItem
@@ -41,7 +39,13 @@ export default function UpdateGamesPage() {
           value={
             <Fragment>
               Contée par{" "}
-              {<PlayerName name={`${game.storyTeller.name}${pseudo}`} />}
+              {
+                <PlayerName
+                  name={`${game.storyTeller.name}${getPlayerPseudoString(
+                    game.storyTeller.pseudo
+                  )}`}
+                />
+              }
             </Fragment>
           }
         ></ListItem>

@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Player } from "@/entities/Player";
+import { Player, getNewEmptyPlayer, getPlayerPseudoString } from "@/entities/Player";
 import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
@@ -11,7 +11,7 @@ import { getPlayerById } from "../../../data/back-api/back-api";
 
 export default function PlayerPage() {
   const playerId = useRouter().query.playerId;
-  const [player, setPlayer] = useState<Player>();
+  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
   useEffect(() => {
     async function initPlayer() {
@@ -30,7 +30,7 @@ export default function PlayerPage() {
     return;
   }
 
-  const title = <Title>Détails joueur...</Title>;
+  const title = <Title>Détails {player.name}{getPlayerPseudoString(player.pseudo)}</Title>;
 
   const playerComponent = player ? (
     <Collapse expanded title="Détails généraux">
