@@ -10,6 +10,7 @@ import {
   getPlayerById as queryPlayerById,
   createNewPlayer as queryCreateNewPlayer,
   updatePlayer as queryUpdatePlayer,
+  deletePlayer as queryDeletePlayer,
 } from "./back-api-player";
 import {
   getAllRoles as queryAllRoles,
@@ -106,6 +107,10 @@ export async function createNewPlayer(player: Player): Promise<boolean> {
 
 export async function updatePlayer(player: Player) {
   return queryUpdatePlayer(apiUrl, player);
+}
+
+export async function deletePlayer(playerId: number) {
+  return queryDeletePlayer(apiUrl, playerId);
 }
 
 /* Roles */

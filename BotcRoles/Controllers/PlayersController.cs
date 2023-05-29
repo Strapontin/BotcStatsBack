@@ -25,6 +25,7 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<PlayerEntities>> GetPlayers()
         {
             var players = _db.Players
+                .Where(p => !p.IsHidden)
                 .Include(p => p.PlayerRoleGames)
                 .Select(p => new PlayerEntities(_db, p))
                 .ToList()

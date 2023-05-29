@@ -152,13 +152,14 @@ namespace BotcRoles.Test
                 modelContext.Roles.First(),
                 modelContext.Games.First()));
 
-            foreach(var player in modelContext.Players)
+            foreach (var player in modelContext.Players)
             {
                 var res = PlayerHelper.DeletePlayer(modelContext, player.PlayerId);
                 Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
             }
 
-            Assert.AreEqual(2, PlayerHelper.GetPlayers(modelContext).Count());
+            Assert.AreEqual(0, PlayerHelper.GetPlayers(modelContext).Count());
+            Assert.AreEqual(2, modelContext.Players.Count());
             Assert.IsTrue(modelContext.Players.All(p => p.IsHidden));
         }
     }

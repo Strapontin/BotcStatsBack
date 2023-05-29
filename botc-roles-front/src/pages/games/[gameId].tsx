@@ -66,7 +66,7 @@ export default function GamePage() {
         {game.playerRoles.map((prg: PlayerRole) => (
           <Link
             key={prg.player.name}
-            href={`/players/${prg.player.name}`}
+            href={`/players/${prg.player.id}`}
             color="text"
           >
             <ListItemPlayerRole

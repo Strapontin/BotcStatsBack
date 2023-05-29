@@ -18,7 +18,7 @@ import {
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
-export default function UpdatePlayerPage() {
+export default async function UpdatePlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
@@ -168,13 +168,10 @@ export default function UpdatePlayerPage() {
   async function btnDeletePressed() {
     setDisableBtnDelete(true);
     setTimeout(async () => {
-      if (await deletePlayer(oldPlayer.id)) {
-        updateMessage(false, "Le joueur a été supprimé correctement.");
-        closePopupDelete();
-      }
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 1500);
+      // if (await deletePlayer(oldPlayer.id)) {
+      //   updateMessage(false, "Le joueur a été supprimé correctement.");
+      // }
+      console.log(router.query)
 
       setDisableBtnDelete(false);
     }, 0);
@@ -192,12 +189,12 @@ export default function UpdatePlayerPage() {
           ?
         </Text>
       </Modal.Header>
-      <Modal.Footer css={{ justifyContent: "space-around" }}>
-        <Button auto flat color="error" onPress={btnDeletePressed}>
-          Confirmer
+      <Modal.Footer>
+        <Button auto flat color="error" onPress={closePopupDelete}>
+          Close
         </Button>
         <Button auto onPress={closePopupDelete}>
-          Annuler
+          Sign in
         </Button>
       </Modal.Footer>
     </Modal>

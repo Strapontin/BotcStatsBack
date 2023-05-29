@@ -81,3 +81,29 @@ export async function updatePlayer(
 
   return true;
 }
+
+export async function deletePlayer(
+  apiUrl: string,
+  playerId: number
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Players/${playerId}`, {
+    method: "DELETE",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
+
+  console.log("deletePlayer");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}
