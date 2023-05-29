@@ -1,10 +1,14 @@
 import { Fragment, useEffect, useState } from "react";
-import { Player, getNewEmptyPlayer, getPlayerPseudoString } from "@/entities/Player";
+import {
+  Player,
+  getNewEmptyPlayer,
+  getPlayerPseudoString,
+} from "@/entities/Player";
 import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
-import { Collapse, Loading, Spacer } from "@nextui-org/react";
+import { Collapse, Loading } from "@nextui-org/react";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 import { getPlayerById } from "../../../data/back-api/back-api";
@@ -12,6 +16,7 @@ import { getPlayerById } from "../../../data/back-api/back-api";
 export default function PlayerPage() {
   const playerId = useRouter().query.playerId;
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
+  const [detailsRolesPlayed, setDetailsRolesPlayed] = useState(<Loading />);
 
   useEffect(() => {
     async function initPlayer() {
@@ -25,12 +30,42 @@ export default function PlayerPage() {
     initPlayer();
   }, [playerId]);
 
+  useEffect(() => {
+    async function initDetailsRolesPlayed() {
+      if (player.id === -1) return;
+
+      setDetailsRolesPlayed(
+        <Collapse expanded title="Détails des rôles joués">
+          <Container>
+            {player.timesPlayedRole.map((tpr) => (
+              <ListItemRole
+                key={tpr.id}
+                id={tpr.id}
+                image={tpr.name}
+                characterType={tpr.characterType}
+                nbWins={tpr.timesWonByPlayer}
+                nbLoses={tpr.timesLostByPlayer}
+                nbGamesPlayed={tpr.timesPlayedByPlayer}
+              />
+            ))}
+          </Container>
+        </Collapse>
+      );
+    }
+    initDetailsRolesPlayed();
+  }, [player]);
+
   if (!playerId) {
     <Loading />;
     return;
   }
 
-  const title = <Title>Détails {player.name}{getPlayerPseudoString(player.pseudo)}</Title>;
+  const title = (
+    <Title>
+      Détails {player.name}
+      {getPlayerPseudoString(player.pseudo)}
+    </Title>
+  );
 
   const playerComponent = player ? (
     <Collapse expanded title="Détails généraux">
@@ -63,32 +98,11 @@ export default function PlayerPage() {
     <Fragment />
   );
 
-  const rolesComponent = player?.timesPlayedRole ? (
-    <Collapse expanded title="Détails des rôles joués">
-      <Container>
-        {player.timesPlayedRole.map((tpr) => (
-          <ListItemRole
-            key={tpr.name}
-            image={tpr.name}
-            characterType={tpr.characterType}
-            nbWins={tpr.timesWonByPlayer}
-            nbLoses={tpr.timesLostByPlayer}
-            nbGamesPlayed={tpr.timesPlayedByPlayer}
-          />
-        ))}
-      </Container>
-    </Collapse>
-  ) : (
-    <Loading />
-  );
-
   return (
     <Fragment>
       {title}
-      <Collapse.Group accordion={false} css={{ w: "100%" }}>
-        {playerComponent}
-        {rolesComponent}
-      </Collapse.Group>
+      <Collapse.Group css={{ w: "100%" }}>{playerComponent}</Collapse.Group>
+      <Collapse.Group css={{ w: "100%" }}>{detailsRolesPlayed}</Collapse.Group>
     </Fragment>
   );
 }

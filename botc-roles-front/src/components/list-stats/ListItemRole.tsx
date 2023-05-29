@@ -64,7 +64,11 @@ export default function ListItemRole(props: {
   );
 
   if (props.id !== undefined) {
-    return <Link href={`/roles/${props.id}`}>{itemRole}</Link>;
+    return (
+      <Link className={Classes.link} href={`/roles/${props.id}`}>
+        {itemRole}
+      </Link>
+    );
   }
 
   return itemRole;
