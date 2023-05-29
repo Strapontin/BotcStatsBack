@@ -169,6 +169,11 @@ export default function UpdateRolePage() {
             {oldRole.name}
           </Text>
           {"' "}?
+          <br />
+          <Text size={14}>
+            Si ce rôle est dans un module, il sera également supprimé de
+            celui-ci.
+          </Text>
         </Text>
       </Modal.Header>
       <Modal.Footer css={{ justifyContent: "space-around" }}>
