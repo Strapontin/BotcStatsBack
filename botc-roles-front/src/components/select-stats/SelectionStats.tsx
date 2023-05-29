@@ -1,6 +1,5 @@
-import { Dropdown, Link } from "@nextui-org/react";
+import { Dropdown } from "@nextui-org/react";
 import classes from "./SelectionStats.module.css";
-import { Key } from "react";
 import { useRouter } from "next/router";
 
 export default function SelectionStats() {
@@ -34,13 +33,11 @@ export default function SelectionStats() {
           <Dropdown.Item withDivider key="/update/games">
             Modifier une partie
           </Dropdown.Item>
-          <Dropdown.Item  key="/update/editions">
+          <Dropdown.Item key="/update/editions">
             Modifier un module
           </Dropdown.Item>
-          <Dropdown.Item  key="/update/roles">
-            Modifier un rôle
-          </Dropdown.Item>
-          <Dropdown.Item  key="/update/players">
+          <Dropdown.Item key="/update/roles">Modifier un rôle</Dropdown.Item>
+          <Dropdown.Item key="/update/players">
             Modifier un joueur
           </Dropdown.Item>
           <Dropdown.Item withDivider key="/games-player">
@@ -49,7 +46,9 @@ export default function SelectionStats() {
           <Dropdown.Item key="/games-role">
             Nombre de parties par rôle
           </Dropdown.Item>
-          <Dropdown.Item withDivider key="/games">Liste des parties</Dropdown.Item>
+          <Dropdown.Item withDivider key="/games">
+            Liste des parties
+          </Dropdown.Item>
           <Dropdown.Item key="/editions">Liste des modules</Dropdown.Item>
           <Dropdown.Item key="/roles">Liste des rôles</Dropdown.Item>
         </Dropdown.Menu>

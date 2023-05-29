@@ -4,8 +4,10 @@ import classes from "./Layout.module.css";
 export default function Layout(props: { children: any }) {
   return (
     <div className={classes.Layout}>
-      <SelectionStats />
-      {props.children}
+      <div className={classes.header}>
+        <SelectionStats />
+      </div>
+      <div className={classes.content}>{props.children}</div>
     </div>
   );
 }
