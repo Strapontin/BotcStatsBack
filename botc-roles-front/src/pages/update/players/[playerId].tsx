@@ -6,7 +6,7 @@ import {
   getAllPlayers,
   deletePlayer,
 } from "../../../../data/back-api/back-api";
-import { Button, Checkbox, Loading, Modal, Row, Text } from "@nextui-org/react";
+import { Button, Checkbox, Loading, Modal, Row, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
@@ -223,6 +223,7 @@ export default function UpdatePlayerPage() {
       >
         Supprimer le joueur
       </Button>
+      <Spacer y={3} />
       {popup}
     </Fragment>
   );
