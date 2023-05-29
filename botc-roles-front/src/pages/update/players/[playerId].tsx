@@ -6,7 +6,15 @@ import {
   getAllPlayers,
   deletePlayer,
 } from "../../../../data/back-api/back-api";
-import { Button, Checkbox, Loading, Modal, Row, Spacer, Text } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  Loading,
+  Modal,
+  Row,
+  Spacer,
+  Text,
+} from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
@@ -184,12 +192,12 @@ export default function UpdatePlayerPage() {
     <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
       <Modal.Header>
         <Text id="modal-title" size={22}>
-          Voulez-vous vraiment supprimer le joueur :{" "}
+          Voulez-vous vraiment supprimer le joueur :{" '"}
           <Text b size={22}>
             {oldPlayer.name}
             {getPlayerPseudoString(oldPlayer.pseudo)}
-          </Text>{" "}
-          ?
+          </Text>
+          {"' "}?
         </Text>
       </Modal.Header>
       <Modal.Footer css={{ justifyContent: "space-around" }}>
@@ -220,6 +228,7 @@ export default function UpdatePlayerPage() {
         ghost
         color="error"
         onPress={() => setPopupDeleteVisible(true)}
+        disabled={disableBtnDelete}
       >
         Supprimer le joueur
       </Button>

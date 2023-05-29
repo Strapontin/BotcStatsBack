@@ -83,3 +83,29 @@ export async function updateRole(apiUrl: string, role: Role): Promise<boolean> {
 
   return true;
 }
+
+export async function deleteRole(
+  apiUrl: string,
+  roleId: number
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Roles/${roleId}`, {
+    method: "DELETE",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
+
+  console.log("deleteRole");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}

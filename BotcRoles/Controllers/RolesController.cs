@@ -25,6 +25,7 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<RoleEntities>> GetRoles()
         {
             var roles = _db.Roles
+                .Where(p => !p.IsHidden)
                 .Select(r => new RoleEntities(_db, r))
                 .ToList()
                 .OrderBy(r => r.CharacterType)
@@ -99,6 +100,36 @@ namespace BotcRoles.Controllers
                 _db.SaveChanges();
 
                 return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{roleId}")]
+        public IActionResult DeleteRole(long roleId)
+        {
+            try
+            {
+                if (!_db.Roles.Any(p => p.RoleId == roleId))
+                {
+                    return NotFound();
+                }
+
+                if (_db.PlayerRoleGames.Any(prg => prg.RoleId == roleId))
+                {
+                    _db.Roles.First(p => p.RoleId == roleId).IsHidden = true;
+                    _db.SaveChanges();
+                }
+                else
+                {
+                    _db.Roles.Remove(_db.Roles.First(g => g.RoleId == roleId));
+                    _db.SaveChanges();
+                }
+
+                return Accepted();
             }
             catch (Exception ex)
             {

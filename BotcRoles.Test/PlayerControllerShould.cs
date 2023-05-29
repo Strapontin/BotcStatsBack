@@ -151,6 +151,8 @@ namespace BotcRoles.Test
                 modelContext.Players.First(p => p.Name == "player2"),
                 modelContext.Roles.First(),
                 modelContext.Games.First()));
+            modelContext.SaveChanges();
+
 
             foreach (var player in modelContext.Players)
             {

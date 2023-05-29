@@ -4,8 +4,9 @@ import {
   updateRole,
   getRoleById,
   getAllRoles,
+  deleteRole,
 } from "../../../../data/back-api/back-api";
-import { Loading, Text } from "@nextui-org/react";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
@@ -14,11 +15,14 @@ import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function UpdateRolePage() {
-  const roleId: number = Number(useRouter().query.roleId);
+  const router = useRouter();
+  const roleId: number = Number(router.query.roleId);
 
   const [oldRole, setOldRole] = useState<Role>(getNewEmptyRole());
+  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
+  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
@@ -137,15 +141,70 @@ export default function UpdateRolePage() {
     }
   }
 
+  function closePopupDelete() {
+    setPopupDeleteVisible(false);
+  }
+
+  async function btnDeletePressed() {
+    setDisableBtnDelete(true);
+    setTimeout(async () => {
+      if (await deleteRole(oldRole.id)) {
+        updateMessage(false, "Le rôle a été supprimé correctement.");
+        closePopupDelete();
+      }
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 1500);
+
+      setDisableBtnDelete(false);
+    }, 0);
+  }
+
+  const popup = (
+    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
+      <Modal.Header>
+        <Text id="modal-title" size={22}>
+          Voulez-vous vraiment supprimer le rôle :{" '"}
+          <Text b size={22}>
+            {oldRole.name}
+          </Text>
+          {"' "}?
+        </Text>
+      </Modal.Header>
+      <Modal.Footer css={{ justifyContent: "space-around" }}>
+        <Button auto flat color="error" onPress={btnDeletePressed}>
+          Confirmer
+        </Button>
+        <Button auto onPress={closePopupDelete}>
+          Annuler
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   return (
-    <RoleCreateEdit
-      key={roleCreateEditKey}
-      title={title}
-      role={role}
-      setRole={setRole}
-      message={message}
-      btnPressed={btnUpdateRole}
-      btnText="Modifier le rôle"
-    />
+    <Fragment>
+      <RoleCreateEdit
+        key={roleCreateEditKey}
+        title={title}
+        role={role}
+        setRole={setRole}
+        message={message}
+        btnPressed={btnUpdateRole}
+        btnText="Modifier le rôle"
+      />
+
+      <Button
+        shadow
+        ghost
+        color="error"
+        onPress={() => setPopupDeleteVisible(true)}
+        disabled={disableBtnDelete}
+      >
+        Supprimer le joueur
+      </Button>
+      <Spacer y={3} />
+      {popup}
+    </Fragment>
   );
 }

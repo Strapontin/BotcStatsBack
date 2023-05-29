@@ -38,12 +38,6 @@ namespace BotcRoles.Test.HelperMethods
             return roleController.GetRoleById(id).Value;
         }
 
-        public static void DeleteAllRoles(ModelContext modelContext)
-        {
-            modelContext.Roles.RemoveRange(modelContext.Roles);
-            modelContext.SaveChanges();
-        }
-
         internal static IActionResult UpdateRole(ModelContext modelContext, long roleId, string roleName, CharacterType characterType, Alignment alignment)
         {
             RolesController rolesController = new(null!, modelContext);
@@ -58,6 +52,20 @@ namespace BotcRoles.Test.HelperMethods
 
             var res = rolesController.UpdateRole(JObject.FromObject(data));
             return res;
+        }
+
+        public static IActionResult DeleteRole(ModelContext modelContext, long roleId)
+        {
+            RolesController rolesController = new(null!, modelContext);
+            var res = rolesController.DeleteRole(roleId);
+
+            return res;
+        }
+
+        public static void DeleteAllRoles(ModelContext modelContext)
+        {
+            modelContext.Roles.RemoveRange(modelContext.Roles);
+            modelContext.SaveChanges();
         }
     }
 }

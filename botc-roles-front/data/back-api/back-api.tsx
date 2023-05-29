@@ -17,6 +17,7 @@ import {
   getRoleById as queryRoleById,
   createNewRole as queryCreateNewRole,
   updateRole as queryUpdateRole,
+  deleteRole as queryDeleteRole,
 } from "./back-api-role";
 import {
   getAllEditions as queryAllEditions,
@@ -110,6 +111,10 @@ export async function createNewRole(
 
 export async function updateRole(role: Role) {
   return queryUpdateRole(apiUrl, role);
+}
+
+export async function deleteRole(roleId: number) {
+  return queryDeleteRole(apiUrl, roleId);
 }
 
 /* Edition */

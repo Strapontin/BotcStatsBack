@@ -38,20 +38,6 @@ namespace BotcRoles.Test.HelperMethods
             return res.Value;
         }
 
-        public static IActionResult DeletePlayer(ModelContext modelContext, long playerId)
-        {
-            PlayersController playersController = new(null!, modelContext);
-            var res = playersController.DeletePlayer(playerId);
-
-            return res;
-        }
-
-        public static void DeleteAllPlayers(ModelContext modelContext)
-        {
-            modelContext.Players.RemoveRange(modelContext.Players);
-            modelContext.SaveChanges();
-        }
-
         public static IActionResult UpdatePlayer(ModelContext modelContext, long playerId, string playerName, string pseudo)
         {
             PlayersController playersController = new(null!, modelContext);
@@ -65,6 +51,20 @@ namespace BotcRoles.Test.HelperMethods
 
             var res = playersController.UpdatePlayer(JObject.FromObject(data));
             return res;
+        }
+
+        public static IActionResult DeletePlayer(ModelContext modelContext, long playerId)
+        {
+            PlayersController playersController = new(null!, modelContext);
+            var res = playersController.DeletePlayer(playerId);
+
+            return res;
+        }
+
+        public static void DeleteAllPlayers(ModelContext modelContext)
+        {
+            modelContext.Players.RemoveRange(modelContext.Players);
+            modelContext.SaveChanges();
         }
     }
 }
