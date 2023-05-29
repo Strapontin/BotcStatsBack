@@ -47,6 +47,8 @@ export default function PlayerRolesSelector(props: {
       setPlayerSelected(getNewEmptyPlayer());
       setRoleFilter("");
       setRoleSelected(getNewEmptyRole());
+      inputFilterRole.current?.blur();
+      inputFilterPlayer.current?.blur();
 
       var allSelectedPlayerRoles = props.selectedPlayerRoles;
       const playerRole: PlayerRole = {
@@ -112,7 +114,6 @@ export default function PlayerRolesSelector(props: {
   }
 
   function canBlur(event: any, itemClass: string) {
-    // console.log(event);
     if (
       event === undefined ||
       event === null ||
@@ -121,11 +122,8 @@ export default function PlayerRolesSelector(props: {
       event.relatedTarget.classList === undefined ||
       event.relatedTarget.classList === null
     ) {
-      // console.log(0);
       return true;
     }
-    // console.log(event.relatedTarget.classList.contains(itemClass));
-    // console.log(itemClass);
 
     if (
       event.relatedTarget.classList.contains(itemClass) &&
@@ -135,21 +133,17 @@ export default function PlayerRolesSelector(props: {
       ) &&
       !event.relatedTarget.classList.contains(Classes["container-roles-values"])
     ) {
-      // console.log(1);
       return false;
     } else if (
       event.relatedTarget.classList.contains("nextui-input-clear-button")
     ) {
-      // console.log(2);
       return false;
     } else if (
       event.relatedTarget.classList.contains(Classes["container-roles-values"])
     ) {
-      // console.log(3);
       return false;
     }
 
-    // console.log(4);
     return true;
   }
 
