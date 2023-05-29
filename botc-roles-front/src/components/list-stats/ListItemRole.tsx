@@ -3,6 +3,7 @@ import ImageIconName from "../ui/image-icon-name";
 import Classes from "./ListItem.module.css";
 import { Text } from "@nextui-org/react";
 import { Fragment } from "react";
+import Link from "next/link";
 
 export default function ListItemRole(props: {
   image: string;
@@ -10,6 +11,7 @@ export default function ListItemRole(props: {
   nbWins?: number;
   nbLoses?: number;
   nbGamesPlayed?: number;
+  id?: number;
 }) {
   const textNbWins =
     props.nbWins !== undefined ? (
@@ -44,7 +46,7 @@ export default function ListItemRole(props: {
       <Fragment />
     );
 
-  return (
+  const itemRole = (
     <div className={Classes["list-item"]}>
       <div>
         <ImageIconName
@@ -60,4 +62,10 @@ export default function ListItemRole(props: {
       </div>
     </div>
   );
+
+  if (props.id !== undefined) {
+    return <Link href={`/roles/${props.id}`}>{itemRole}</Link>;
+  }
+
+  return itemRole;
 }

@@ -1,5 +1,4 @@
 import { Game } from "@/entities/Game";
-import { PlayerRole } from "@/entities/PlayerRole";
 import { Alignment } from "@/entities/enums/alignment";
 
 export async function getAllGames(apiUrl: string) {
@@ -27,13 +26,15 @@ export async function getGameById(apiUrl: string, id: number) {
 
 export async function createNewGame(
   apiUrl: string,
-  editionId: number,
-  storyTellerId: number,
-  datePlayed: string,
-  notes: string,
-  winningAlignment: Alignment,
-  playersIdRolesId: { playerId: number; roleId: number }[]
+  game: Game
 ): Promise<boolean> {
+  const playersIdRolesId = game.playerRoles.map((pr) => ({
+    playerId: pr.player.id,
+    roleId: pr.role.id,
+  }));
+
+  const demonBluffsId = game.demonBluffs.map((db) => db.id);
+
   const response = await fetch(`${apiUrl}/Games`, {
     method: "POST",
     mode: "cors",
@@ -45,36 +46,34 @@ export async function createNewGame(
     redirect: "follow",
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
-      editionId,
-      storyTellerId,
-      datePlayed,
-      notes,
-      winningAlignment,
+      editionId: game.edition.id,
+      storyTellerId: game.storyTeller.id,
+      datePlayed: game.datePlayed,
+      notes: game.notes,
+      winningAlignment: game.winningAlignment,
       playersIdRolesId,
+      demonBluffsId,
     }),
   });
 
   console.log("createNewGame");
 
   if (!response.ok) {
-    const res = await response.json();
-    console.log(res);
+    console.log(response);
     return false;
   }
 
   return true;
 }
 
-export async function updateGame(
-  apiUrl: string,
-  gameId: number,
-  editionId: number,
-  storyTellerId: number,
-  datePlayed: string,
-  notes: string,
-  winningAlignment: Alignment,
-  playersIdRolesId: { playerId: number; roleId: number }[]
-): Promise<boolean> {
+export async function updateGame(apiUrl: string, game: Game): Promise<boolean> {
+  const playersIdRolesId = game.playerRoles.map((pr) => ({
+    playerId: pr.player.id,
+    roleId: pr.role.id,
+  }));
+
+  const demonBluffsId = game.demonBluffs.map((db) => db.id);
+
   const response = await fetch(`${apiUrl}/Games`, {
     method: "PUT",
     mode: "cors",
@@ -86,13 +85,14 @@ export async function updateGame(
     redirect: "follow",
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
-      gameId,
-      editionId,
-      storyTellerId,
-      datePlayed,
-      notes,
-      winningAlignment,
+      gameId: game.id,
+      editionId: game.edition.id,
+      storyTellerId: game.storyTeller.id,
+      datePlayed: game.datePlayed,
+      notes: game.notes,
+      winningAlignment: game.winningAlignment,
       playersIdRolesId,
+      demonBluffsId,
     }),
   });
 

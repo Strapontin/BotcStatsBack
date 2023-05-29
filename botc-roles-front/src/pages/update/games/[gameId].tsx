@@ -40,17 +40,7 @@ export default function UpdateGamePage() {
   async function btnUpdateGame() {
     if (!canUpdateGame()) return;
 
-    if (
-      await updateGame(
-        game.id,
-        game.edition.id,
-        game.storyTeller.id,
-        dateToString(game.datePlayed),
-        game.notes,
-        game.winningAlignment,
-        game.playerRoles
-      )
-    ) {
+    if (await updateGame(game)) {
       const g = await getGameById(gameId);
       setGame(g);
       setGameCreateEditKey(gameCreateEditKey + 1);

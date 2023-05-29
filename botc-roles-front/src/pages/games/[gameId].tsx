@@ -7,12 +7,14 @@ import Title from "@/components/ui/title";
 import PlayerName from "@/components/ui/playerName";
 import DateUi from "@/components/ui/date-ui";
 import ListItemLarge from "@/components/list-stats/ListItemLarge";
-import { Link, Spacer } from "@nextui-org/react";
+import { Link, Spacer, Text } from "@nextui-org/react";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { getGameById } from "../../../data/back-api/back-api";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
 import { getPlayerPseudoString } from "@/entities/Player";
+import { Role } from "@/entities/Role";
+import ListItemRole from "@/components/list-stats/ListItemRole";
 
 export default function GamePage() {
   const gameId: number = Number(useRouter().query.gameId);
@@ -41,6 +43,8 @@ export default function GamePage() {
     </Title>
   );
 
+  console.log(game);
+
   return (
     <Fragment>
       {title}
@@ -62,7 +66,7 @@ export default function GamePage() {
         />
         <ListItemLarge name="Notes" value={game.notes} />
         <Spacer y={2} />
-
+        <Text b>Liste des rôles des joueurs :</Text>
         {game.playerRoles.map((prg: PlayerRole) => (
           <Link
             key={prg.player.name}
@@ -76,6 +80,16 @@ export default function GamePage() {
               characterType={prg.role.characterType}
             />
           </Link>
+        ))}
+        <Spacer y={2} />
+        <Text b>Liste des demon bluffs :</Text>
+        {game.demonBluffs.map((db: Role) => (
+          <ListItemRole
+            key={db.id}
+            id={db.id}
+            characterType={db.characterType}
+            image={db.name}
+          />
         ))}
       </Container>
     </Fragment>

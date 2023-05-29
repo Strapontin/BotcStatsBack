@@ -50,6 +50,7 @@ export default function EditionCreateEdit(props: {
         <RolesSelector
           selectedRoles={props.edition.roles}
           setSelectedRoles={rolesInEditionChanged}
+          placeholderText="Rôles"
         />
         <Spacer y={3} />
       </Container>

@@ -52,6 +52,7 @@ namespace BotcRoles.Controllers
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Role)
                 .Include(g => g.DemonBluffs)
+                    .ThenInclude(demonBluff => demonBluff.Role)
                 .Select(g => new GameEntities(_db, g))
                 .FirstOrDefault();
 
@@ -131,9 +132,11 @@ namespace BotcRoles.Controllers
                 game.WinningAlignment = gameTemp.WinningAlignment;
 
                 _db.RemoveRange(_db.PlayerRoleGames.Where(prg => prg.GameId == game.GameId));
+                _db.RemoveRange(_db.DemonBluffs.Where(demonBluff => demonBluff.GameId == game.GameId));
                 _db.SaveChanges();
 
                 game.PlayerRoleGames = gameTemp.PlayerRoleGames;
+                game.DemonBluffs = gameTemp.DemonBluffs;
 
                 _db.SaveChanges();
 
@@ -219,9 +222,31 @@ namespace BotcRoles.Controllers
                 playersRoles.Add(new PlayerRoleGame(playerDb, roleDb, null));
             }
 
+            // Demon bluffs
+            List<long>? demonBluffsId = data["demonBluffsId"]?.ToObject<List<long>>();
+            if (demonBluffsId == null)
+            {
+                error = $"Aucun demon bluff.";
+                return null;
+            }
+
+            List<DemonBluff> demonBluffs = new();
+            foreach (var demonBluffId in demonBluffsId)
+            {
+                Role? roleDb = _db.Roles.FirstOrDefault(r => r.RoleId == demonBluffId);
+                if (roleDb == null)
+                {
+                    error = $"Le demonBluff avec le rôle Id '{demonBluffId}' n'a pas été trouvé.";
+                    return null;
+                }
+                demonBluffs.Add(new DemonBluff(roleDb, null));
+            }
+
+
             Game game = new(edition, storyTeller, datePlayed, notes, winningAlignment)
             {
-                PlayerRoleGames = playersRoles
+                PlayerRoleGames = playersRoles,
+                DemonBluffs = demonBluffs,
             };
 
             return game;

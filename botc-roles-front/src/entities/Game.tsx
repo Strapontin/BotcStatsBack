@@ -1,6 +1,7 @@
 import { Edition, getNewEmptyEdition } from "./Edition";
 import { Player, getNewEmptyPlayer } from "./Player";
 import { PlayerRole } from "./PlayerRole";
+import { Role } from "./Role";
 import { Alignment } from "./enums/alignment";
 
 export type Game = {
@@ -12,6 +13,7 @@ export type Game = {
   winningAlignment: Alignment;
 
   playerRoles: PlayerRole[];
+  demonBluffs: Role[];
 };
 
 export function getNewEmptyGame() {
@@ -23,6 +25,7 @@ export function getNewEmptyGame() {
     notes: "",
     winningAlignment: Alignment.None,
     playerRoles: [],
+    demonBluffs: [],
   };
   return game;
 }

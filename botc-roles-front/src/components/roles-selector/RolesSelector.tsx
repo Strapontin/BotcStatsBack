@@ -10,6 +10,8 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 export default function RolesSelector(props: {
   selectedRoles: Role[];
   setSelectedRoles: any;
+  placeholderText: string;
+  rolesInSelectedEdition?: Role[];
 }) {
   const inputFilterRole = useRef<HTMLInputElement>(null);
   const [showRoles, setShowRoles] = useState(false);
@@ -20,12 +22,18 @@ export default function RolesSelector(props: {
 
   useEffect(() => {
     async function initRoles() {
-      const tempRoles = await getAllRoles();
-      setAllRoles(tempRoles);
-      setVisibleRoles(tempRoles);
+      // if roles are passed in prop, use them
+      if (props.rolesInSelectedEdition !== undefined) {
+        setAllRoles(props.rolesInSelectedEdition);
+        setVisibleRoles(props.rolesInSelectedEdition);
+      } else {
+        const tempRoles = await getAllRoles();
+        setAllRoles(tempRoles);
+        setVisibleRoles(tempRoles);
+      }
     }
     initRoles();
-  }, []);
+  }, [props.rolesInSelectedEdition]);
 
   function onChangeInput(value: string) {
     reSetVisibleRolesFromValue(value);
@@ -43,7 +51,9 @@ export default function RolesSelector(props: {
   }
 
   function onSelectRole(idRoleSelected: number) {
-    const roleSelected = visibleRoles.find((role) => role.id === idRoleSelected);
+    const roleSelected = visibleRoles.find(
+      (role) => role.id === idRoleSelected
+    );
 
     if (roleSelected !== undefined) {
       const roles = props.selectedRoles;
@@ -128,8 +138,8 @@ export default function RolesSelector(props: {
       <div className={Classes["input-container"]}>
         <Input
           css={{ flex: 1 }}
-          labelPlaceholder="Rôle"
-          aria-label="Rôle"
+          labelPlaceholder={props.placeholderText}
+          aria-label={props.placeholderText}
           clearable
           bordered
           value={filter}

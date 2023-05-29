@@ -19,16 +19,7 @@ export default function CreateGame() {
   async function createGame() {
     if (!canCreateGame()) return;
 
-    if (
-      await createNewGame(
-        game.edition.id,
-        game.storyTeller.id,
-        dateToString(game.datePlayed),
-        game.notes,
-        game.winningAlignment,
-        game.playerRoles
-      )
-    ) {
+    if (await createNewGame(game)) {
       setGame(getNewEmptyGame());
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);

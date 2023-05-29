@@ -11,6 +11,7 @@ import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
 import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
 import { Game } from "@/entities/Game";
 import { dateToStringOrderByFormat } from "@/helper/date";
+import RolesSelector from "@/components/roles-selector/RolesSelector";
 
 export default function GameCreateEdit(props: {
   title: JSX.Element;
@@ -73,6 +74,11 @@ export default function GameCreateEdit(props: {
     props.setGame(newGame);
   }
 
+  function selectedDemonBluffsChanged(selectedDemonBluffs: Role[]) {
+    const newGame = { ...props.game, demonBluffs: selectedDemonBluffs };
+    props.setGame(newGame);
+  }
+
   return (
     <Fragment>
       {props.title}
@@ -118,6 +124,13 @@ export default function GameCreateEdit(props: {
           selectedPlayerRoles={props.game.playerRoles}
           setSelectedPlayerRoles={selectedPlayerRolesChanged}
           rolesInSelectedEdition={rolesInSelectedEdition}
+        />
+        <Spacer y={3} />
+        <RolesSelector
+          selectedRoles={props.game.demonBluffs}
+          setSelectedRoles={selectedDemonBluffsChanged}
+          rolesInSelectedEdition={rolesInSelectedEdition}
+          placeholderText="Demon bluffs"
         />
         <Spacer y={3} />
       </Container>
