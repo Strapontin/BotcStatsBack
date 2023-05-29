@@ -38,6 +38,7 @@ namespace BotcRoles.Models
         public bool IsHidden { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
+        public List<DemonBluff> DemonBluffs { get; set; }
 
         public Alignment WinningAlignment { get; set; }
     }

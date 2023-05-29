@@ -28,6 +28,7 @@ namespace BotcRoles.Models
 
         public List<RoleEdition> RolesEdition { get; set; }
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
+        public List<DemonBluff> DemonBluffs { get; set; }
     }
 
 

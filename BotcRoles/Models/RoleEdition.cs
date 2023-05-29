@@ -31,20 +31,20 @@ namespace BotcRoles.Models
         public void Configure(EntityTypeBuilder<RoleEdition> builder)
         {
             builder
-                .HasKey(rm => new { rm.RoleId, rm.EditionId });
+                .HasKey(re => new { re.RoleId, re.EditionId });
 
             builder
-                .HasOne(rm => rm.Role)
+                .HasOne(re => re.Role)
                 .WithMany(r => r.RolesEdition)
-                .HasForeignKey(rm => rm.RoleId);
+                .HasForeignKey(re => re.RoleId);
 
             builder
-                .HasOne(rm => rm.Edition)
-                .WithMany(m => m.RolesEdition)
-                .HasForeignKey(rm => rm.EditionId);
+                .HasOne(re => re.Edition)
+                .WithMany(e => e.RolesEdition)
+                .HasForeignKey(re => re.EditionId);
 
             builder
-                .HasIndex(rm => new { rm.RoleId, rm.EditionId })
+                .HasIndex(re => new { re.RoleId, re.EditionId })
                 .IsUnique();
         }
     }

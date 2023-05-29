@@ -17,6 +17,11 @@ namespace BotcRoles.Entities
                 .Select(prg => new PlayerRoleEntities(db, prg))
                 .OrderBy(prg => prg.Role.Alignment)
                 .ToList();
+
+            this.DemonBluffs = game.DemonBluffs
+                .Select(demonBluff => new RoleEntities(db, demonBluff.Role))
+                .OrderBy(role => role.Alignment)
+                .ToList();
         }
 
         public long Id { get; set; }
@@ -27,5 +32,6 @@ namespace BotcRoles.Entities
         public Alignment WinningAlignment { get; set; }
 
         public List<PlayerRoleEntities> PlayerRoles { get; set; }
+        public List<RoleEntities> DemonBluffs { get; set; }
     }
 }
