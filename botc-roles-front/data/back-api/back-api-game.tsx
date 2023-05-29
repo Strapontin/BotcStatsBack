@@ -105,3 +105,29 @@ export async function updateGame(apiUrl: string, game: Game): Promise<boolean> {
 
   return true;
 }
+
+export async function deleteGame(
+  apiUrl: string,
+  gameId: number
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Games/${gameId}`, {
+    method: "DELETE",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
+
+  console.log("deleteGame");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}

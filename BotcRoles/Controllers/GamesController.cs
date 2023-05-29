@@ -85,22 +85,6 @@ namespace BotcRoles.Controllers
             }
         }
 
-        //[HttpDelete]
-        //[Route("{gameId}")]
-        //public IActionResult Delete(long gameId)
-        //{
-        //    try
-        //    {
-        //        _db.Games.Remove(_db.Games.First(g => g.GameId == gameId));
-        //        _db.SaveChanges();
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.InnerException);
-        //    }
-        //}
-
         [HttpPut]
         [Route("")]
         public IActionResult UpdateGame([FromBody] JObject data)
@@ -141,6 +125,22 @@ namespace BotcRoles.Controllers
                 _db.SaveChanges();
 
                 return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{gameId}")]
+        public IActionResult DeleteGame(long gameId)
+        {
+            try
+            {
+                _db.Games.Remove(_db.Games.First(g => g.GameId == gameId));
+                _db.SaveChanges();
+                return Accepted();
             }
             catch (Exception ex)
             {

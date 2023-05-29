@@ -4,6 +4,7 @@ import {
   getGameById as queryGameById,
   createNewGame as queryCreateNewGame,
   updateGame as queryUpdateGame,
+  deleteGame as queryDeleteGame,
 } from "./back-api-game";
 import {
   getAllPlayers as queryAllPlayers,
@@ -51,6 +52,11 @@ export async function createNewGame(game: Game) {
 export async function updateGame(game: Game) {
   return queryUpdateGame(apiUrl, game);
 }
+
+export async function deleteGame(gameId: number) {
+  return queryDeleteGame(apiUrl, gameId);
+}
+
 
 /* Players */
 

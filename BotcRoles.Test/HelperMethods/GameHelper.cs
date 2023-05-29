@@ -85,6 +85,14 @@ namespace BotcRoles.Test.HelperMethods
             return result;
         }
 
+        public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
+        {
+            GamesController gamesController = new(null!, modelContext);
+            var res = gamesController.DeleteGame(gameId);
+
+            return res;
+        }
+
         public static void DeleteAllGames(ModelContext modelContext)
         {
             modelContext.RemoveRange(modelContext.Games);

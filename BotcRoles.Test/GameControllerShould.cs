@@ -351,5 +351,31 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Delete_Game()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            GameHelper.DeleteAllGames(modelContext);
+
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            var storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var alignment = Alignment.Good;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, alignment, playersIdRolesId, rolesId);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var gameId = GameHelper.GetGames(modelContext).First().Id;
+
+            // Act
+            res = GameHelper.DeleteGame(modelContext, gameId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, GameHelper.GetGames(modelContext).Count());
+        }
     }
 }

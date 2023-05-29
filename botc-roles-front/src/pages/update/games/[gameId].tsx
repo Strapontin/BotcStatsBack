@@ -1,7 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { updateGame, getGameById } from "../../../../data/back-api/back-api";
-import { Loading, Text } from "@nextui-org/react";
+import {
+  updateGame,
+  getGameById,
+  deleteGame,
+} from "../../../../data/back-api/back-api";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import { Alignment, alignmentList } from "@/entities/enums/alignment";
@@ -9,9 +13,14 @@ import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreate
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
 import { useRouter } from "next/router";
+import { getPlayerPseudoString } from "@/entities/Player";
 
 export default function UpdateGamePage() {
-  const gameId: number = Number(useRouter().query.gameId);
+  const router = useRouter();
+  const gameId: number = Number(router.query.gameId);
+
+  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
+  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
@@ -96,15 +105,75 @@ export default function UpdateGamePage() {
     return true;
   }
 
+  function closePopupDelete() {
+    setPopupDeleteVisible(false);
+  }
+
+  async function btnDeletePressed() {
+    setDisableBtnDelete(true);
+    setTimeout(async () => {
+      if (await deleteGame(game.id)) {
+        updateMessage(false, "La partie a été supprimé correctement.");
+        closePopupDelete();
+      }
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 1500);
+
+      setDisableBtnDelete(false);
+    }, 0);
+  }
+
+  const popup = (
+    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
+      <Modal.Header>
+        <Text id="modal-title" size={22}>
+          Voulez-vous vraiment supprimer la partie du{" "}
+          <Text b size={22}>
+            {dateToString(game.datePlayed)}
+          </Text>{" "}
+          contée par{" '"}
+          <Text b size={22}>
+            {game.storyTeller.name}
+            {getPlayerPseudoString(game.storyTeller.pseudo)}
+          </Text>
+          {"' "}?
+        </Text>
+      </Modal.Header>
+      <Modal.Footer css={{ justifyContent: "space-around" }}>
+        <Button auto flat color="error" onPress={btnDeletePressed}>
+          Confirmer
+        </Button>
+        <Button auto onPress={closePopupDelete}>
+          Annuler
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   return (
-    <GameCreateEdit
-      key={gameCreateEditKey}
-      title={title}
-      game={game}
-      setGame={setGame}
-      message={message}
-      btnPressed={btnUpdateGame}
-      btnText="Modifier la partie"
-    />
+    <Fragment>
+      <GameCreateEdit
+        key={gameCreateEditKey}
+        title={title}
+        game={game}
+        setGame={setGame}
+        message={message}
+        btnPressed={btnUpdateGame}
+        btnText="Modifier la partie"
+      />
+
+      <Button
+        shadow
+        ghost
+        color="error"
+        onPress={() => setPopupDeleteVisible(true)}
+        disabled={disableBtnDelete}
+      >
+        Supprimer la partie
+      </Button>
+      <Spacer y={3} />
+      {popup}
+    </Fragment>
   );
 }

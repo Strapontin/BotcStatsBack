@@ -121,9 +121,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetCleanContext(fileName);
-            PlayerHelper.DeleteAllPlayers(modelContext);
-            DBHelper.DeleteAllPlayerRoleGame(modelContext);
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
 
 
             string playerName = "playerName";
