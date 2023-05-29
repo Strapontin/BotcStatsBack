@@ -201,7 +201,7 @@ export default function UpdateRolePage() {
         onPress={() => setPopupDeleteVisible(true)}
         disabled={disableBtnDelete}
       >
-        Supprimer le joueur
+        Supprimer le rôle
       </Button>
       <Spacer y={3} />
       {popup}

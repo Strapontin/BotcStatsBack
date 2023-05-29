@@ -24,6 +24,7 @@ import {
   getEditionById as queryEditionById,
   createNewEdition as queryCreateNewEdition,
   updateEdition as queryUpdateEdition,
+  deleteEdition as queryDeleteEdition,
 } from "./back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
 import { PlayerRole } from "@/entities/PlayerRole";
@@ -139,4 +140,8 @@ export async function updateEdition(
   const rolesId = roles.map((r) => r.id);
 
   return queryUpdateEdition(apiUrl, editionId, name, rolesId);
+}
+
+export async function deleteEdition(editionId: number) {
+  return queryDeleteEdition(apiUrl, editionId);
 }

@@ -193,7 +193,7 @@ namespace BotcRoles.Test
         }
 
         [Test]
-        public void Delete_Role_In_PlayerRoleGameOr_StoryTeller_Sets_Hidden()
+        public void Delete_Role_In_PlayerRoleGame_Sets_Hidden()
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";

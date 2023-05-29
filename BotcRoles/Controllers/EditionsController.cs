@@ -25,6 +25,7 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<EditionEntities>> GetEditions()
         {
             var editions = _db.Editions
+                .Where(e => !e.IsHidden)
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
                 .Include(m => m.Games)
@@ -108,6 +109,36 @@ namespace BotcRoles.Controllers
                 _db.SaveChanges();
 
                 return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{editionId}")]
+        public IActionResult DeleteEdition(long editionId)
+        {
+            try
+            {
+                if (!_db.Editions.Any(p => p.EditionId == editionId))
+                {
+                    return NotFound();
+                }
+
+                if (_db.Games.Any(g => g.EditionId == editionId))
+                {
+                    _db.Editions.First(p => p.EditionId == editionId).IsHidden = true;
+                    _db.SaveChanges();
+                }
+                else
+                {
+                    _db.Editions.Remove(_db.Editions.First(g => g.EditionId == editionId));
+                    _db.SaveChanges();
+                }
+
+                return Accepted();
             }
             catch (Exception ex)
             {

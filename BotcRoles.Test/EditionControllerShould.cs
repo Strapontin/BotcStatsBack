@@ -207,5 +207,46 @@ namespace BotcRoles.Test
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }
+
+        [Test]
+        public void Can_Delete_Edition_Not_In_Game()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+
+
+            string editionName = "editionName";
+            var res = EditionHelper.PostEdition(modelContext, editionName);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var playerId = EditionHelper.GetEditions(modelContext).First().Id;
+
+            // Act
+            res = EditionHelper.DeleteEdition(modelContext, playerId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).Count());
+        }
+
+        [Test]
+        public void Delete_Edition_In_Game_Sets_Hidden()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+            DBHelper.CreateBasicDataInAllTables(modelContext);
+            int countEditions = modelContext.Editions.Count();
+
+            foreach (var player in modelContext.Editions)
+            {
+                var res = EditionHelper.DeleteEdition(modelContext, player.EditionId);
+                Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+            }
+
+            Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).Count());
+            Assert.AreEqual(countEditions, modelContext.Editions.Count());
+            Assert.IsTrue(modelContext.Editions.All(p => p.IsHidden));
+        }
     }
 }

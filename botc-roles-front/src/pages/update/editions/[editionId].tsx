@@ -4,8 +4,9 @@ import {
   updateEdition,
   getEditionById,
   getAllEditions,
+  deleteEdition,
 } from "../../../../data/back-api/back-api";
-import { Loading, Text } from "@nextui-org/react";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
@@ -14,11 +15,14 @@ import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function UpdateEditionPage() {
-  const editionId: number = Number(useRouter().query.editionId);
+  const router = useRouter();
+  const editionId: number = Number(router.query.editionId);
 
-  const [oldEditionName, setOldEditionName] = useState("");
+  const [oldEdition, setOldEdition] = useState<Edition>(getNewEmptyEdition());
+  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
+  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
@@ -32,7 +36,7 @@ export default function UpdateEditionPage() {
       editions.filter(
         (p) =>
           toLowerRemoveDiacritics(p) !==
-            toLowerRemoveDiacritics(oldEditionName) &&
+            toLowerRemoveDiacritics(oldEdition.name) &&
           toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
       ).length !== 0
     ) {
@@ -42,7 +46,7 @@ export default function UpdateEditionPage() {
       updateMessage(false, "");
       return true;
     }
-  }, [edition, editions, oldEditionName]);
+  }, [edition, editions, oldEdition]);
 
   useEffect(() => {
     if (editionId === undefined || isNaN(editionId)) return;
@@ -50,7 +54,7 @@ export default function UpdateEditionPage() {
     async function initEdition() {
       const e = await getEditionById(editionId);
       setEdition(e);
-      setOldEditionName(e.name);
+      setOldEdition(e);
     }
     initEdition();
 
@@ -76,7 +80,7 @@ export default function UpdateEditionPage() {
     );
   }
 
-  const title = <Title>Modification du module {`'${oldEditionName}'`}</Title>;
+  const title = <Title>Modification du module {`'${oldEdition.name}'`}</Title>;
 
   async function btnUpdateEdition() {
     if (!canUpdateEdition()) return;
@@ -122,15 +126,70 @@ export default function UpdateEditionPage() {
     }
   }
 
+  function closePopupDelete() {
+    setPopupDeleteVisible(false);
+  }
+
+  async function btnDeletePressed() {
+    setDisableBtnDelete(true);
+    setTimeout(async () => {
+      if (await deleteEdition(oldEdition.id)) {
+        updateMessage(false, "Le module a été supprimé correctement.");
+        closePopupDelete();
+      }
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 1500);
+
+      setDisableBtnDelete(false);
+    }, 0);
+  }
+
+  const popup = (
+    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
+      <Modal.Header>
+        <Text id="modal-title" size={22}>
+          Voulez-vous vraiment supprimer le module :{" '"}
+          <Text b size={22}>
+            {oldEdition.name}
+          </Text>
+          {"' "}?
+        </Text>
+      </Modal.Header>
+      <Modal.Footer css={{ justifyContent: "space-around" }}>
+        <Button auto flat color="error" onPress={btnDeletePressed}>
+          Confirmer
+        </Button>
+        <Button auto onPress={closePopupDelete}>
+          Annuler
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   return (
-    <EditionCreateEdit
-      key={editionCreateEditKey}
-      title={title}
-      edition={edition}
-      setEdition={setEdition}
-      message={message}
-      btnPressed={btnUpdateEdition}
-      btnText="Modifier le module"
-    />
+    <Fragment>
+      <EditionCreateEdit
+        key={editionCreateEditKey}
+        title={title}
+        edition={edition}
+        setEdition={setEdition}
+        message={message}
+        btnPressed={btnUpdateEdition}
+        btnText="Modifier le module"
+      />
+
+      <Button
+        shadow
+        ghost
+        color="error"
+        onPress={() => setPopupDeleteVisible(true)}
+        disabled={disableBtnDelete}
+      >
+        Supprimer le module
+      </Button>
+      <Spacer y={3} />
+      {popup}
+    </Fragment>
   );
 }

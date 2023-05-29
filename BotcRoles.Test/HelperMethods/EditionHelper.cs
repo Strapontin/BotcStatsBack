@@ -62,5 +62,13 @@ namespace BotcRoles.Test.HelperMethods
             var res = editionsController.UpdateEdition(JObject.FromObject(data));
             return res;
         }
+
+        public static IActionResult DeleteEdition(ModelContext modelContext, long editionId)
+        {
+            EditionsController editionsController = new(null!, modelContext);
+            var res = editionsController.DeleteEdition(editionId);
+
+            return res;
+        }
     }
 }

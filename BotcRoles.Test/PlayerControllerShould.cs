@@ -126,8 +126,8 @@ namespace BotcRoles.Test
             DBHelper.DeleteAllPlayerRoleGame(modelContext);
 
 
-            string roleName = "playerName";
-            var res = PlayerHelper.PostPlayer(modelContext, roleName);
+            string playerName = "playerName";
+            var res = PlayerHelper.PostPlayer(modelContext, playerName);
             Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
             var playerId = PlayerHelper.GetPlayers(modelContext).First().Id;

@@ -84,3 +84,29 @@ export async function updateEdition(
 
   return true;
 }
+
+export async function deleteEdition(
+  apiUrl: string,
+  editionId: number
+): Promise<boolean> {
+  const response = await fetch(`${apiUrl}/Editions/${editionId}`, {
+    method: "DELETE",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
+
+  console.log("deleteEdition");
+
+  if (!response.ok) {
+    console.log(response);
+    return false;
+  }
+
+  return true;
+}
