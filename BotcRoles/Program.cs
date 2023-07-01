@@ -43,61 +43,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie()
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = config.GetValue<string>("Jwt:Issuer"),
-        ValidAudience = config.GetValue<string>("Jwt:Audience"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:EncrptionKey")))
-    };
-})
-.AddOAuth("Discord", options =>
-{
-    options.AuthorizationEndpoint = "https://discord.com/oauth2/authorize";
-    options.Scope.Add("identify");
 
-    options.CallbackPath = new PathString("/auth/oauthCallback");
 
-    options.ClientId = config.GetValue<string>("Discord:ClientId");
-    options.ClientSecret = config.GetValue<string>("Discord:ClientSecret");
+builder.Services.AddAuthentication("cookie")
+    .AddCookie("cookie")
+    .AddOAuth();
 
-    options.TokenEndpoint = "https://discord.com/api/oauth2/token";
-    options.UserInformationEndpoint = "https://discord.com/api/users/@me";
-
-    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "username");
-    //options.ClaimActions.MapJsonSubKey("...", "someobject", "id");
-
-    options.AccessDeniedPath = "/Home/DiscordAuthFailed";
-
-    options.Events = new OAuthEvents
-    {
-        OnCreatingTicket = async context =>
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
-
-            var response = await context.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.HttpContext.RequestAborted);
-            response.EnsureSuccessStatusCode();
-
-            var user = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
-
-            context.RunClaimActions(user);
-        }
-    };
-});
+builder.Services.AddHttpClient();
 
 
 var app = builder.Build();
@@ -119,6 +71,95 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/login", () => Results.SignIn(
+    new ClaimsPrincipal(
+        new ClaimsIdentity(
+            new[] { new Claim("user_id", Guid.NewGuid().ToString()) },
+            "cookie"
+        )
+    ),
+    authenticationScheme: "cookie"
+));
+
+app.MapGet("/yt/info", (IHttpClientFactory clientFactory) =>
+{
+
+});
+
 app.Run();
 
 public partial class Program { } // utile pour exposer la class Program au projet de tests
+
+
+/*
+ 
+ using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text.Json;
+
+var builder = WebApplication.CreateBuilder(args);
+
+const string tbaServerId = "765137571608920074";
+const string storyTellerRoleId = "797739056406069279";
+
+builder.Services.AddAuthentication("cookie")
+    .AddCookie("cookie")
+    .AddOAuth("discord", o =>
+    {
+        o.SignInScheme = "cookie";
+        o.ClientId = config.GetValue<string>("Discord:ClientId");
+        o.ClientSecret = config.GetValue<string>("Discord:ClientSecret");
+
+        o.AuthorizationEndpoint = "https://discord.com/oauth2/authorize";
+        o.TokenEndpoint = "https://discord.com/api/oauth2/token";
+        o.CallbackPath = "/auth/discord/callback";
+        o.SaveTokens = true;
+
+        o.UserInformationEndpoint = "https://discord.com/api/users/@me";
+
+        o.ClaimActions.MapJsonKey("sub", "id");
+        o.ClaimActions.MapJsonKey(ClaimTypes.Name, "global_name");
+        o.ClaimActions.MapJsonKey("roles", "roles");
+
+        o.Events.OnCreatingTicket = async ctx =>
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint + $"/guilds/{tbaServerId}/member");
+            //using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+            using var result = await ctx.Backchannel.SendAsync(request);
+            var user = await result.Content.ReadFromJsonAsync<JsonElement>();
+
+            ctx.RunClaimActions(user);
+        };
+
+        o.Scope.Add("identify");
+        //o.Scope.Add("guilds");
+        o.Scope.Add("guilds.members.read");
+    });
+
+var app = builder.Build();
+
+app.UseAuthentication();
+
+
+app.MapGet("/", (HttpContext ctx) =>
+{
+    return ctx.User.Claims.Select(x => new { x.Type, x.Value }).ToList();
+});
+
+app.MapGet("/login", () =>
+{
+    return Results.Challenge(
+        new AuthenticationProperties()
+        {
+            RedirectUri = "https://localhost:7108/"
+        },
+        authenticationSchemes: new List<string>() { "discord" });
+});
+
+app.Run();
+
+
+ 
+ */

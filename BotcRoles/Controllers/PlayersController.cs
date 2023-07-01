@@ -1,12 +1,14 @@
 using BotcRoles.Entities;
 using BotcRoles.Helper;
 using BotcRoles.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PlayersController : ControllerBase
