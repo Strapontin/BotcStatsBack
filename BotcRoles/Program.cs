@@ -1,22 +1,21 @@
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
+using System.Web;
+
+const string tbaServerId = "765137571608920074";
+const string storyTellerRoleId = "797739056406069279";
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables()
     .Build();
 
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,9 +45,72 @@ builder.Services.AddControllersWithViews()
 
 
 builder.Services.AddAuthentication("cookie")
-    .AddCookie("cookie")
-    .AddOAuth();
+    .AddCookie("cookie", o =>
+    {
+        o.LoginPath = "/login";
+        var del = o.Events.OnRedirectToAccessDenied;
 
+        o.Events.OnRedirectToAccessDenied = ctx =>
+        {
+            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            ctx.RedirectUri = $"/unauthorized";
+            //ctx.RedirectUri = "/";  // TODO : Create an access denied page ?
+            return del(ctx);
+        };
+    })
+    .AddOAuth("discord", o =>
+    {
+        o.SignInScheme = "cookie";
+        o.ClientId = config.GetValue<string>("DiscordAuth:ClientId");
+        o.ClientSecret = config.GetValue<string>("DiscordAuth:ClientSecret");
+
+        o.AuthorizationEndpoint = "https://discord.com/oauth2/authorize";
+        o.TokenEndpoint = "https://discord.com/api/oauth2/token";
+        o.CallbackPath = "/auth/discord/callback";
+        o.SaveTokens = true;
+
+        o.UserInformationEndpoint = "https://discord.com/api/users/@me";
+
+        o.Scope.Clear();
+        o.Scope.Add("identify");
+        o.Scope.Add("guilds.members.read");
+
+        o.Events.OnCreatingTicket = async ctx =>
+        {
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint + $"/guilds/{tbaServerId}/member");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+            using var result = await ctx.Backchannel.SendAsync(request);
+            var user = await result.Content.ReadFromJsonAsync<JsonElement>();
+            var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(user);
+
+            if (userGuildDetails == null || userGuildDetails.user == null)
+            {
+                return;
+            }
+
+            var userId = userGuildDetails.user.id;
+            var db = ctx.HttpContext.RequestServices.GetRequiredService<Database>();
+            db[userId] = ctx.AccessToken!;
+
+            var identity = ctx.Principal.Identities.First();
+            identity.AddClaim(new Claim("ds-role-storyteller", userGuildDetails.roles.Contains(storyTellerRoleId) ? "y" : "n"));
+            identity.AddClaim(new Claim("user_id", userId));
+        };
+    });
+
+
+builder.Services.AddAuthorization(b =>
+{
+    b.AddPolicy("storyteller", pb =>
+    {
+        pb.AddAuthenticationSchemes("cookie")
+            .RequireClaim("ds-role-storyteller", "y");
+    });
+});
+
+
+builder.Services.AddSingleton<Database>();
 builder.Services.AddHttpClient();
 
 
@@ -71,95 +133,63 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/login", () => Results.SignIn(
-    new ClaimsPrincipal(
-        new ClaimsIdentity(
-            new[] { new Claim("user_id", Guid.NewGuid().ToString()) },
-            "cookie"
-        )
-    ),
-    authenticationScheme: "cookie"
-));
 
-app.MapGet("/yt/info", (IHttpClientFactory clientFactory) =>
+app.MapGet("/login", (HttpContext ctx) =>
 {
+    var returnUrl = HttpUtility.ParseQueryString(ctx.Request.QueryString.Value).Get("ReturnUrl");
+    var redirectUri = $"https://{ctx.Request.Host}{returnUrl}";
 
-});
-
-app.Run();
-
-public partial class Program { } // utile pour exposer la class Program au projet de tests
-
-
-/*
- 
- using Microsoft.AspNetCore.Authentication;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text.Json;
-
-var builder = WebApplication.CreateBuilder(args);
-
-const string tbaServerId = "765137571608920074";
-const string storyTellerRoleId = "797739056406069279";
-
-builder.Services.AddAuthentication("cookie")
-    .AddCookie("cookie")
-    .AddOAuth("discord", o =>
-    {
-        o.SignInScheme = "cookie";
-        o.ClientId = config.GetValue<string>("Discord:ClientId");
-        o.ClientSecret = config.GetValue<string>("Discord:ClientSecret");
-
-        o.AuthorizationEndpoint = "https://discord.com/oauth2/authorize";
-        o.TokenEndpoint = "https://discord.com/api/oauth2/token";
-        o.CallbackPath = "/auth/discord/callback";
-        o.SaveTokens = true;
-
-        o.UserInformationEndpoint = "https://discord.com/api/users/@me";
-
-        o.ClaimActions.MapJsonKey("sub", "id");
-        o.ClaimActions.MapJsonKey(ClaimTypes.Name, "global_name");
-        o.ClaimActions.MapJsonKey("roles", "roles");
-
-        o.Events.OnCreatingTicket = async ctx =>
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint + $"/guilds/{tbaServerId}/member");
-            //using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
-            using var result = await ctx.Backchannel.SendAsync(request);
-            var user = await result.Content.ReadFromJsonAsync<JsonElement>();
-
-            ctx.RunClaimActions(user);
-        };
-
-        o.Scope.Add("identify");
-        //o.Scope.Add("guilds");
-        o.Scope.Add("guilds.members.read");
-    });
-
-var app = builder.Build();
-
-app.UseAuthentication();
-
-
-app.MapGet("/", (HttpContext ctx) =>
-{
-    return ctx.User.Claims.Select(x => new { x.Type, x.Value }).ToList();
-});
-
-app.MapGet("/login", () =>
-{
     return Results.Challenge(
         new AuthenticationProperties()
         {
-            RedirectUri = "https://localhost:7108/"
+            RedirectUri = redirectUri
         },
         authenticationSchemes: new List<string>() { "discord" });
 });
 
+app.MapGet("/logout", async (HttpContext ctx) =>
+{
+    await ctx.SignOutAsync("cookie");
+
+    return "logged out";
+});
+
+app.MapGet("/unauthorized", (HttpContext ctx) =>
+{
+    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+    return "Unauthorized";
+});
+
 app.Run();
 
+public partial class Program { } // Usefull to expose class Program to test project
 
- 
- */
+
+// Data to log users
+public class Database : Dictionary<string, string>
+{
+
+}
+
+public class UserGuildDetails
+{
+    public string[] roles { get; set; }
+    public DiscordUser user { get; set; }
+}
+
+public class DiscordUser
+{
+    public string id { get; set; }
+    public string? username { get; set; }
+    public string? avatar { get; set; }
+    public string? discriminator { get; set; }
+    public int public_flags { get; set; }
+    public int flags { get; set; }
+    public string? banner { get; set; }
+    public string? accent_color { get; set; }
+    public string? global_name { get; set; }
+    public string? avatar_decoration { get; set; }
+    public string? display_name { get; set; }
+    public string? banner_color { get; set; }
+}
+

@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "storyteller")]
     [ApiController]
     [Route("[controller]")]
     public class PlayersController : ControllerBase

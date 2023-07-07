@@ -1,7 +1,16 @@
 import { Player } from "@/entities/Player";
 
 export async function getAllPlayers(apiUrl: string) {
-  const response = await fetch(`${apiUrl}/Players`);
+  const response = await fetch(`${apiUrl}/Players`, {
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
   const data = await response.json();
   const players: Player[] = [];
 
