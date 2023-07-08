@@ -35,6 +35,16 @@ import { Game } from "@/entities/Game";
 
 const apiUrl = "https://192.168.1.48:7099";
 
+/* Login/Logout */
+
+export function getLoginUrl() {
+  return `${apiUrl}/login`;
+}
+
+export function getLogoutUrl() {
+  return `${apiUrl}/logout`;
+}
+
 /* Games */
 
 export async function getAllGames() {
@@ -56,7 +66,6 @@ export async function updateGame(game: Game) {
 export async function deleteGame(gameId: number) {
   return queryDeleteGame(apiUrl, gameId);
 }
-
 
 /* Players */
 

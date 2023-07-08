@@ -31,10 +31,6 @@ builder.Services.AddCors(options =>
     {
         policy
             .AllowAnyOrigin()
-            //.WithOrigins("http://192.168.1.48:3000",
-            //    "https://192.168.1.48:3000",
-            //    "http://192.168.1.48:3000/*",
-            //    "https://192.168.1.48:3000/*")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -77,7 +73,6 @@ builder.Services.AddAuthentication("cookie")
 
         o.Events.OnCreatingTicket = async ctx =>
         {
-
             using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint + $"/guilds/{tbaServerId}/member");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
             using var result = await ctx.Backchannel.SendAsync(request);
