@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "storyteller")]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PlayersController : ControllerBase
@@ -22,6 +22,7 @@ namespace BotcRoles.Controllers
             _db = db;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<PlayerEntities>> GetPlayers()
