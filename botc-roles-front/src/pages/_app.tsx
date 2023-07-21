@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 import { NextUIProvider, createTheme, useSSR } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
+import { AuthContextProvider } from "@/stores/authContext";
 
 export default function App({
   Component,
@@ -19,19 +20,21 @@ export default function App({
   return (
     isBrowser && (
       <SessionProvider session={session}>
-        <NextThemesProvider
-          defaultTheme="system"
-          attribute="class"
-          value={{
-            dark: darkTheme.className,
-          }}
-        >
-          <NextUIProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </NextUIProvider>
-        </NextThemesProvider>
+        <AuthContextProvider>
+          <NextThemesProvider
+            defaultTheme="system"
+            attribute="class"
+            value={{
+              dark: darkTheme.className,
+            }}
+          >
+            <NextUIProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </NextUIProvider>
+          </NextThemesProvider>
+        </AuthContextProvider>
       </SessionProvider>
     )
   );

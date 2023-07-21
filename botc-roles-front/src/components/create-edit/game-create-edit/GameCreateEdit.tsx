@@ -26,7 +26,6 @@ export default function GameCreateEdit(props: {
   );
 
   useEffect(() => {
-    console.log(props.game);
     setRolesInSelectedEdition(props.game.edition.roles);
   }, [props.game]);
 

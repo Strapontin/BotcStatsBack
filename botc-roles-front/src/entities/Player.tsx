@@ -4,7 +4,7 @@ export interface Player {
   id: number;
   name: string;
   pseudo: string;
-  nbGamesPlayed?: number;
+  nbGamesPlayed: number;
   nbGamesWon: number;
   nbGamesLost: number;
   nbGamesGood: number;
@@ -17,6 +17,7 @@ export function getNewEmptyPlayer() {
     id: -1,
     name: "",
     pseudo: "",
+    nbGamesPlayed: 0,
     nbGamesWon: 0,
     nbGamesLost: 0,
     nbGamesGood: 0,

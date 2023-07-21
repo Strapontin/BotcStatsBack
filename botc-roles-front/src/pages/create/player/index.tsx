@@ -19,7 +19,6 @@ export default function CreatePlayer() {
   const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
-    console.log("playerId")
     async function initPlayers() {
       const tempPlayers = await getAllPlayers();
       setPlayers(tempPlayers);

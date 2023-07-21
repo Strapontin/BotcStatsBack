@@ -7,6 +7,10 @@ export const authOptions = {
     DiscordProvider({
       clientId: process.env.DISCORD_ID!,
       clientSecret: process.env.DISCORD_SECRET!,
+      authorization: {
+        // url: "https://discord.com/api/users/@me/guilds/765137571608920074/member",
+        params: { scope: "guilds.members.read" },
+      },
     }),
     // ...add more providers here
   ],
@@ -16,6 +20,8 @@ export const authOptions = {
       if (account) {
         token.accessToken = account.access_token;
       }
+      // console.log("jwt");
+      // console.log(token);
       return token;
     },
     async session({
@@ -31,9 +37,11 @@ export const authOptions = {
       const url = `https://discord.com/api/users/@me/guilds/${tbaServerId}/member`;
 
       const response = await fetch(url, {
-        method:"GET"
-      })
-// TODO : Changer le fetch de la connexion pour avoir le bon scope & récupérer les rôles de l'utilisateur
+        method: "GET",
+      });
+
+      // console.log("session");
+      // console.log(response);
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
       return session;

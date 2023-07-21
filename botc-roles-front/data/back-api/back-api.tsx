@@ -28,12 +28,11 @@ import {
   deleteEdition as queryDeleteEdition,
 } from "./back-api-edition";
 import { CharacterType } from "@/entities/enums/characterType";
-import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
-const apiUrl = "https://192.168.1.48:7099";
+const apiUrl = "http://192.168.1.48:7099";
 
 /* Login/Logout */
 

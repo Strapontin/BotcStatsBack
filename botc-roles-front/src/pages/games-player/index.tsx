@@ -13,6 +13,7 @@ export default function GamesPlayedByPlayerPage() {
   useEffect(() => {
     async function initPlayers() {
       const p = await getAllPlayers();
+      p.sort((a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed);
       setPlayers(p);
     }
     initPlayers();

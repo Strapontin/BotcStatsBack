@@ -43,8 +43,6 @@ export default function GamePage() {
     </Title>
   );
 
-  console.log(game);
-
   return (
     <Fragment>
       {title}
