@@ -1,5 +1,4 @@
 import { Game } from "@/entities/Game";
-import { Alignment } from "@/entities/enums/alignment";
 
 export async function getAllGames(apiUrl: string) {
   const response = await fetch(`${apiUrl}/Games`);

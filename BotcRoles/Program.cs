@@ -81,32 +81,3 @@ app.Run();
 
 public partial class Program { } // Usefull to expose class Program to test project
 
-
-//// Data to log users
-//public class Database : Dictionary<string, string>
-//{
-
-//}
-
-//public class UserGuildDetails
-//{
-//    public string[] roles { get; set; }
-//    public DiscordUser user { get; set; }
-//}
-
-//public class DiscordUser
-//{
-//    public string id { get; set; }
-//    public string? username { get; set; }
-//    public string? avatar { get; set; }
-//    public string? discriminator { get; set; }
-//    public int public_flags { get; set; }
-//    public int flags { get; set; }
-//    public string? banner { get; set; }
-//    public string? accent_color { get; set; }
-//    public string? global_name { get; set; }
-//    public string? avatar_decoration { get; set; }
-//    public string? display_name { get; set; }
-//    public string? banner_color { get; set; }
-//}
-
