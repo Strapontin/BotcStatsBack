@@ -76,8 +76,11 @@ export async function getPlayerById(playerId: number) {
   return queryPlayerById(apiUrl, playerId);
 }
 
-export async function createNewPlayer(player: Player): Promise<boolean> {
-  return queryCreateNewPlayer(apiUrl, player);
+export async function createNewPlayer(
+  player: Player,
+  accessToken: string
+): Promise<boolean> {
+  return queryCreateNewPlayer(apiUrl, player, accessToken);
 }
 
 export async function updatePlayer(player: Player) {

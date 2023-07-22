@@ -1,12 +1,14 @@
 using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Helper;
+using Microsoft.AspNetCore.Authorization;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
+    [Authorize(Policy = "IsStoryTeller")]
     [ApiController]
     [Route("[controller]")]
     public class RolesController : ControllerBase
@@ -20,6 +22,7 @@ namespace BotcRoles.Controllers
             _db = db;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<RoleEntities>> GetRoles()
@@ -35,6 +38,7 @@ namespace BotcRoles.Controllers
             return roles;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("{roleId}")]
         public ActionResult<RoleEntities> GetRoleById(long roleId)

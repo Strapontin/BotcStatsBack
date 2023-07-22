@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import Title from "@/components/ui/title";
 import {
   createNewPlayer,
@@ -10,6 +10,7 @@ import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import AuthContext from "@/stores/authContext";
 
 export default function CreatePlayer() {
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
@@ -17,6 +18,8 @@ export default function CreatePlayer() {
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
   const [players, setPlayers] = useState<Player[]>([]);
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   useEffect(() => {
     async function initPlayers() {
@@ -56,7 +59,7 @@ export default function CreatePlayer() {
   async function createPlayer() {
     if (player.name === "") return;
 
-    if (await createNewPlayer(player)) {
+    if (await createNewPlayer(player, accessToken)) {
       setPlayer(getNewEmptyPlayer());
 
       updateMessage(

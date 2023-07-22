@@ -1,5 +1,6 @@
 using BotcRoles.Models;
 using BotcRoles.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -7,6 +8,7 @@ using BotcRoles.Helper;
 
 namespace BotcRoles.Controllers
 {
+    [Authorize(Policy = "IsStoryTeller")]
     [ApiController]
     [Route("[controller]")]
     public class EditionsController : ControllerBase
@@ -20,6 +22,7 @@ namespace BotcRoles.Controllers
             _db = db;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<EditionEntities>> GetEditions()
@@ -37,6 +40,7 @@ namespace BotcRoles.Controllers
             return editions;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("{editionId}")]
         public ActionResult<EditionEntities> GetEditionById(long editionId)

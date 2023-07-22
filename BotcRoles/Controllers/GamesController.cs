@@ -3,11 +3,13 @@ using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
+    [Authorize(Policy = "IsStoryTeller")]
     [ApiController]
     [Route("[controller]")]
     public class GamesController : ControllerBase
@@ -21,6 +23,7 @@ namespace BotcRoles.Controllers
             _db = db;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("")]
         public ActionResult<IEnumerable<GameEntities>> GetGames()
@@ -37,6 +40,7 @@ namespace BotcRoles.Controllers
             return games;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("{gameId}")]
         public ActionResult<GameEntities> GetGameById(long gameId)

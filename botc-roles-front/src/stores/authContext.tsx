@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { createContext, useEffect, useState } from "react";
 
 const AuthContext = createContext({
+  accessToken: null,
   isStoryTeller: false,
 });
 
@@ -23,7 +24,7 @@ export const AuthContextProvider = ({ children }: { children: any }) => {
       );
 
       const res = await response.json();
-      const s: any = { isStoryTeller: res.roles.includes(storyTellerRoleId) };
+      const s: any = { isStoryTeller: res.roles?.includes(storyTellerRoleId), accessToken };
       setUser(s);
     }
     getUserData();

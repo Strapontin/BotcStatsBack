@@ -34,7 +34,8 @@ export async function getPlayerById(apiUrl: string, playerId: number) {
 
 export async function createNewPlayer(
   apiUrl: string,
-  player: Player
+  player: Player,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players`, {
     method: "POST",
@@ -43,6 +44,7 @@ export async function createNewPlayer(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -50,6 +52,7 @@ export async function createNewPlayer(
   });
 
   console.log("createPlayer");
+  console.log(response);
 
   if (!response.ok) {
     const res = await response.json();
