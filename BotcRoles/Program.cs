@@ -1,8 +1,24 @@
+using BotcRoles;
 using BotcRoles.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Web;
+
+const string tbaServerId = "765137571608920074";
+const string storyTellerRoleId = "797739056406069279";
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -11,15 +27,46 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ModelContext>();
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllersWithViews()
-    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 
-IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
+//builder.Services.AddAuthentication(x =>
+//{
+//    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(x =>
+//{
+
+//});
+
+builder.Services.AddSingleton<IAuthorizationHandler, IsStoryTellerAuthorizationHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    options.AddPolicy("IsStoryTeller", policy => policy.Requirements.Add(new IsStoryTellerRequirement()));
+});
+
+
+//builder.Services.AddSingleton<Database>();
+builder.Services.AddHttpClient();
 
 
 var app = builder.Build();
@@ -33,10 +80,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(MyAllowSpecificOrigins);
+
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+
+
 app.Run();
 
-public partial class Program { } // utile pour exposer la class Program au projet de tests
+public partial class Program { } // Usefull to expose class Program to test project
+

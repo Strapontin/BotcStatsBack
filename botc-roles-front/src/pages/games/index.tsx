@@ -1,11 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
-import { getAllGames } from "../../../data/dummy-backend";
 import { Game } from "@/entities/Game";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
+import { dateToString } from "@/helper/date";
+import { getAllGames } from "../../../data/back-api/back-api";
+import { getPlayerPseudoString } from "@/entities/Player";
 
 export default function GamesListPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -29,25 +31,32 @@ export default function GamesListPage() {
     );
   }
 
-  console.log(games);
+  function line(game: Game) {
+    return (
+      <Link key={game.id} href={`/games/${game.id}`} color="text">
+        <ListItem
+          name={dateToString(game.datePlayed)}
+          value={
+            <Fragment>
+              Contée par{" "}
+              {
+                <PlayerName
+                  name={`${game.storyTeller.name}${getPlayerPseudoString(
+                    game.storyTeller.pseudo
+                  )}`}
+                />
+              }
+            </Fragment>
+          }
+        ></ListItem>
+      </Link>
+    );
+  }
 
   return (
     <Fragment>
       <Title>{title}</Title>
-      <Container>
-        {games.map((game: any) => (
-          <Link key={game.id} href={`/games/${game.id}`} color="text">
-            <ListItem
-              name={game.datePlayed}
-              value={
-                <Fragment>
-                  Conté par {<PlayerName name={game.storyTeller} />}
-                </Fragment>
-              }
-            ></ListItem>
-          </Link>
-        ))}
-      </Container>
+      <Container>{games.map((game: Game) => line(game))}</Container>
     </Fragment>
   );
 }

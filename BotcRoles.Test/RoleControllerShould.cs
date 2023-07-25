@@ -1,4 +1,5 @@
-﻿using BotcRoles.Test.HelperMethods;
+﻿using BotcRoles.Enums;
+using BotcRoles.Test.HelperMethods;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
@@ -12,79 +13,208 @@ namespace BotcRoles.Test
         public void Post_And_Get_Role()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
+            RoleHelper.DeleteAllRoles(modelContext);
 
             // Act
-            var res = RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Evil);
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
 
             // Assert
-            Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
-            Assert.AreEqual(roleName, RoleHelper.GetRoles(modelContext).First().Name);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            //Act
+            long roleId = RoleHelper.GetRoles(modelContext).Last().Id;
+
+            // Assert
+            Assert.AreEqual(roleName, RoleHelper.GetRoleById(modelContext, roleId).Name);
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Get_Role_By_Id()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+
+            // Act
+            var res = RoleHelper.GetRoleById(modelContext, roleId);
+
+            // Assert
+            Assert.IsNotNull(res);
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Cant_Post_Two_Roles_With_Same_Name()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act
-            RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Evil);
-            var res = RoleHelper.AddRole(modelContext, roleName, Enums.Type.Townsfolk, Enums.Alignment.Good);
-            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Townsfolk, Alignment.Good);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Cant_Post_Role_With_Empty_Name()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = string.Empty;
 
             // Act
-            var res = RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Enums.Alignment.Evil);
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, Alignment.Evil);
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Cant_Post_Role_With_Empty_Type()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act
-            var res = RoleHelper.AddRole(modelContext, roleName, null, Enums.Alignment.Evil);
+            var res = RoleHelper.AddRole(modelContext, roleName, null, Alignment.Evil);
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
         public void Cant_Post_Role_With_Empty_Alignement()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
             // Act
-            var res = RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, null);
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Demon, null);
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Can_Update_Role()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            RoleHelper.DeleteAllRoles(modelContext);
+            string roleName = "roleName";
+            var res = RoleHelper.AddRole(modelContext, roleName, CharacterType.Fabled, Alignment.Evil);
+
+            // Act
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            string newName = "newName";
+            CharacterType characterType = CharacterType.Townsfolk;
+            Alignment alignment = Alignment.Good;
+            res = RoleHelper.UpdateRole(modelContext, roleId, newName, characterType, alignment);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var role = RoleHelper.GetRoleById(modelContext, roleId);
+            Assert.AreEqual(roleId, role.Id);
+            Assert.AreEqual(newName, role.Name);
+            Assert.AreEqual(characterType, role.CharacterType);
+            Assert.AreEqual(alignment, role.Alignment);
+            Assert.AreEqual(1, modelContext.Roles.Count());
+
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Can_Delete_Role_Not_In_PlayerRoleGame()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+
+            string roleName = "playerName";
+            CharacterType characterType = CharacterType.Townsfolk;
+            Alignment alignment = Alignment.Good;
+
+            var res = RoleHelper.AddRole(modelContext, roleName, characterType, alignment);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+
+            // Act
+            res = RoleHelper.DeleteRole(modelContext, roleId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
+        }
+
+        [Test]
+        public void Delete_Role_In_Edition_Removes_It_From_Edition()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+
+            string roleName = "playerName";
+            CharacterType characterType = CharacterType.Townsfolk;
+            Alignment alignment = Alignment.Good;
+
+            RoleHelper.AddRole(modelContext, roleName, characterType, alignment);
+            var allRolesId = modelContext.Roles.Select(r => r.RoleId).ToList();
+            EditionHelper.PostEdition(modelContext, "editionName", allRolesId);
+
+            Assert.AreEqual(1, EditionHelper.GetEditions(modelContext).First().Roles.Count());
+
+            var roleId = RoleHelper.GetRoles(modelContext).First().Id;
+
+            // Act
+            var res = RoleHelper.DeleteRole(modelContext, roleId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
+            Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).First().Roles.Count());
+        }
+
+        [Test]
+        public void Delete_Role_In_PlayerRoleGame_Sets_Hidden()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
+            DBHelper.CreateBasicDataInAllTables(modelContext);
+
+            modelContext.PlayerRoleGames.Add(new Models.PlayerRoleGame(
+                modelContext.Players.First(),
+                modelContext.Roles.First(),
+                modelContext.Games.First()));
+            modelContext.SaveChanges();
+
+            foreach (var role in modelContext.Roles)
+            {
+                var res = RoleHelper.DeleteRole(modelContext, role.RoleId);
+                Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+            }
+
+            Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
+            Assert.AreEqual(1, modelContext.Roles.Count());
+            Assert.IsTrue(modelContext.Roles.All(p => p.IsHidden));
         }
     }
 }

@@ -1,10 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
-import { getAllPlayers } from "../../../data/dummy-backend";
 import { Player } from "@/entities/Player";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
+import { getAllPlayers } from "../../../data/back-api/back-api";
 
 export default function GamesPlayedByPlayerPage() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -13,6 +13,7 @@ export default function GamesPlayedByPlayerPage() {
   useEffect(() => {
     async function initPlayers() {
       const p = await getAllPlayers();
+      p.sort((a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed);
       setPlayers(p);
     }
     initPlayers();
@@ -34,7 +35,11 @@ export default function GamesPlayedByPlayerPage() {
       <Container>
         {players.map((player) => (
           <Link key={player.id} href={`/players/${player.id}`} color="text">
-            <ListItem name={player.id} value={player.gamesPlayed} />
+            <ListItem
+              name={player.name}
+              subName={player.pseudo}
+              value={player.nbGamesPlayed}
+            />
           </Link>
         ))}
       </Container>

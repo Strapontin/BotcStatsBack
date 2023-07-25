@@ -11,13 +11,17 @@ namespace BotcRoles.Models
     {
         public Player() { }
 
-        public Player(string name)
+        public Player(string name, string pseudo = null)
         {
             Name = name;
+            Pseudo = pseudo ?? "";
+            IsHidden = false;
         }
 
         public long PlayerId { get; set; }
         public string Name { get; set; }
+        public string Pseudo { get; set; }
+        public bool IsHidden { get; set; }
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
         public List<Game> GamesStoryTelling { get; set; }
@@ -33,12 +37,17 @@ namespace BotcRoles.Models
                 .HasKey(p => p.PlayerId);
 
             builder
-                .HasIndex(p => p.Name)
-                .IsUnique();
-
-            builder
                 .Property(p => p.Name)
                 .IsRequired();
+
+            builder
+                .Property(p => p.Pseudo)
+                .IsRequired(false);
+
+            builder
+                .HasIndex(p => new { p.Name, p.Pseudo })
+                .IsUnique()
+                .HasFilter(null);
         }
     }
 }

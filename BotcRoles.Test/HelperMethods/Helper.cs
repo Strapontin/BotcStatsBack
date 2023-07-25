@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace BotcRoles.Test.HelperMethods
 {
-    public static class Helper
+    public static class DBHelper
     {
-        private static readonly string _dbPath = "C:\\Users\\antod\\AppData\\Local\\BotcRoles_TestDatabases";
+        private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcRoles\BotcRoles\DB\BotcRoles_TestDatabases";
 
         public static string GetCurrentMethodName()
         {
@@ -22,8 +22,19 @@ namespace BotcRoles.Test.HelperMethods
             return stackFrame.GetMethod()!.Name;
         }
 
-        public static ModelContext GetContext(string methodName)
+        public static ModelContext GetCleanContext(string methodName, bool initData = true)
         {
+            DeleteCreatedDatabase(GetContext(methodName, true));
+            return GetContext(methodName, initData);
+        }
+
+        private static ModelContext GetContext(string methodName, bool initData)
+        {
+            if (!Directory.Exists(_dbPath))
+            {
+                Directory.CreateDirectory(_dbPath);
+            }
+
             var settings = new Dictionary<string, string>
             {
                 { "Db_Path", _dbPath },
@@ -34,13 +45,34 @@ namespace BotcRoles.Test.HelperMethods
                 .AddInMemoryCollection(settings)
                 .Build();
 
-            ModelContext modelContext = new(new DbContextOptions<ModelContext>(), config);
+            ModelContext modelContext = new(new DbContextOptions<ModelContext>(), config, initData);
+
             return modelContext;
         }
 
         public static void DeleteCreatedDatabase(ModelContext modelContext)
         {
-            modelContext.Database.EnsureDeleted(); 
+            modelContext.Database.EnsureDeleted();
+        }
+
+        public static void CreateBasicDataInAllTables(ModelContext modelContext)
+        {
+            modelContext.Players.Add(new Player("playerName", "pseudo"));
+            modelContext.Roles.Add(new Role("roleName", Enums.CharacterType.Townsfolk, Enums.Alignment.Good));
+            modelContext.Editions.Add(new Edition("editionName"));
+            modelContext.SaveChanges();
+            
+            modelContext.Games.Add(new Game(modelContext.Editions.First(),
+                modelContext.Players.First(), 
+                DateTime.Now,
+                "",
+                Enums.Alignment.Good));
+            modelContext.SaveChanges();
+        }
+
+        public static void DeleteAllPlayerRoleGame(ModelContext modelContext)
+        {
+            modelContext.PlayerRoleGames.RemoveRange(modelContext.PlayerRoleGames);
         }
     }
 }

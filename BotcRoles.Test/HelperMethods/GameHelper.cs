@@ -1,7 +1,9 @@
 ﻿using BotcRoles.Controllers;
+using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,76 +14,88 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class GameHelper
     {
-        public static IActionResult PostGame(ModelContext modelContext, long moduleId, long storyTellerId)
+        public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storyTellerId, DateTime? datePlayed,
+            Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, List<long> demonBluffsId, string notes = null)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
-            var res = gameController.Post(moduleId, storyTellerId);
+            var data = new
+            {
+                editionId,
+                storyTellerId,
+                datePlayed,
+                notes,
+                winningAlignment,
+                playersIdRolesId,
+                demonBluffsId,
+            };
+
+            var res = gamesController.CreateGame(JObject.FromObject(data));
             return res;
         }
 
-        public static IEnumerable<Game> GetGames(ModelContext modelContext)
+        public static IActionResult UpdateGame(ModelContext modelContext, long? gameId, long? editionId, long? storyTellerId, DateTime? datePlayed,
+            Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, List<long> demonBluffsId, string notes = null)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
-            return gameController.Get();
+            var data = new
+            {
+                gameId,
+                editionId,
+                storyTellerId,
+                datePlayed,
+                notes,
+                winningAlignment,
+                playersIdRolesId,
+                demonBluffsId,
+            };
+
+            var res = gamesController.UpdateGame(JObject.FromObject(data));
+            return res;
         }
 
-        public static Game GetGame(ModelContext modelContext, long gameId)
+        public static IEnumerable<GameEntities> GetGames(ModelContext modelContext)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
 
-            var res = gameController.Get(gameId);
-            return res!;
+            return gamesController.GetGames().Value;
+        }
+
+        public static GameEntities GetGame(ModelContext modelContext, long gameId)
+        {
+            GamesController gamesController = new(null!, modelContext);
+
+            var res = gamesController.GetGameById(gameId);
+            return res.Value;
+        }
+
+
+        public static List<PlayerIdRoleId> GetCorrectPlayersIdRolesId(ModelContext modelContext)
+        {
+            var result = new List<PlayerIdRoleId>()
+            {
+                new (modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId),
+                new (modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId),
+                new (modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId),
+                new (modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId),
+                new (modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId),
+            };
+
+            return result;
         }
 
         public static IActionResult DeleteGame(ModelContext modelContext, long gameId)
         {
-            GameController gameController = new(null!, modelContext);
+            GamesController gamesController = new(null!, modelContext);
+            var res = gamesController.DeleteGame(gameId);
 
-            var res = gameController.Delete(gameId);
             return res;
         }
 
-        public static void CreateModuleAndStoryTellerForGame(ModelContext modelContext, string moduleName, out long moduleId, string storyTellerName, out long storyTellerId)
+        public static void DeleteAllGames(ModelContext modelContext)
         {
-            ModuleHelper.PostModule(modelContext, moduleName);
-            moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
-
-            PlayerHelper.PostPlayer(modelContext, storyTellerName);
-            storyTellerId = PlayerHelper.GetPlayers(modelContext).First().PlayerId;
-        }
-
-        public static IActionResult AddPlayerInGame(ModelContext modelContext, long gameId, long? playerId)
-        {
-            GameController gameController = new(null!, modelContext);
-
-            var res = gameController.AddPlayerInGame(gameId, playerId);
-            return res;
-        }
-
-        public static IEnumerable<Player>? GetPlayersInGame(ModelContext modelContext, long gameId)
-        {
-            GameController gameController = new(null!, modelContext);
-
-            var res = gameController.GetPlayers(gameId);
-            return res;
-        }
-
-        public static IActionResult ChangePlayerRoleAndAlignmentInGame(ModelContext modelContext, long gameId, long playerId, long roleId, Alignment finalAlignment)
-        {
-            GameController gameController = new(null!, modelContext);
-
-            var res = gameController.ChangePlayerRoleAndAlignmentInGame(gameId, playerId, roleId, finalAlignment);
-            return res;
-        }
-
-        public static IEnumerable<PlayerRoleGame>? GetPlayerRoleFromGame(ModelContext modelContext, long gameId, long playerId)
-        {
-            GameController gameController = new(null!, modelContext);
-
-            var res = gameController.GetPlayerRoleFromGame(gameId, playerId);
-            return res;
+            modelContext.RemoveRange(modelContext.Games);
         }
     }
 }

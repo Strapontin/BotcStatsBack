@@ -20,412 +20,362 @@ namespace BotcRoles.Test
     public class GameControllerShould
     {
         [Test]
-        public void Post_And_Get_Game()
+        public void Get_Games()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-
-            GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
             // Act
-            var res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+            var res = GameHelper.GetGames(modelContext);
 
-            // Assert POST Ok
-            Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+            // Assert 
+            Assert.IsTrue(res.Count() > 0);
 
-            // Act
-            long gameId = GameHelper.GetGames(modelContext).First().GameId;
-            var game = GameHelper.GetGame(modelContext, gameId);
-
-            // Assert GET Ok
-            Assert.AreEqual(moduleName, game.Module.Name);
-            Assert.AreEqual(storyTellerName, game.StoryTeller.Name);
-
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Cant_Post_Game_With_Wrong_PlayerId()
+        public void Get_Game()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-
-            ModuleHelper.PostModule(modelContext, moduleName);
-            long moduleId = ModuleHelper.GetModules(modelContext).First().ModuleId;
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
             // Act
-            var res = GameHelper.PostGame(modelContext, moduleId, 1);
+            var res = GameHelper.GetGame(modelContext, 1);
 
-            // Assert
-            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            // Assert 
+            Assert.IsTrue(res != null);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Cant_Post_Game_With_Wrong_ModuleId()
+        public void Cant_Post_Game_Without_EditionId()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
 
             PlayerHelper.PostPlayer(modelContext, playerName);
-            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().PlayerId;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act
-            var res = GameHelper.PostGame(modelContext, 1, storyTellerId);
+            var res = GameHelper.PostGame(modelContext, null, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
             // Assert
-            Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Can_Post_Two_Games_With_Same_StoryTellerId_And_ModuleId()
+        public void Cant_Post_Game_With_Wrong_EditionId()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            string playerName = "PlayerName";
 
-            GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+            PlayerHelper.PostPlayer(modelContext, playerName);
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act
-            var res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+            var res = GameHelper.PostGame(modelContext, -1, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-            // Assert POST Ok
-            Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Cant_Post_Game_Without_StoryTellerId()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act
-            res = GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+            var res = GameHelper.PostGame(modelContext, editionId, null, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-            // Assert POST Ok
-            Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-            Helper.DeleteCreatedDatabase(modelContext);
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Delete_Game_Deletes_Only_One_Game()
+        public void Cant_Post_Game_With_Wrong_StoryTellerId()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, -1, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-                var games = GameHelper.GetGames(modelContext);
-                Assert.AreEqual(2, games.Count());
-                long gameId = games.First().GameId;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Act
-                var res = GameHelper.DeleteGame(modelContext, gameId);
-
-                // Assert
-                Assert.AreEqual(StatusCodes.Status200OK, ((OkResult)res).StatusCode);
-                Assert.IsTrue(!GameHelper.GetGames(modelContext).Any(g => g.GameId == gameId));
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Post_And_Get_Player_In_Game()
+        public void Cant_Post_Game_Without_DatePlayed()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, null, Alignment.Good, playersIdRolesId, rolesId);
 
-                // Act
-                var res = GameHelper.AddPlayerInGame(modelContext, gameId, playerId);
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res).StatusCode);
-
-                // Act
-                var players = GameHelper.GetPlayersInGame(modelContext, gameId)!;
-
-                // Assert
-                Assert.AreEqual(1, players.Count());
-                Assert.AreEqual(playerName, players.First().Name);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Change_Player_Role_And_Alignment_In_Game_And_Get_Correct_Value()
+        public void Cant_Post_Game_Without_WinningAlignment()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
-            string roleName = "RoleName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
-                GameHelper.AddPlayerInGame(modelContext, gameId, playerId);
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, null, DateTime.Now, null, playersIdRolesId, rolesId);
 
-                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Alignment.Evil);
-                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
-
-                // Act
-                var res = GameHelper.ChangePlayerRoleAndAlignmentInGame(modelContext, gameId, playerId, roleId, Alignment.Evil);
-
-                // Assert
-                Assert.AreEqual(StatusCodes.Status200OK, ((OkResult)res).StatusCode);
-
-                // Act
-                var value = GameHelper.GetPlayerRoleFromGame(modelContext, gameId, playerId)!;
-
-                // Assert
-                Assert.AreEqual(1, value.Count());
-                Assert.AreEqual(roleId, value.First().RoleId);
-                Assert.AreEqual(Alignment.Evil, value.First().FinalAlignment);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Cant_Change_Player_Role_And_Alignment_In_Game_If_Role_Is_Not_In_Role_Module()
+        public void Cant_Post_Game_With_Wrong_WinningAlignment()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
-            string roleName = "RoleName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
-                GameHelper.AddPlayerInGame(modelContext, gameId, playerId);
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, (Alignment)3, playersIdRolesId, rolesId);
 
-                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Alignment.Evil);
-                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Act
-                var res = GameHelper.ChangePlayerRoleAndAlignmentInGame(modelContext, gameId, playerId, roleId, Alignment.Evil);
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Cant_Add_Two_PlayerRoleGame_With_Same_PlayerId_And_GameId()
+        public void Cant_Post_Game_Without_PlayerRoles()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, null, rolesId);
 
-                // Act
-                var res1 = GameHelper.AddPlayerInGame(modelContext, gameId, playerId)!;
-                var res2 = GameHelper.AddPlayerInGame(modelContext, gameId, playerId)!;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status201Created, ((CreatedResult)res1).StatusCode);
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res2).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Return_Bad_Request_If_PlayerId_Not_Provided_When_Add_Player_In_Game()
+        public void Cant_Post_Game_With_Wrong_PlayerRole_Player_Id()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId));
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-                // Act
-                var res = GameHelper.AddPlayerInGame(modelContext, gameId, null)!;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Return_Bad_Request_If_GameId_Not_Found_When_Add_Player_In_Game()
+        public void Cant_Post_Game_With_Wrong_PlayerRole_Role_Id()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(modelContext.Players.OrderBy(p => p.PlayerId).Last().PlayerId, -1));
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-                // Act
-                var res = GameHelper.AddPlayerInGame(modelContext, gameId + 1, playerId)!;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Return_Bad_Request_If_PlayerId_Not_Found_When_Add_Player_In_Game()
+        public void Can_Post_Game()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-                // Act
-                var res = GameHelper.AddPlayerInGame(modelContext, gameId, playerId + 1)!;
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Return_Bad_Request_When_ChangePlayerRoleAndAlignmentInGame_And_PlayerRoleGame_Is_Not_Assigned_To_Game()
+        public void Can_Update_Game()
         {
             // Arrange
-            string fileName = Helper.GetCurrentMethodName() + ".db";
-            var modelContext = Helper.GetContext(fileName);
-            string moduleName = "ModuleName";
-            string storyTellerName = "StoryTellerName";
-            string playerName = "PlayerName";
-            string roleName = "RoleName";
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            GameHelper.DeleteAllGames(modelContext);
 
-            try
-            {
-                GameHelper.CreateModuleAndStoryTellerForGame(modelContext, moduleName, out long moduleId, storyTellerName, out long storyTellerId);
-                GameHelper.PostGame(modelContext, moduleId, storyTellerId);
-                var gameId = GameHelper.GetGames(modelContext).First().GameId;
+            #region Create game
 
-                PlayerHelper.PostPlayer(modelContext, playerName);
-                long playerId = PlayerHelper.GetPlayers(modelContext).First(p => p.Name == playerName).PlayerId;
-                //GameHelper.AddPlayerInGame(modelContext, gameId, playerId);
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
-                RoleHelper.AddRole(modelContext, roleName, Enums.Type.Demon, Alignment.Evil);
-                long roleId = RoleHelper.GetRoles(modelContext).First().RoleId;
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
-                ModuleHelper.AddRoleInModule(modelContext, moduleId, roleId);
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
-                // Act
-                var res = GameHelper.ChangePlayerRoleAndAlignmentInGame(modelContext, gameId, playerId, roleId, Alignment.Evil);
+            #endregion
 
-                // Assert
-                Assert.AreEqual(StatusCodes.Status400BadRequest, ((BadRequestObjectResult)res).StatusCode);
-            }
-            finally
-            {
-                Helper.DeleteCreatedDatabase(modelContext);
-            }
+            #region Update game
+
+            var gameId = GameHelper.GetGames(modelContext).First().Id;
+
+            res = GameHelper.UpdateGame(modelContext, gameId, editionId, storyTellerId + 1, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+            Assert.AreEqual(storyTellerId + 1, GameHelper.GetGame(modelContext, gameId).StoryTeller.Id);
+
+            #endregion
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Cant_Update_Game_Without_GameId()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            GameHelper.DeleteAllGames(modelContext);
+
+            #region Create game
+
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            #endregion
+
+            #region Update game
+
+            res = GameHelper.UpdateGame(modelContext, null, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
+
+            #endregion
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
+        public void Can_Delete_Game()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+            GameHelper.DeleteAllGames(modelContext);
+
+            var editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            var storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var alignment = Alignment.Good;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, alignment, playersIdRolesId, rolesId);
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            var gameId = GameHelper.GetGames(modelContext).First().Id;
+
+            // Act
+            res = GameHelper.DeleteGame(modelContext, gameId);
+            Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
+
+            Assert.AreEqual(0, GameHelper.GetGames(modelContext).Count());
         }
     }
 }
