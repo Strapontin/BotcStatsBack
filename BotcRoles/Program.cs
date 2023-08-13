@@ -8,8 +8,6 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Web;
 
-const string tbaServerId = "765137571608920074";
-const string storyTellerRoleId = "797739056406069279";
 
 var builder = WebApplication.CreateBuilder(args);
 
