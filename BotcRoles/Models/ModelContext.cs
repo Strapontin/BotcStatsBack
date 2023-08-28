@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace BotcRoles.Models
 {
@@ -64,9 +64,9 @@ namespace BotcRoles.Models
             if (!RolesEdition.Any())
                 InitRolesEdition();
             if (!Games.Any())
-                InitGames();
+                //InitGames();
             if (!PlayerRoleGames.Any())
-                InitPlayerRoleGames();
+                //InitPlayerRoleGames();
         }
 
         private void InitPlayers()
@@ -74,7 +74,7 @@ namespace BotcRoles.Models
             Players.AddRange(new List<Player> {
                 new Player("Anthony", "Strapontin"),
                 new Player("Pras"),
-                new Player("Mika"),
+                //new Player("Mika"),
                 new Player("Gil"),
                 new Player("Anthony", "Zariko"),
                 new Player("Jonathan", "Stashmou"),
@@ -82,7 +82,7 @@ namespace BotcRoles.Models
                 new Player("Eloise"),
                 new Player("Alexandre", "Pacha"),
                 new Player("Lauriane"),
-                new Player("Marwanne"),
+                //new Player("Marwanne"),
                 new Player("Alexandre", "Jila"),
                 new Player("Florian", "Goratschin"),
                 new Player("Florine"),
@@ -144,7 +144,7 @@ namespace BotcRoles.Models
         private void InitRolesEdition()
         {
             List<string> rolesTB = new() { "Lavandière", "Archiviste", "Enquêteur", "Cuistot", "Empathique", "Voyante", "Croque-Mort", "Moine", "Gardien","Pucelle",
-                "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp", "Marionnette" };
+                "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp", };
 
             Edition editionTb = Editions.First(m => m.Name == "Trouble Brewing");
 
