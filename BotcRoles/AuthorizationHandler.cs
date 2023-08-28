@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
@@ -16,7 +16,7 @@ namespace BotcRoles
         const string _storyTellerRoleId = "797739056406069279";
         const string _staffTBARoleId = "895968259201982484";
         const string _neoConteurRoleId = "1082696028404318370";
-        string[] authorizedRolesId = new string[] { _storyTellerRoleId, _staffTBARoleId, _neoConteurRoleId };
+        string[] authorizedRolesId = new string[] { _storyTellerRoleId };
         List<BearerStoryTeller> _bearerIsStoryTeller = new();
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsStoryTellerRequirement requirement)
