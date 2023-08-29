@@ -49,7 +49,7 @@ namespace BotcRoles.Test
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetCleanContext(fileName);
+            var modelContext = DBHelper.GetCleanContext(fileName, false);
             string editionName = "EditionName";
 
             // Act

@@ -32,6 +32,7 @@ namespace BotcRoles.Controllers
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
                 .Include(m => m.Games)
+                .ToList()
                 .Select(m => new EditionEntities(_db, m))
                 .ToList()
                 .OrderBy(m => m.Name.ToLowerRemoveDiacritics())
@@ -49,6 +50,7 @@ namespace BotcRoles.Controllers
                 .Where(m => m.EditionId == editionId)
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
+                .ToList()
                 .Select(m => new EditionEntities(_db, m))
                 .FirstOrDefault();
 

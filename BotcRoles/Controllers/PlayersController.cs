@@ -30,6 +30,7 @@ namespace BotcRoles.Controllers
             var players = _db.Players
                 .Where(p => !p.IsHidden)
                 .Include(p => p.PlayerRoleGames)
+                .ToList()
                 .Select(p => new PlayerEntities(_db, p))
                 .ToList()
                 .OrderBy(p => p.Name.ToLowerRemoveDiacritics())
@@ -47,6 +48,7 @@ namespace BotcRoles.Controllers
                 .Where(p => p.PlayerId == playerId)
                 .Include(p => p.PlayerRoleGames)
                     .ThenInclude(prg => prg.Game)
+                .ToList()
                 .Select(p => new PlayerEntities(_db, p))
                 .FirstOrDefault();
 

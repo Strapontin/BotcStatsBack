@@ -14,29 +14,70 @@ namespace BotcRoles.Models
 
 
         public string DbPath { get; }
+        public EnvironmentBuild EnvironmentBuild { get; }
 
         public ModelContext(DbContextOptions<ModelContext> options, IConfiguration config, bool initData = true) : base(options)
         {
-            var path = config["Db_Path"];
-            var name = config["Db_Name"];
-            DbPath = Path.Join(path, name);
-
-            if (!Directory.Exists(path))
+            switch (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
             {
-                Directory.CreateDirectory(path);
+                case "Production":
+                    EnvironmentBuild = EnvironmentBuild.Production;
+                    break;
+
+                case "Development":
+                    EnvironmentBuild = EnvironmentBuild.Development;
+                    //EnvironmentBuild = EnvironmentBuild.Tests;
+                    break;
+
+                default:
+                    EnvironmentBuild = EnvironmentBuild.Tests;
+                    break;
             }
 
-            bool dbExists = File.Exists(DbPath);
+            bool dbExists = true;
+
+            if (EnvironmentBuild == EnvironmentBuild.Tests)
+            {
+                var path = config["Db_Path"];
+                var name = config["Db_Name"];
+                DbPath = Path.Join(path, name);
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                dbExists = File.Exists(DbPath);
+            }
+            else if (EnvironmentBuild == EnvironmentBuild.Production)
+            {
+                DbPath = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+                //DbPath = "Host=ep-flat-grass-25871966.eu-central-1.aws.neon.tech; Database=neondb; Username=anthony-delorme-apollo; Password=";
+            }
+            else if(EnvironmentBuild == EnvironmentBuild.Development)
+            {
+                DbPath = "Host=localhost; Database=botc_stats_db; Username=postgres; Password=admin;";
+            }
 
             this.Database.Migrate();
 
-            if (!dbExists && initData)
+            if (initData && (EnvironmentBuild != EnvironmentBuild.Tests || !dbExists))
             {
                 InitDatabase();
             }
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            if (EnvironmentBuild == EnvironmentBuild.Tests)
+            {
+                options.UseSqlite($"Data Source={DbPath}");
+            }
+            else if (EnvironmentBuild == EnvironmentBuild.Production || EnvironmentBuild == EnvironmentBuild.Development)
+            {
+                options.UseNpgsql(DbPath);
+            }
+        }
 
 
 
@@ -63,10 +104,10 @@ namespace BotcRoles.Models
                 InitEditions();
             if (!RolesEdition.Any())
                 InitRolesEdition();
-            if (!Games.Any())
-                //InitGames();
-            if (!PlayerRoleGames.Any())
-                //InitPlayerRoleGames();
+            // if (!Games.Any())
+            //     InitGames();
+            // if (!PlayerRoleGames.Any())
+            //     InitPlayerRoleGames();
         }
 
         private void InitPlayers()
@@ -74,7 +115,6 @@ namespace BotcRoles.Models
             Players.AddRange(new List<Player> {
                 new Player("Anthony", "Strapontin"),
                 new Player("Pras"),
-                //new Player("Mika"),
                 new Player("Gil"),
                 new Player("Anthony", "Zariko"),
                 new Player("Jonathan", "Stashmou"),
@@ -82,7 +122,6 @@ namespace BotcRoles.Models
                 new Player("Eloise"),
                 new Player("Alexandre", "Pacha"),
                 new Player("Lauriane"),
-                //new Player("Marwanne"),
                 new Player("Alexandre", "Jila"),
                 new Player("Florian", "Goratschin"),
                 new Player("Florine"),
@@ -138,15 +177,33 @@ namespace BotcRoles.Models
         private void InitEditions()
         {
             Editions.Add(new Edition("Trouble Brewing"));
+            Editions.Add(new Edition("Bad Moon Rising"));
+            Editions.Add(new Edition("Sects And Violets"));
             this.SaveChanges();
         }
 
         private void InitRolesEdition()
         {
             List<string> rolesTB = new() { "Lavandière", "Archiviste", "Enquêteur", "Cuistot", "Empathique", "Voyante", "Croque-Mort", "Moine", "Gardien","Pucelle",
-                "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp", };
+                "Mercenaire", "Soldat", "Maire", "Majordome", "Soûlard", "Reclus", "Vertueux", "Empoisonneur", "Espion", "Croqueuse d'hommes", "Baron", "Imp" };
 
             Edition editionTb = Editions.First(m => m.Name == "Trouble Brewing");
+
+
+            List<string> rolesBMR = new() { "Mamie", "Marin", "Femme de Chambre", "Exorciste", "Aubergiste", "Parieur", "Commère", "Courtisane", "Professeur", "Ménestrel",
+                "Herboriste", "Pacifiste", "Fou", "Inventeur", "Gitane", "Brute", "Lunatique", "Parrain", "Avocat du Diable", "Assassin", "Conspirateur",
+                "Pukka", "Po", "Shabaloth", "Zombuul", "Apprenti", "Archevêque", "Magistrat", "Matrone", "Necromant" };
+
+            Edition editionBMR = Editions.First(m => m.Name == "Bad Moon Rising");
+
+
+            List<string> rolesSnV = new() { "Horloger", "Reveur", "Charmeur de serpent", "Mathematicien", "Fleuriste", "Crieur", "Oracle", "Savant", "Couturiere", "Faussaire",
+                "Artiste", "Jongleur", "Sage", "Bete de foire", "Barbier", "Dulcinée", "Maladroit", "Jumeau Maléfique", "Manipulateur", "Sorcière", "Vieille Chouette",
+                "Fang Gu", "No Dashii", "Vigormortis", "Vortox", "Barista", "Boucher", "Collecteur d'os", "Déviant", "Fille de joie" };
+
+
+            Edition editionSnV = Editions.First(m => m.Name == "Sects And Violets");
+
 
             List<RoleEdition> rolesEdition = new();
             foreach (var role in rolesTB)
@@ -154,6 +211,15 @@ namespace BotcRoles.Models
                 rolesEdition.Add(new RoleEdition(Roles.First(r => r.Name == role), editionTb));
             }
 
+            foreach (var role in rolesBMR)
+            {
+                rolesEdition.Add(new RoleEdition(Roles.First(r => r.Name == role), editionBMR));
+            }
+
+            foreach (var role in rolesSnV)
+            {
+                rolesEdition.Add(new RoleEdition(Roles.First(r => r.Name == role), editionSnV));
+            }
             RolesEdition.AddRange(rolesEdition);
             this.SaveChanges();
         }

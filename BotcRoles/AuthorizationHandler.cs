@@ -13,10 +13,14 @@ namespace BotcRoles
     public class IsStoryTellerAuthorizationHandler : AuthorizationHandler<IsStoryTellerRequirement>
     {
         const string _tbaServerId = "765137571608920074";
+
         const string _storyTellerRoleId = "797739056406069279";
         const string _staffTBARoleId = "895968259201982484";
         const string _neoConteurRoleId = "1082696028404318370";
-        string[] authorizedRolesId = new string[] { _storyTellerRoleId };
+
+        //string[] authorizedRolesId = new string[] { _storyTellerRoleId };
+        string[] authorizedRolesId = new string[] { _storyTellerRoleId, _staffTBARoleId, _neoConteurRoleId };
+
         List<BearerStoryTeller> _bearerIsStoryTeller = new();
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsStoryTellerRequirement requirement)

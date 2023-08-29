@@ -12,7 +12,7 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class DBHelper
     {
-        private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcRoles\BotcRoles\DB\BotcRoles_TestDatabases";
+        private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcStatsBack\BotcRoles\DB\BotcRoles_TestDatabases";
 
         public static string GetCurrentMethodName()
         {

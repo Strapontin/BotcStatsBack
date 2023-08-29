@@ -1,7 +1,6 @@
 ﻿using BotcRoles.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
@@ -55,6 +54,10 @@ namespace BotcRoles.Models
             builder
                 .Property(r => r.DefaultAlignment)
                 .IsRequired();
+
+            builder
+                .Property(p => p.IsHidden)
+                .HasConversion(Helper.Converter.GetConverterBoolToInt());
         }
     }
 }

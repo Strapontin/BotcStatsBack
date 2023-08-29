@@ -26,7 +26,7 @@ namespace BotcRoles.Entities
             }
 
             this.TimesPlayedTotal = db.PlayerRoleGames.Count(prg => prg.RoleId == this.Id);
-            this.TimesWonTotal = db.PlayerRoleGames.Where(prg => prg.RoleId == this.Id && prg.Game.WinningAlignment == prg.FinalAlignment).Count();
+            this.TimesWonTotal = db.PlayerRoleGames.Count(prg => prg.RoleId == this.Id && prg.Game.WinningAlignment == prg.FinalAlignment);
         }
 
         public long Id { get; set; }

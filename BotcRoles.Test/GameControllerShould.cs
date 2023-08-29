@@ -20,11 +20,39 @@ namespace BotcRoles.Test
     public class GameControllerShould
     {
         [Test]
+        public void Can_Post_Game()
+        {
+            // Arrange
+            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            var modelContext = DBHelper.GetCleanContext(fileName);
+
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            // Act
+            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
+
+            DBHelper.DeleteCreatedDatabase(modelContext);
+        }
+
+        [Test]
         public void Get_Games()
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
             var modelContext = DBHelper.GetCleanContext(fileName);
+
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
             // Act
             var res = GameHelper.GetGames(modelContext);
@@ -41,6 +69,13 @@ namespace BotcRoles.Test
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName() + ".db";
             var modelContext = DBHelper.GetCleanContext(fileName);
+
+            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
+            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
+            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
+            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
+
+            GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
 
             // Act
             var res = GameHelper.GetGame(modelContext, 1);
@@ -258,27 +293,6 @@ namespace BotcRoles.Test
 
             // Assert
             Assert.AreEqual(StatusCodes.Status400BadRequest, ((ObjectResult)res).StatusCode);
-
-            DBHelper.DeleteCreatedDatabase(modelContext);
-        }
-
-        [Test]
-        public void Can_Post_Game()
-        {
-            // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
-            var modelContext = DBHelper.GetCleanContext(fileName);
-
-            long editionId = EditionHelper.GetEditions(modelContext).First().Id;
-            long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
-            var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
-
-            // Act
-            var res = GameHelper.PostGame(modelContext, editionId, storyTellerId, DateTime.Now, Alignment.Good, playersIdRolesId, rolesId);
-
-            // Assert
-            Assert.AreEqual(StatusCodes.Status201Created, ((ObjectResult)res).StatusCode);
 
             DBHelper.DeleteCreatedDatabase(modelContext);
         }

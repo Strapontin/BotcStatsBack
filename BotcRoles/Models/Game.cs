@@ -1,7 +1,6 @@
 ﻿using BotcRoles.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
@@ -61,6 +60,18 @@ namespace BotcRoles.Models
                 .HasOne(g => g.StoryTeller)
                 .WithMany(p => p.GamesStoryTelling)
                 .HasForeignKey(g => g.StoryTellerId);
+
+            builder
+                .Property(p => p.IsHidden)
+                .HasConversion(Helper.Converter.GetConverterBoolToInt());
+
+            builder
+                .Property(p => p.DateCreated)
+                .HasConversion(Helper.Converter.GetConverterDateTimeToString());
+
+            builder
+                .Property(p => p.DatePlayed)
+                .HasConversion(Helper.Converter.GetConverterDateTimeToString());
         }
     }
 }

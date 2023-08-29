@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
 
 namespace BotcRoles.Models
 {
@@ -48,6 +47,10 @@ namespace BotcRoles.Models
                 .HasIndex(p => new { p.Name, p.Pseudo })
                 .IsUnique()
                 .HasFilter(null);
+
+            builder
+                .Property(p => p.IsHidden)
+                .HasConversion(Helper.Converter.GetConverterBoolToInt());
         }
     }
 }

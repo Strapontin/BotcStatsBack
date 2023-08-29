@@ -34,6 +34,7 @@ namespace BotcRoles.Controllers
                 .Include(g => g.PlayerRoleGames)
                 .Include(g => g.DemonBluffs)
                 .OrderByDescending(g => g.DatePlayed)
+                .ToList()
                 .Select(g => new GameEntities(_db, g))
                 .ToList();
 
@@ -57,6 +58,7 @@ namespace BotcRoles.Controllers
                     .ThenInclude(prg => prg.Role)
                 .Include(g => g.DemonBluffs)
                     .ThenInclude(demonBluff => demonBluff.Role)
+                .ToList()
                 .Select(g => new GameEntities(_db, g))
                 .FirstOrDefault();
 

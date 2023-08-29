@@ -29,6 +29,7 @@ namespace BotcRoles.Controllers
         {
             var roles = _db.Roles
                 .Where(p => !p.IsHidden)
+                .ToList()
                 .Select(r => new RoleEntities(_db, r))
                 .ToList()
                 .OrderBy(r => r.CharacterType)
@@ -45,6 +46,7 @@ namespace BotcRoles.Controllers
         {
             var role = _db.Roles
                 .Where(p => p.RoleId == roleId)
+                .ToList()
                 .Select(p => new RoleEntities(_db, p))
                 .FirstOrDefault();
 
