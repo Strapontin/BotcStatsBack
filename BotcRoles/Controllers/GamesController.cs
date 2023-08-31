@@ -225,7 +225,10 @@ namespace BotcRoles.Controllers
                     return null;
                 }
 
-                playersRoles.Add(new PlayerRoleGame(playerDb, roleDb, null));
+                var pgr = new PlayerRoleGame(playerDb, roleDb, null);
+                pgr.FinalAlignment = roleDb.DefaultAlignment; // TODO : Changer ça pour mettre l'alignement final du joueur passé depuis le front
+
+                playersRoles.Add(pgr);
             }
 
             // Demon bluffs
