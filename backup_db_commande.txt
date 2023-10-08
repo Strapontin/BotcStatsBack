@@ -1,0 +1,7 @@
+
+pg_dump -h ep-gentle-rice-14582194.eu-central-1.aws.neon.tech -U Strapontin -d neondb -Fc -f E:\Anthony\Devs\Devs\_backups_neon\botcstat_07_10_2023.backup
+
+
+
+pg_restore -U postgres -v -d botc_stats_db E:\Anthony\Devs\Devs\_backups_neon\botcstat_07_10_2023.backup
+

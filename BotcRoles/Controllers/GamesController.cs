@@ -1,7 +1,6 @@
 using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;

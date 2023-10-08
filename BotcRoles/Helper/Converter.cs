@@ -14,9 +14,11 @@ namespace BotcRoles.Helper
         }
         public static ValueConverter GetConverterDateTimeToString()
         {
+            var culture = new CultureInfo("en-US");
+
             return new ValueConverter<DateTime, string>(
-                v => v.ToString(),
-                v => DateTime.Parse(v));
+                v => v.ToString(culture),
+                v => DateTime.Parse(v, culture));
         }
     }
 }
