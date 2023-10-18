@@ -29,9 +29,6 @@ namespace BotcRoles.Controllers
         {
             var editions = _db.Editions
                 .Where(e => !e.IsHidden)
-                .Include(m => m.RolesEdition)
-                    .ThenInclude(rm => rm.Role)
-                .Include(m => m.Games)
                 .ToList()
                 .Select(m => new EditionEntities(_db, m))
                 .ToList()

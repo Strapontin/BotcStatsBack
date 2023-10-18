@@ -28,10 +28,7 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<GameEntities>> GetGames()
         {
             var games = _db.Games
-                .Include(g => g.Edition)
                 .Include(g => g.StoryTeller)
-                .Include(g => g.PlayerRoleGames)
-                .Include(g => g.DemonBluffs)
                 .OrderByDescending(g => g.DatePlayed)
                 .ToList()
                 .Select(g => new GameEntities(_db, g))
