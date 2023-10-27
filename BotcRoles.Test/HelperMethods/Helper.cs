@@ -12,7 +12,10 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class DBHelper
     {
-        private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcStatsBack\BotcRoles\DB\BotcRoles_TestDatabases";
+        //private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcStatsBack\BotcRoles\DB\BotcRoles_TestDatabases";
+
+        // TODO : a voir pour mettre le nom du test dans 'Database=', et drop du coup la bdd correctement à la fin des tests
+        private static readonly string _dbPath = "Host=localhost; Database=botc_stats_db_test; Username=postgres; Password=admin;";
 
         public static string GetCurrentMethodName()
         {
@@ -61,9 +64,9 @@ namespace BotcRoles.Test.HelperMethods
             modelContext.Roles.Add(new Role("roleName", Enums.CharacterType.Townsfolk, Enums.Alignment.Good));
             modelContext.Editions.Add(new Edition("editionName"));
             modelContext.SaveChanges();
-            
+
             modelContext.Games.Add(new Game(modelContext.Editions.First(),
-                modelContext.Players.First(), 
+                modelContext.Players.First(),
                 DateTime.Now,
                 "",
                 Enums.Alignment.Good));

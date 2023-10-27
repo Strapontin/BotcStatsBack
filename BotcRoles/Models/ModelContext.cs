@@ -42,21 +42,21 @@ namespace BotcRoles.Models
                 var name = config["Db_Name"];
                 DbPath = Path.Join(path, name);
 
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                //if (!Directory.Exists(path))
+                //{
+                //    Directory.CreateDirectory(path);
+                //}
 
-                dbExists = File.Exists(DbPath);
+                //dbExists = File.Exists(DbPath);
             }
             else if (EnvironmentBuild == EnvironmentBuild.Production)
             {
                 DbPath = Environment.GetEnvironmentVariable("CONNECTION_STRING");
                 //DbPath = "Host=ep-flat-grass-25871966.eu-central-1.aws.neon.tech; Database=neondb; Username=anthony-delorme-apollo; Password=";
             }
-            else if(EnvironmentBuild == EnvironmentBuild.Development)
+            else if (EnvironmentBuild == EnvironmentBuild.Development)
             {
-                DbPath = "Host=localhost; Database=botc_stats_db; Username=postgres; Password=admin;";
+                DbPath = "Host=localhost; Database=botc_stats_db; Username=postgres; Password=postgres;";
             }
 
             this.Database.Migrate();
