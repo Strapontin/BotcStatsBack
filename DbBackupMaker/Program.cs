@@ -12,6 +12,7 @@ class Program
         if (!File.Exists("./secrets"))
         {
             Console.WriteLine($"No secrets file found at {AppDomain.CurrentDomain.BaseDirectory}");
+            Console.ReadKey();
             return;
         }
         var secrets = File.ReadAllLines("./secrets");
@@ -62,6 +63,7 @@ class Program
             backupDirectory == string.Empty)
         {
             Console.WriteLine("Not all values found, exiting");
+            Console.ReadKey();
             return;
         }
 
@@ -77,6 +79,7 @@ class Program
         if (File.Exists(backupFile))
         {
             Console.WriteLine($"File already exists at {backupFile}. Exiting");
+            Console.ReadKey();
             return;
         }
 
@@ -98,6 +101,8 @@ class Program
         {
             Console.WriteLine("Error during backup : " + ex.Message);
         }
+        Console.ReadKey();
+
     }
 
     private static Task Execute(string dumpCommand)
