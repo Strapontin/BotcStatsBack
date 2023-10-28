@@ -24,6 +24,10 @@ namespace BotcRoles.Models
                     EnvironmentBuild = EnvironmentBuild.Production;
                     break;
 
+                case "Recette":
+                    EnvironmentBuild = EnvironmentBuild.Recette;
+                    break;
+
                 case "Development":
                     EnvironmentBuild = EnvironmentBuild.Development;
                     //EnvironmentBuild = EnvironmentBuild.Tests;
@@ -49,7 +53,8 @@ namespace BotcRoles.Models
 
                 //dbExists = File.Exists(DbPath);
             }
-            else if (EnvironmentBuild == EnvironmentBuild.Production)
+            else if (EnvironmentBuild == EnvironmentBuild.Production ||
+                EnvironmentBuild == EnvironmentBuild.Recette)
             {
                 DbPath = Environment.GetEnvironmentVariable("CONNECTION_STRING");
                 //DbPath = "Host=ep-flat-grass-25871966.eu-central-1.aws.neon.tech; Database=neondb; Username=anthony-delorme-apollo; Password=";
