@@ -78,7 +78,9 @@ namespace BotcRoles.Models
             {
                 options.UseSqlite($"Data Source={DbPath}");
             }
-            else if (EnvironmentBuild == EnvironmentBuild.Production || EnvironmentBuild == EnvironmentBuild.Development)
+            else if (EnvironmentBuild == EnvironmentBuild.Production || 
+                EnvironmentBuild == EnvironmentBuild.Recette ||
+                EnvironmentBuild == EnvironmentBuild.Development)
             {
                 options.UseNpgsql(DbPath);
             }
