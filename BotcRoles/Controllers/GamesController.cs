@@ -30,6 +30,7 @@ namespace BotcRoles.Controllers
             var games = _db.Games
                 .Include(g => g.StoryTeller)
                 .OrderByDescending(g => g.DatePlayed)
+                .ThenBy(g => g.StoryTeller.Name)
                 .ToList()
                 .Select(g => new GameEntities(_db, g))
                 .ToList();

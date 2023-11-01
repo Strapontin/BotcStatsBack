@@ -68,7 +68,7 @@ class Program
         }
 
         // Timestamp (for backup file naming)
-        string timestamp = DateTime.Now.ToString("dd_MM_yyyy");
+        string timestamp = DateTime.Now.ToString("yyyy_MM_dd");
 
         // Filename for the backup file
         string backupFile = $"{backupDirectory}botcstat_{timestamp}.backup";
@@ -120,7 +120,7 @@ class Program
 
                 ProcessStartInfo info = ProcessInfoByOS(batFilePath);
 
-                using Process proc = Process.Start(info);
+                using Process proc = Process.Start(info)!;
 
                 proc.WaitForExit();
                 var exit = proc.ExitCode;
