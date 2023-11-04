@@ -263,7 +263,7 @@ namespace BotcRoles.Test
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
             var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId));
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId, modelContext.Roles.First().DefaultAlignment));
             var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act
@@ -285,7 +285,7 @@ namespace BotcRoles.Test
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
             var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            playersIdRolesId.Add(new Entities.PlayerIdRoleId(modelContext.Players.OrderBy(p => p.PlayerId).Last().PlayerId, -1));
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(modelContext.Players.OrderBy(p => p.PlayerId).Last().PlayerId, -1, Alignment.Evil));
             var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act
