@@ -30,7 +30,6 @@ namespace BotcRoles.Models
 
                 case "Development":
                     EnvironmentBuild = EnvironmentBuild.Development;
-                    //EnvironmentBuild = EnvironmentBuild.Tests;
                     break;
 
                 default:
@@ -38,26 +37,15 @@ namespace BotcRoles.Models
                     break;
             }
 
-            bool dbExists = true;
 
             if (EnvironmentBuild == EnvironmentBuild.Tests)
             {
-                var path = config["Db_Path"];
-                var name = config["Db_Name"];
-                DbPath = Path.Join(path, name);
-
-                //if (!Directory.Exists(path))
-                //{
-                //    Directory.CreateDirectory(path);
-                //}
-
-                //dbExists = File.Exists(DbPath);
+                DbPath = config["Db_Path"];
             }
             else if (EnvironmentBuild == EnvironmentBuild.Production ||
                 EnvironmentBuild == EnvironmentBuild.Recette)
             {
                 DbPath = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-                //DbPath = "Host=ep-flat-grass-25871966.eu-central-1.aws.neon.tech; Database=neondb; Username=anthony-delorme-apollo; Password=";
             }
             else if (EnvironmentBuild == EnvironmentBuild.Development)
             {
@@ -66,7 +54,7 @@ namespace BotcRoles.Models
 
             this.Database.Migrate();
 
-            if (initData && (EnvironmentBuild != EnvironmentBuild.Tests || !dbExists))
+            if (initData)
             {
                 InitDatabase();
             }
@@ -74,16 +62,7 @@ namespace BotcRoles.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            if (EnvironmentBuild == EnvironmentBuild.Tests)
-            {
-                options.UseSqlite($"Data Source={DbPath}");
-            }
-            else if (EnvironmentBuild == EnvironmentBuild.Production || 
-                EnvironmentBuild == EnvironmentBuild.Recette ||
-                EnvironmentBuild == EnvironmentBuild.Development)
-            {
-                options.UseNpgsql(DbPath);
-            }
+            options.UseNpgsql(DbPath);
         }
 
 

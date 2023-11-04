@@ -12,7 +12,7 @@ namespace BotcRoles.Test
         public void Post_And_Get_Player()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             modelContext.Players.RemoveRange(modelContext.Players);
             string playerName = "PlayerName";
@@ -42,7 +42,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Two_Players_With_Same_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
 
@@ -58,7 +58,7 @@ namespace BotcRoles.Test
         public void Can_Post_Two_Players_With_Same_Name_And_Different_Pseudo()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
             string pseudo1 = "pseudo1";
@@ -76,7 +76,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Player_With_Empty_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = string.Empty;
 
@@ -91,7 +91,7 @@ namespace BotcRoles.Test
         public void Can_Update_Player()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             PlayerHelper.DeleteAllPlayers(modelContext);
             string roleName = "playerName";
@@ -120,7 +120,7 @@ namespace BotcRoles.Test
         public void Can_Delete_Player_Not_In_PlayerRoleGame()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
 
 
@@ -141,7 +141,7 @@ namespace BotcRoles.Test
         public void Delete_Player_In_PlayerRoleGameOr_StoryTeller_Sets_Hidden()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
             DBHelper.CreateBasicDataInAllTables(modelContext);
             PlayerHelper.PostPlayer(modelContext, "player2");
@@ -152,7 +152,7 @@ namespace BotcRoles.Test
             modelContext.SaveChanges();
 
 
-            foreach (var player in modelContext.Players)
+            foreach (var player in modelContext.Players.ToList())
             {
                 var res = PlayerHelper.DeletePlayer(modelContext, player.PlayerId);
                 Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
