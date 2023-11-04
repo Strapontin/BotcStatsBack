@@ -14,7 +14,7 @@ namespace BotcRoles.Test
         public void Get_Editions()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             // Act
@@ -30,7 +30,7 @@ namespace BotcRoles.Test
         public void Get_Edition()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             var editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -48,7 +48,7 @@ namespace BotcRoles.Test
         public void Post_And_Get_Edition()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
             string editionName = "EditionName";
 
@@ -70,7 +70,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Two_Editions_With_Same_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
 
@@ -86,7 +86,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Edition_With_Empty_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = string.Empty;
 
@@ -101,7 +101,7 @@ namespace BotcRoles.Test
         public void Post_Edition_And_Assign_Roles()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
             EditionHelper.DeleteAllEditions(modelContext);
@@ -131,7 +131,7 @@ namespace BotcRoles.Test
         public void Post_Edition_And_Assign_Non_Existing_Roles_Should_Fail()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string editionName = "EditionName";
             EditionHelper.DeleteAllEditions(modelContext);
@@ -157,7 +157,7 @@ namespace BotcRoles.Test
         public void Can_Update_Edition()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             EditionHelper.DeleteAllEditions(modelContext);
             string editionName = "editionName";
@@ -185,7 +185,7 @@ namespace BotcRoles.Test
         public void Can_Update_Edition_With_Same_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             EditionHelper.DeleteAllEditions(modelContext);
             string editionName = "editionName";
@@ -212,7 +212,7 @@ namespace BotcRoles.Test
         public void Can_Delete_Edition_Not_In_Game()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
 
 
@@ -233,12 +233,12 @@ namespace BotcRoles.Test
         public void Delete_Edition_In_Game_Sets_Hidden()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
             DBHelper.CreateBasicDataInAllTables(modelContext);
             int countEditions = modelContext.Editions.Count();
 
-            foreach (var player in modelContext.Editions)
+            foreach (var player in modelContext.Editions.ToList())
             {
                 var res = EditionHelper.DeleteEdition(modelContext, player.EditionId);
                 Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);

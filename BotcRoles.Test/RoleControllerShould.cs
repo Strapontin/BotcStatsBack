@@ -13,7 +13,7 @@ namespace BotcRoles.Test
         public void Post_And_Get_Role()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
             RoleHelper.DeleteAllRoles(modelContext);
@@ -37,7 +37,7 @@ namespace BotcRoles.Test
         public void Get_Role_By_Id()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             var roleId = RoleHelper.GetRoles(modelContext).First().Id;
 
@@ -54,7 +54,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Two_Roles_With_Same_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
@@ -70,7 +70,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Role_With_Empty_Name()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = string.Empty;
 
@@ -85,7 +85,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Role_With_Empty_Type()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
@@ -100,7 +100,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Role_With_Empty_Alignement()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string roleName = "RoleName";
 
@@ -115,7 +115,7 @@ namespace BotcRoles.Test
         public void Can_Update_Role()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             RoleHelper.DeleteAllRoles(modelContext);
             string roleName = "roleName";
@@ -146,7 +146,7 @@ namespace BotcRoles.Test
         public void Can_Delete_Role_Not_In_PlayerRoleGame()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
 
             string roleName = "playerName";
@@ -169,7 +169,7 @@ namespace BotcRoles.Test
         public void Delete_Role_In_Edition_Removes_It_From_Edition()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
 
             string roleName = "playerName";
@@ -196,7 +196,7 @@ namespace BotcRoles.Test
         public void Delete_Role_In_PlayerRoleGame_Sets_Hidden()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName, false);
             DBHelper.CreateBasicDataInAllTables(modelContext);
 
@@ -206,7 +206,7 @@ namespace BotcRoles.Test
                 modelContext.Games.First()));
             modelContext.SaveChanges();
 
-            foreach (var role in modelContext.Roles)
+            foreach (var role in modelContext.Roles.ToList())
             {
                 var res = RoleHelper.DeleteRole(modelContext, role.RoleId);
                 Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);

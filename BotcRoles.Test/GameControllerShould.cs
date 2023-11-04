@@ -23,7 +23,7 @@ namespace BotcRoles.Test
         public void Can_Post_Game()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -44,7 +44,7 @@ namespace BotcRoles.Test
         public void Get_Games()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -67,7 +67,7 @@ namespace BotcRoles.Test
         public void Get_Game()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -90,7 +90,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_Without_EditionId()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
 
@@ -112,7 +112,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_With_Wrong_EditionId()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             string playerName = "PlayerName";
 
@@ -134,7 +134,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_Without_StoryTellerId()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -154,7 +154,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_With_Wrong_StoryTellerId()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -174,7 +174,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_Without_DatePlayed()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -195,7 +195,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_Without_WinningAlignment()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -215,7 +215,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_With_Wrong_WinningAlignment()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -236,7 +236,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_Without_PlayerRoles()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -257,7 +257,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_With_Wrong_PlayerRole_Player_Id()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -279,7 +279,7 @@ namespace BotcRoles.Test
         public void Cant_Post_Game_With_Wrong_PlayerRole_Role_Id()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
 
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
@@ -301,7 +301,7 @@ namespace BotcRoles.Test
         public void Can_Update_Game()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             GameHelper.DeleteAllGames(modelContext);
 
@@ -337,7 +337,7 @@ namespace BotcRoles.Test
         public void Cant_Update_Game_Without_GameId()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             GameHelper.DeleteAllGames(modelContext);
 
@@ -370,7 +370,7 @@ namespace BotcRoles.Test
         public void Can_Delete_Game()
         {
             // Arrange
-            string fileName = DBHelper.GetCurrentMethodName() + ".db";
+            string fileName = DBHelper.GetCurrentMethodName();
             var modelContext = DBHelper.GetCleanContext(fileName);
             GameHelper.DeleteAllGames(modelContext);
 
