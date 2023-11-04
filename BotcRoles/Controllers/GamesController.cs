@@ -223,7 +223,7 @@ namespace BotcRoles.Controllers
                 }
 
                 var pgr = new PlayerRoleGame(playerDb, roleDb, null);
-                pgr.FinalAlignment = roleDb.DefaultAlignment; // TODO : Changer ça pour mettre l'alignement final du joueur passé depuis le front
+                pgr.FinalAlignment = playerIdRoleId.FinalAlignment;
 
                 playersRoles.Add(pgr);
             }
