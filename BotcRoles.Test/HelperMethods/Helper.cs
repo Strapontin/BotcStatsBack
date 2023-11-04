@@ -12,10 +12,7 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class DBHelper
     {
-        //private static readonly string _dbPath = @"E:\Anthony\Devs\Devs\BotcStatsBack\BotcRoles\DB\BotcRoles_TestDatabases";
-
-        // TODO : a voir pour mettre le nom du test dans 'Database=', et drop du coup la bdd correctement à la fin des tests
-        private static readonly string _dbPath = "Host=localhost; Database=botc_stats_db_test; Username=postgres; Password=admin;";
+        private static readonly string _dbPath = "Host=localhost; Database={0}; Username=postgres; Password=postgres;";
 
         public static string GetCurrentMethodName()
         {
@@ -27,21 +24,15 @@ namespace BotcRoles.Test.HelperMethods
 
         public static ModelContext GetCleanContext(string methodName, bool initData = true)
         {
-            DeleteCreatedDatabase(GetContext(methodName, true));
+            DeleteCreatedDatabase(GetContext(methodName, initData));
             return GetContext(methodName, initData);
         }
 
         private static ModelContext GetContext(string methodName, bool initData)
         {
-            if (!Directory.Exists(_dbPath))
-            {
-                Directory.CreateDirectory(_dbPath);
-            }
-
             var settings = new Dictionary<string, string>
             {
-                { "Db_Path", _dbPath },
-                { "Db_Name", methodName },
+                { "Db_Path", _dbPath.Replace("{0}", methodName.ToLower()) },
             };
 
             IConfiguration config = new ConfigurationBuilder()
