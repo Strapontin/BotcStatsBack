@@ -1,12 +1,8 @@
-using BotcRoles;
+using BotcRoles.AuthorizationHandlers;
 using BotcRoles.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text.Json;
-using System.Web;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,12 +49,28 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddSingleton<IAuthorizationHandler, IsStoryTellerAuthorizationHandler>();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    //options.Authority = "https://localhost:5000"; // URL of Identity Server; use IConfiguration instead of hardcoding 
+    //options.Audience = "client.mydomain.com"; // ID of the client application; either hardcoded or configureable via IConfiguration if needed 
+    options.RequireHttpsMetadata = true; // require HTTPS (may be disabled in development, but advice against it)
+    options.SaveToken = true; // cache the token for faster authentication
+    options.IncludeErrorDetails = true; // get more details on errors; may be disabled in production 
+});
+
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
 
+    //options.AddPolicy("IsConnectedToDiscord", policy => policy.Requirements.Add(new IsConnectedToDiscordRequirement()));
     options.AddPolicy("IsStoryTeller", policy => policy.Requirements.Add(new IsStoryTellerRequirement()));
 });
 
