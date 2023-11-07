@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
-namespace BotcRoles
+namespace BotcRoles.AuthorizationHandlers
 {
     public class IsStoryTellerRequirement : IAuthorizationRequirement
     {
@@ -46,7 +47,15 @@ namespace BotcRoles
             // If the user has already authenticated 
             if (_bearerIsStoryTeller.Any(b => b.Bearer == bearer))
             {
-                ResolveContext(context, requirement, bearer);
+                // If user has the rights
+                if (_bearerIsStoryTeller.Find(b => b.Bearer == bearer).IsStoryTeller)
+                {
+                    context.Succeed(requirement);
+                }
+                else
+                {
+                    context.Fail();
+                }
                 return;
             }
             else
@@ -65,7 +74,7 @@ namespace BotcRoles
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Serializing {contentStream}");
+                    Console.WriteLine($"Serializing User Data : '{contentStream}'");
                     var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(contentStream);
 
                     if (userGuildDetails == null || userGuildDetails.user == null)
@@ -79,6 +88,10 @@ namespace BotcRoles
                         isUserStoryTeller = true;
                         context.Succeed(requirement);
                     }
+                    else
+                    {
+                        context.Fail();
+                    }
                 }
                 else
                 {
@@ -87,19 +100,6 @@ namespace BotcRoles
 
                 _bearerIsStoryTeller.Add(new(bearer, isUserStoryTeller, DateTime.Now));
                 return;
-            }
-        }
-
-        private void ResolveContext(AuthorizationHandlerContext context, IsStoryTellerRequirement requirement, string bearer)
-        {
-            // If user has the rights
-            if (_bearerIsStoryTeller.Find(b => b.Bearer == bearer).IsStoryTeller)
-            {
-                context.Succeed(requirement);
-            }
-            else
-            {
-                context.Fail();
             }
         }
 
