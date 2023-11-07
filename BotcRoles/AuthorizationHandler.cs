@@ -65,6 +65,7 @@ namespace BotcRoles
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Serializing {contentStream}");
                     var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(contentStream);
 
                     if (userGuildDetails == null || userGuildDetails.user == null)
