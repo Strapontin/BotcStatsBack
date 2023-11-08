@@ -133,7 +133,7 @@ namespace BotcRoles.AuthorizationHandlers
             public int public_flags { get; set; }
             public int flags { get; set; }
             public string? banner { get; set; }
-            public string? accent_color { get; set; }
+            public int? accent_color { get; set; }
             public string? global_name { get; set; }
             public string? avatar_decoration { get; set; }
             public string? display_name { get; set; }
