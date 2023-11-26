@@ -37,6 +37,7 @@ namespace BotcRoles.Entities
                 .Select(r => new RoleEntities(db, r.Key, player.PlayerRoleGames))
                 .OrderByDescending(re => re.TimesPlayedByPlayer)
                 .ThenByDescending(re => re.TimesWonByPlayer)
+                .ThenBy(re => re.CharacterType)
                 .ThenBy(re => re.Name)
                 .ToList();
         }
