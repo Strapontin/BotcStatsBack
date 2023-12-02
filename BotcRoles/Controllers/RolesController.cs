@@ -164,14 +164,14 @@ namespace BotcRoles.Controllers
 
             if (!int.TryParse(data["characterType"]?.ToString(), out int ctInt) || !Enum.IsDefined(typeof(CharacterType), ctInt))
             {
-                error = $"Une erreur a été rencontrée avec le paramètre 'characterType'.";
+                error = $"Le type de personnage n'est pas renseigné.";
                 return null;
             }
             CharacterType characterType = (CharacterType)ctInt;
 
             if (!int.TryParse(data["alignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
             {
-                error = $"Une erreur a été rencontrée avec le paramètre 'alignment'.";
+                error = $"L'alignement n'est pas renseigné.";
                 return null;
             }
             Alignment alignment = (Alignment)alignmentInt;

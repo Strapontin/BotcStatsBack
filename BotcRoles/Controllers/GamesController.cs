@@ -177,7 +177,7 @@ namespace BotcRoles.Controllers
             var storyTeller = _db.Players.FirstOrDefault(e => e.PlayerId == storyTellerId);
             if (storyTeller == null)
             {
-                error = $"Le module avec l'id '{storyTellerId}' n'a pas été trouvé";
+                error = $"Le conteur avec l'id '{storyTellerId}' n'a pas été trouvé";
                 return null;
             }
 
@@ -191,7 +191,7 @@ namespace BotcRoles.Controllers
 
             if (!int.TryParse(data["winningAlignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
             {
-                error = $"Une erreur a été rencontrée avec le paramètre 'winningAlignment'.";
+                error = $"L'alignement gagnant n'est pas renseigné.";
                 return null;
             }
             Alignment winningAlignment = (Alignment)alignmentInt;

@@ -165,7 +165,7 @@ namespace BotcRoles.Controllers
                 .Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics() &&
                           (m.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics())))
             {
-                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe déj?.";
+                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe déjà.";
                 return null;
             }
 
