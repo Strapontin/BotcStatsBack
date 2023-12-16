@@ -145,7 +145,7 @@ namespace BotcRoles.Models
             }
 
             List<string> demonNames = new() { "Al-Hadikhia", "Emeutier", "Fang Gu", "Imp", "Légion", "Léviathan", "Po", "Pukka", "No Dashii", "Sangsue", "Shabaloth",
-                "P'tit Monstre", "Vigormortis", "Vortox", "Zombuul" };
+                "Ptit Monstre", "Vigormortis", "Vortox", "Zombuul" };
             foreach (var demon in demonNames)
             {
                 Roles.Add(new Role(demon, Enums.CharacterType.Demon, Enums.Alignment.Evil));
