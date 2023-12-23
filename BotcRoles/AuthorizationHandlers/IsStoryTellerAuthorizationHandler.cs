@@ -74,7 +74,8 @@ namespace BotcRoles.AuthorizationHandlers
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     // If we're on the recette, the user doesn't have to be a storyteller
-                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Recette")
+                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Recette" ||
+                        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                     {
                         context.Succeed(requirement);
                         _bearerIsStoryTeller.Add(new(bearer, true, DateTime.Now));

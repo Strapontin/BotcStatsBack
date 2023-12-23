@@ -75,11 +75,11 @@ namespace BotcRoles.Test.HelperMethods
         {
             var result = new List<PlayerIdRoleId>()
             {
-                new (modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId, modelContext.Roles.First().DefaultAlignment),
-                new (modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId, modelContext.Roles.Skip(1).First().DefaultAlignment),
-                new (modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId, modelContext.Roles.Skip(2).First().DefaultAlignment),
-                new (modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId, modelContext.Roles.Skip(3).First().DefaultAlignment),
-                new (modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId, modelContext.Roles.Skip(4).First().DefaultAlignment),
+                new (modelContext.Players.First().PlayerId, modelContext.Roles.First().RoleId, Alignment.Good),
+                new (modelContext.Players.Skip(1).First().PlayerId, modelContext.Roles.Skip(1).First().RoleId, Alignment.Good),
+                new (modelContext.Players.Skip(2).First().PlayerId, modelContext.Roles.Skip(2).First().RoleId, Alignment.Good),
+                new (modelContext.Players.Skip(3).First().PlayerId, modelContext.Roles.Skip(3).First().RoleId, Alignment.Good),
+                new (modelContext.Players.Skip(4).First().PlayerId, modelContext.Roles.Skip(4).First().RoleId, Alignment.Good),
             };
 
             return result;

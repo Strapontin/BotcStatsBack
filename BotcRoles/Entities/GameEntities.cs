@@ -23,7 +23,6 @@ namespace BotcRoles.Entities
             {
                 this.PlayerRoles = game.PlayerRoleGames
                     .Select(prg => new PlayerRoleEntities(db, prg))
-                    .OrderBy(prg => prg.Role.Alignment)
                     .ToList();
             }
 
@@ -31,7 +30,7 @@ namespace BotcRoles.Entities
             {
                 this.DemonBluffs = game.DemonBluffs
                     .Select(demonBluff => new RoleEntities(db, demonBluff.Role))
-                    .OrderBy(role => role.Alignment)
+                    .OrderBy(role => role.CharacterType)
                     .ToList();
             }
         }
