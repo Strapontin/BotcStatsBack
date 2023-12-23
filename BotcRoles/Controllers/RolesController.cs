@@ -25,10 +25,21 @@ namespace BotcRoles.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<RoleEntities>> GetRoles()
+        public ActionResult<IEnumerable<RoleEntities>> GetRoles([FromQuery(Name = "characterTypes")] List<int>? characterTypes)
         {
+            characterTypes = characterTypes != null && characterTypes.Count != 0 ? characterTypes :
+                new List<int>()
+                {
+                    (int)CharacterType.Townsfolk,
+                    (int)CharacterType.Outsider,
+                    (int)CharacterType.Minion,
+                    (int)CharacterType.Demon,
+                    (int)CharacterType.Traveller,
+                    (int)CharacterType.Fabled,
+                };
+
             var roles = _db.Roles
-                .Where(p => !p.IsHidden)
+                .Where(p => !p.IsHidden && characterTypes.Contains((int)p.CharacterType))
                 .ToList()
                 .Select(r => new RoleEntities(_db, r))
                 .ToList()
@@ -102,7 +113,6 @@ namespace BotcRoles.Controllers
 
                 role.Name = tempRole.Name;
                 role.CharacterType = tempRole.CharacterType;
-                role.DefaultAlignment = tempRole.DefaultAlignment;
                 _db.SaveChanges();
 
                 return Created("", null);
@@ -169,15 +179,7 @@ namespace BotcRoles.Controllers
             }
             CharacterType characterType = (CharacterType)ctInt;
 
-            if (!int.TryParse(data["alignment"]?.ToString(), out int alignmentInt) || !Enum.IsDefined(typeof(Alignment), alignmentInt))
-            {
-                error = $"L'alignement n'est pas renseigné.";
-                return null;
-            }
-            Alignment alignment = (Alignment)alignmentInt;
-
-
-            Role role = new(roleName, characterType, alignment);
+            Role role = new(roleName, characterType);
 
             return role;
         }

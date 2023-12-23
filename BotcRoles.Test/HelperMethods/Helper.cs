@@ -52,7 +52,7 @@ namespace BotcRoles.Test.HelperMethods
         public static void CreateBasicDataInAllTables(ModelContext modelContext)
         {
             modelContext.Players.Add(new Player("playerName", "pseudo"));
-            modelContext.Roles.Add(new Role("roleName", Enums.CharacterType.Townsfolk, Enums.Alignment.Good));
+            modelContext.Roles.Add(new Role("roleName", Enums.CharacterType.Townsfolk));
             modelContext.Editions.Add(new Edition("editionName"));
             modelContext.SaveChanges();
 

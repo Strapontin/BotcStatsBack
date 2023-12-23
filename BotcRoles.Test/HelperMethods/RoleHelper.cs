@@ -14,11 +14,11 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class RoleHelper
     {
-        public static IActionResult AddRole(ModelContext modelContext, string roleName, CharacterType? characterType, Alignment? alignment)
+        public static IActionResult AddRole(ModelContext modelContext, string roleName, CharacterType? characterType)
         {
             RolesController roleController = new(null!, modelContext);
 
-            JObject rolePost = JObject.FromObject(new { roleName, characterType, alignment });
+            JObject rolePost = JObject.FromObject(new { roleName, characterType });
 
             var res = roleController.AddRole(rolePost);
             return res;
@@ -28,7 +28,7 @@ namespace BotcRoles.Test.HelperMethods
         {
             RolesController roleController = new(null!, modelContext);
 
-            return roleController.GetRoles().Value;
+            return roleController.GetRoles(null).Value;
         }
 
         public static RoleEntities GetRoleById(ModelContext modelContext, long id)
@@ -38,7 +38,7 @@ namespace BotcRoles.Test.HelperMethods
             return roleController.GetRoleById(id).Value;
         }
 
-        internal static IActionResult UpdateRole(ModelContext modelContext, long roleId, string roleName, CharacterType characterType, Alignment alignment)
+        internal static IActionResult UpdateRole(ModelContext modelContext, long roleId, string roleName, CharacterType characterType)
         {
             RolesController rolesController = new(null!, modelContext);
 
@@ -47,7 +47,6 @@ namespace BotcRoles.Test.HelperMethods
                 roleId,
                 roleName,
                 characterType,
-                alignment,
             };
 
             var res = rolesController.UpdateRole(JObject.FromObject(data));

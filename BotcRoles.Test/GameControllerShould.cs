@@ -263,7 +263,7 @@ namespace BotcRoles.Test
             long editionId = EditionHelper.GetEditions(modelContext).First().Id;
             long storyTellerId = PlayerHelper.GetPlayers(modelContext).First().Id;
             var playersIdRolesId = GameHelper.GetCorrectPlayersIdRolesId(modelContext);
-            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId, modelContext.Roles.First().DefaultAlignment));
+            playersIdRolesId.Add(new Entities.PlayerIdRoleId(-1, modelContext.Roles.First().RoleId, Alignment.Good));
             var rolesId = RoleHelper.GetRoles(modelContext).Take(3).Select(r => r.Id).ToList();
 
             // Act

@@ -16,7 +16,6 @@ namespace BotcRoles.Entities
             this.Id = role.RoleId;
             this.Name = role.Name;
             this.CharacterType = role.CharacterType;
-            this.Alignment = role.DefaultAlignment;
 
             if (rolesIdPlayed != null && !rolesIdPlayed.Any(rip => rip.Game == null))
             {
@@ -32,7 +31,6 @@ namespace BotcRoles.Entities
         public long Id { get; set; }
         public string Name { get; set; }
         public CharacterType CharacterType { get; set; }
-        public Alignment Alignment { get; set; }
 
         public int TimesPlayedByPlayer { get; set; }
         public int TimesWonByPlayer { get; set; }

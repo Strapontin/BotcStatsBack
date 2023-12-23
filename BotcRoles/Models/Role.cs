@@ -11,18 +11,16 @@ namespace BotcRoles.Models
     {
         public Role() { }
 
-        public Role(string name, CharacterType characterType, Alignment defaultAlignment)
+        public Role(string name, CharacterType characterType)
         {
             Name = name;
             CharacterType = characterType;
-            DefaultAlignment = defaultAlignment;
             IsHidden = false;
         }
 
         public long RoleId { get; set; }
         public string Name { get; set; }
         public CharacterType CharacterType { get; set; }
-        public Alignment DefaultAlignment { get; set; }
         public bool IsHidden { get; set; }
 
         public List<RoleEdition> RolesEdition { get; set; }
@@ -49,10 +47,6 @@ namespace BotcRoles.Models
 
             builder
                 .Property(r => r.CharacterType)
-                .IsRequired();
-
-            builder
-                .Property(r => r.DefaultAlignment)
                 .IsRequired();
 
             builder
