@@ -70,6 +70,20 @@ namespace BotcRoles.Test.HelperMethods
             return res.Value;
         }
 
+        public static IEnumerable<GameEntities> GetGamesByPlayer(ModelContext modelContext, long playerId)
+        {
+            GamesController gamesController = new(null!, modelContext);
+
+            return gamesController.GetGamesByPlayerId(playerId).Value;
+        }
+
+        public static IEnumerable<GameEntities> GetGamesByStoryteller(ModelContext modelContext, long storytellerId)
+        {
+            GamesController gamesController = new(null!, modelContext);
+
+            return gamesController.GetGamesByStorytellerId(storytellerId).Value;
+        }
+
 
         public static List<PlayerIdRoleId> GetCorrectPlayersIdRolesId(ModelContext modelContext)
         {
