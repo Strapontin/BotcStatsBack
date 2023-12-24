@@ -62,6 +62,42 @@ namespace BotcRoles.Controllers
             return game == null ? NotFound() : game;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByPlayerId/{playerId}")]
+        public ActionResult<List<GameEntities>> GetGamesByPlayerId(long playerId)
+        {
+            var games = _db.Games
+                .Where(g => g.PlayerRoleGames.Any(prg => prg.PlayerId == playerId))
+                .Include(g => g.StoryTeller)
+                .OrderByDescending(g => g.DatePlayed)
+                .ThenBy(g => g.StoryTeller.Name)
+                .ToList()
+                .Select(g => new GameEntities(_db, g))
+                .ToList();
+
+            return games;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByStoryTellerId/{storytellerId}")]
+        public ActionResult<List<GameEntities>> GetGamesByStorytellerId(long storytellerId)
+        {
+            var games = _db.Games
+                .Where(g => g.StoryTellerId == storytellerId)
+                .Include(g => g.StoryTeller)
+                .Include(g => g.PlayerRoleGames)
+                .Include(g => g.Edition)
+                .OrderByDescending(g => g.DatePlayed)
+                .ThenBy(g => g.StoryTeller.Name)
+                .ToList()
+                .Select(g => new GameEntities(_db, g))
+                .ToList();
+
+            return games;
+        }
+
         [HttpPost]
         [Route("")]
         public IActionResult CreateGame([FromBody] JObject data)
