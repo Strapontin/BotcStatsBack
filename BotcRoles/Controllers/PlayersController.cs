@@ -30,6 +30,7 @@ namespace BotcRoles.Controllers
             var players = _db.Players
                 .Where(p => !p.IsHidden)
                 .Include(p => p.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Game)
                 .ToList()
                 .Select(p => new PlayerEntities(_db, p))
                 .ToList()

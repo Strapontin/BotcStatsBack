@@ -19,8 +19,11 @@ namespace BotcRoles.Entities
 
             this.NbGamesPlayed = player.PlayerRoleGames.Count;
 
-            this.NbGamesGood = player.PlayerRoleGames.Count(prg => prg.FinalAlignment == Enums.Alignment.Good);
-            this.NbGamesEvil = player.PlayerRoleGames.Count(prg => prg.FinalAlignment == Enums.Alignment.Evil);
+            var gamesGood = player.PlayerRoleGames.Where(prg => prg.FinalAlignment == Enums.Alignment.Good);
+            var gamesEvil = player.PlayerRoleGames.Where(prg => prg.FinalAlignment == Enums.Alignment.Evil);
+
+            this.NbGamesGood = gamesGood.Count();
+            this.NbGamesEvil = gamesEvil.Count();
 
             if (player.PlayerRoleGames.Any(prg => prg.Game == null))
             {
@@ -29,6 +32,9 @@ namespace BotcRoles.Entities
 
             this.NbGamesWon = player.PlayerRoleGames.Count(prg => prg.Game.WinningAlignment == prg.FinalAlignment);
             this.NbGamesLost = player.PlayerRoleGames.Count(prg => prg.Game.WinningAlignment != prg.FinalAlignment);
+
+            this.NbGamesGoodWon = gamesGood.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Good);
+            this.NbGamesEvilWon = gamesEvil.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Evil);
 
             this.TimesPlayedRole = db.PlayerRoleGames
                 .Where(prg => prg.PlayerId == this.Id)
@@ -52,6 +58,9 @@ namespace BotcRoles.Entities
 
         public int NbGamesWon { get; set; }
         public int NbGamesLost { get; set; }
+
+        public int NbGamesGoodWon { get; set; }
+        public int NbGamesEvilWon { get; set; }
 
 
         public List<RoleEntities> TimesPlayedRole { get; set; }
