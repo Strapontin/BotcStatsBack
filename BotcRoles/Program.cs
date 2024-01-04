@@ -47,7 +47,7 @@ builder.Services.AddControllersWithViews()
 
 //});
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsStoryTellerAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsStorytellerAuthorizationHandler>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -71,7 +71,7 @@ builder.Services.AddAuthorization(options =>
         .Build();
 
     //options.AddPolicy("IsConnectedToDiscord", policy => policy.Requirements.Add(new IsConnectedToDiscordRequirement()));
-    options.AddPolicy("IsStoryTeller", policy => policy.Requirements.Add(new IsStoryTellerRequirement()));
+    options.AddPolicy("IsStoryteller", policy => policy.Requirements.Add(new IsStorytellerRequirement()));
 });
 
 

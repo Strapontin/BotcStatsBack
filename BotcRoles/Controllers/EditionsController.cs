@@ -8,7 +8,7 @@ using BotcRoles.Helper;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "IsStoryTeller")]
+    [Authorize(Policy = "IsStoryteller")]
     [ApiController]
     [Route("[controller]")]
     public class EditionsController : ControllerBase
@@ -27,10 +27,16 @@ namespace BotcRoles.Controllers
         [Route("")]
         public ActionResult<IEnumerable<EditionEntities>> GetEditions()
         {
+            var allGames = _db.Games
+                .ToList()
+                .GroupBy(g => g.EditionId);
+
             var editions = _db.Editions
                 .Where(e => !e.IsHidden)
+                .Include(e => e.RolesEdition)
+                    .ThenInclude(re => re.Role)
                 .ToList()
-                .Select(m => new EditionEntities(_db, m))
+                .Select(m => new EditionEntities(m, allGames.FirstOrDefault(g => g.Key == m.EditionId)?.ToList()))
                 .ToList()
                 .OrderBy(m => m.Name.ToLowerRemoveDiacritics())
                 .ToList();
@@ -48,7 +54,7 @@ namespace BotcRoles.Controllers
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
                 .ToList()
-                .Select(m => new EditionEntities(_db, m))
+                .Select(m => new EditionEntities(m))
                 .FirstOrDefault();
 
             return edition == null ? NotFound() : edition;

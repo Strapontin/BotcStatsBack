@@ -58,7 +58,7 @@ namespace BotcRoles.Migrations
                     GameId = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ModuleId = table.Column<long>(type: "INTEGER", nullable: false),
-                    StoryTellerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    StorytellerId = table.Column<long>(type: "INTEGER", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
                     WinningAlignment = table.Column<int>(type: "INTEGER", nullable: false)
@@ -73,8 +73,8 @@ namespace BotcRoles.Migrations
                         principalColumn: "ModuleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Games_Players_StoryTellerId",
-                        column: x => x.StoryTellerId,
+                        name: "FK_Games_Players_StorytellerId",
+                        column: x => x.StorytellerId,
                         principalTable: "Players",
                         principalColumn: "PlayerId",
                         onDelete: ReferentialAction.Cascade);
@@ -143,9 +143,9 @@ namespace BotcRoles.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_StoryTellerId",
+                name: "IX_Games_StorytellerId",
                 table: "Games",
-                column: "StoryTellerId");
+                column: "StorytellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Modules_Name",

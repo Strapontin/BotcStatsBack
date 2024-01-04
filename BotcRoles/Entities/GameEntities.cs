@@ -4,16 +4,16 @@ namespace BotcRoles.Entities
 {
     public class GameEntities
     {
-        public GameEntities(Models.ModelContext db, Models.Game game)
+        public GameEntities(Models.Game game, List<Models.Game> allGames = null)
         {
             this.Id = game.GameId;
 
             if (game.Edition != null)
             {
-                this.Edition = new EditionEntities(db, game.Edition);
+                this.Edition = new EditionEntities(game.Edition, allGames?.Where(g => g.EditionId == game.EditionId).ToList());
             }
 
-            this.StoryTeller = new PlayerEntities(db, game.StoryTeller);
+            this.Storyteller = new PlayerEntities(game.Storyteller);
 
             this.DatePlayed = game.DatePlayed;
             this.Notes = game.Notes;
@@ -22,14 +22,14 @@ namespace BotcRoles.Entities
             if (game.PlayerRoleGames != null)
             {
                 this.PlayerRoles = game.PlayerRoleGames
-                    .Select(prg => new PlayerRoleEntities(db, prg))
+                    .Select(prg => new PlayerRoleEntities(prg))
                     .ToList();
             }
 
             if (game.DemonBluffs != null)
             {
                 this.DemonBluffs = game.DemonBluffs
-                    .Select(demonBluff => new RoleEntities(db, demonBluff.Role))
+                    .Select(demonBluff => new RoleEntities(demonBluff.Role))
                     .OrderBy(role => role.CharacterType)
                     .ToList();
             }
@@ -37,7 +37,7 @@ namespace BotcRoles.Entities
 
         public long Id { get; set; }
         public EditionEntities Edition { get; set; }
-        public PlayerEntities StoryTeller { get; set; }
+        public PlayerEntities Storyteller { get; set; }
         public DateTime DatePlayed { get; set; }
         public string Notes { get; set; }
         public Alignment WinningAlignment { get; set; }

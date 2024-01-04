@@ -5,7 +5,7 @@ namespace BotcRoles.Entities
 {
     public class PlayerEntities
     {
-        public PlayerEntities(Models.ModelContext db, Models.Player player)
+        public PlayerEntities(Models.Player player)
         {
             if (player == null)
                 return;
@@ -36,11 +36,11 @@ namespace BotcRoles.Entities
             this.NbGamesGoodWon = gamesGood.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Good);
             this.NbGamesEvilWon = gamesEvil.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Evil);
 
-            this.TimesPlayedRole = db.PlayerRoleGames
-                .Where(prg => prg.PlayerId == this.Id)
-                .Include(prg => prg.Role).ToList()
+            this.TimesPlayedRole = player.PlayerRoleGames
+                //.Where(prg => prg.PlayerId == this.Id)
+                //.Include(prg => prg.Role).ToList()
                 .GroupBy(prg => prg.Role)
-                .Select(r => new RoleEntities(db, r.Key, player.PlayerRoleGames))
+                .Select(r => new RoleEntities(r.Key, player.PlayerRoleGames))
                 .OrderByDescending(re => re.TimesPlayedByPlayer)
                 .ThenByDescending(re => re.TimesWonByPlayer)
                 .ThenBy(re => re.CharacterType)

@@ -5,23 +5,17 @@ namespace BotcRoles.Entities
 {
     public class EditionEntities
     {
-        public EditionEntities(Models.ModelContext db, Models.Edition edition)
+        public EditionEntities(Models.Edition edition, List<Models.Game> gamesWithThisEdition = null)
         {
             this.Id = edition.EditionId;
             this.Name = edition.Name;
-            this.Roles = edition.RolesEdition?.Select(rm => new RoleEntities(db, rm.Role)).ToList();
+            this.Roles = edition.RolesEdition?.Select(rm => new RoleEntities(rm.Role)).ToList();
 
+            if (gamesWithThisEdition == null) { return; }
 
-            this.TimesPlayed = db.Editions
-                .Include(m => m.Games)
-                .First(m => m.EditionId == this.Id)
-                .Games.Count;
-
-            this.TimesGoodWon = db.Editions
-                .Include(m => m.Games)
-                .First(m => m.EditionId == this.Id)
-                .Games.Where(g => g.WinningAlignment == Enums.Alignment.Good)
-                .Count();
+            this.TimesPlayed = gamesWithThisEdition.Count;
+            this.TimesGoodWon = gamesWithThisEdition.Count(g => g.WinningAlignment == Enums.Alignment.Good);
+            this.TimesEvilWon = gamesWithThisEdition.Count(g => g.WinningAlignment == Enums.Alignment.Evil);
         }
 
 
@@ -31,5 +25,6 @@ namespace BotcRoles.Entities
 
         public int TimesPlayed { get; set; }
         public int TimesGoodWon { get; set; }
+        public int TimesEvilWon { get; set; }
     }
 }

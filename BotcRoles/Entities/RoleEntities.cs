@@ -6,9 +6,8 @@ namespace BotcRoles.Entities
     {
         public RoleEntities() { }
 
-        public RoleEntities(Models.ModelContext db, Models.Role role) : this(db, role, null) { }
 
-        public RoleEntities(Models.ModelContext db, Models.Role role, List<Models.PlayerRoleGame> rolesIdPlayed)
+        public RoleEntities(Models.Role role, List<Models.PlayerRoleGame> prgFilterRole = null)
         {
             if (role == null)
                 return;
@@ -17,15 +16,16 @@ namespace BotcRoles.Entities
             this.Name = role.Name;
             this.CharacterType = role.CharacterType;
 
-            if (rolesIdPlayed != null && !rolesIdPlayed.Any(rip => rip.Game == null))
+            if (prgFilterRole != null)
             {
-                this.TimesPlayedByPlayer = rolesIdPlayed.Count(rip => rip.RoleId == this.Id);
-                this.TimesLostByPlayer = rolesIdPlayed.Count(rip => rip.RoleId == this.Id && rip.Game.WinningAlignment != rip.FinalAlignment);
-                this.TimesWonByPlayer = rolesIdPlayed.Count(rip => rip.RoleId == this.Id && rip.Game.WinningAlignment == rip.FinalAlignment);
-            }
+                this.TimesPlayedTotal = prgFilterRole.Count;
+                this.TimesWonTotal = prgFilterRole.Count(prg => prg.Game.WinningAlignment == prg.FinalAlignment);
+                this.TimesLostTotal = prgFilterRole.Count(prg => prg.Game.WinningAlignment != prg.FinalAlignment);
 
-            this.TimesPlayedTotal = db.PlayerRoleGames.Count(prg => prg.RoleId == this.Id);
-            this.TimesWonTotal = db.PlayerRoleGames.Count(prg => prg.RoleId == this.Id && prg.Game.WinningAlignment == prg.FinalAlignment);
+                this.TimesPlayedByPlayer = prgFilterRole.Count(rip => rip.RoleId == this.Id);
+                this.TimesLostByPlayer = prgFilterRole.Count(rip => rip.RoleId == this.Id && rip.Game.WinningAlignment != rip.FinalAlignment);
+                this.TimesWonByPlayer = prgFilterRole.Count(rip => rip.RoleId == this.Id && rip.Game.WinningAlignment == rip.FinalAlignment);
+            }
         }
 
         public long Id { get; set; }
@@ -39,5 +39,6 @@ namespace BotcRoles.Entities
 
         public int TimesPlayedTotal { get; set; }
         public int TimesWonTotal { get; set; }
+        public int TimesLostTotal { get; set; }
     }
 }

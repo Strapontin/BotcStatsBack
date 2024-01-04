@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "IsStoryTeller")]
+    [Authorize(Policy = "IsStoryteller")]
     [ApiController]
     [Route("[controller]")]
     public class RolesController : ControllerBase
@@ -38,10 +39,15 @@ namespace BotcRoles.Controllers
                     (int)CharacterType.Fabled,
                 };
 
+            var allPlayerRoleGames = _db.PlayerRoleGames
+                .Include(prg => prg.Game)
+                .ToList()
+                .GroupBy(prg => prg.RoleId);
+
             var roles = _db.Roles
                 .Where(p => !p.IsHidden && characterTypes.Contains((int)p.CharacterType))
                 .ToList()
-                .Select(r => new RoleEntities(_db, r))
+                .Select(r => new RoleEntities(r, allPlayerRoleGames.FirstOrDefault(prg => prg.Key== r.RoleId)?.ToList()))
                 .ToList()
                 .OrderBy(r => r.CharacterType)
                 .ThenBy(r => r.Name.ToLowerRemoveDiacritics())
@@ -55,10 +61,12 @@ namespace BotcRoles.Controllers
         [Route("{roleId}")]
         public ActionResult<RoleEntities> GetRoleById(long roleId)
         {
+            var prgRole = _db.PlayerRoleGames.Where(prg => prg.RoleId == roleId).ToList();
+
             var role = _db.Roles
-                .Where(p => p.RoleId == roleId)
+                .Where(r => r.RoleId == roleId)
                 .ToList()
-                .Select(p => new RoleEntities(_db, p))
+                .Select(r => new RoleEntities(r, prgRole))
                 .FirstOrDefault();
 
             return role == null ? NotFound() : role;

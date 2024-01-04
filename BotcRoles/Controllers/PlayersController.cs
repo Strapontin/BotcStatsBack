@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "IsStoryTeller")]
+    [Authorize(Policy = "IsStoryteller")]
     [ApiController]
     [Route("[controller]")]
     public class PlayersController : ControllerBase
@@ -32,10 +32,10 @@ namespace BotcRoles.Controllers
                 .Include(p => p.PlayerRoleGames)
                     .ThenInclude(prg => prg.Game)
                 .ToList()
-                .Select(p => new PlayerEntities(_db, p))
-                .ToList()
-                .OrderBy(p => p.Name.ToLowerRemoveDiacritics())
-                .ThenBy(p => p.Pseudo.ToLowerRemoveDiacritics())
+                .Select(p => new PlayerEntities(p))
+                //.ToList()
+                //.OrderBy(p => p.Name.ToLowerRemoveDiacritics())
+                //.ThenBy(p => p.Pseudo.ToLowerRemoveDiacritics())
                 .ToList();
             return players;
         }
@@ -49,8 +49,10 @@ namespace BotcRoles.Controllers
                 .Where(p => p.PlayerId == playerId)
                 .Include(p => p.PlayerRoleGames)
                     .ThenInclude(prg => prg.Game)
+                .Include(p => p.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Role)
                 .ToList()
-                .Select(p => new PlayerEntities(_db, p))
+                .Select(p => new PlayerEntities(p))
                 .FirstOrDefault();
 
             return player == null ? NotFound() : player;
@@ -127,7 +129,7 @@ namespace BotcRoles.Controllers
                 }
 
                 if (_db.PlayerRoleGames.Any(prg => prg.PlayerId == playerId) ||
-                    _db.Games.Any(g => g.StoryTellerId == playerId))
+                    _db.Games.Any(g => g.StorytellerId == playerId))
                 {
                     _db.Players.First(p => p.PlayerId == playerId).IsHidden = true;
                     _db.SaveChanges();
