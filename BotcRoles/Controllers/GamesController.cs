@@ -31,12 +31,11 @@ namespace BotcRoles.Controllers
                 .Include(g => g.Storyteller)
                 .Include(g => g.Edition)
                 .Include(g => g.PlayerRoleGames)
-                //.OrderByDescending(g => g.DatePlayed)
-                //.ThenBy(g => g.Storyteller.Name)
+                    .ThenInclude(prg => prg.Role)
                 .ToList();
 
             var games = allGames
-                .Select(g => new GameEntities(g, allGames)) 
+                .Select(g => new GameEntities(g, allGames))
                 .ToList();
 
             return games;
@@ -66,21 +65,55 @@ namespace BotcRoles.Controllers
             return game == null ? NotFound() : game;
         }
 
+        private List<GameEntities> FillDbSetGamesByParamId(IQueryable<Game> games)
+        {
+            return games
+                .Include(g => g.Storyteller)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Role)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
+                .OrderByDescending(g => g.DatePlayed)
+                .ThenBy(g => g.Storyteller.Name)
+                .ToList()
+                .Select(g => new GameEntities(g))
+                .ToList();
+        }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("ByPlayerId/{playerId}")]
         public ActionResult<List<GameEntities>> GetGamesByPlayerId(long playerId)
         {
             var games = _db.Games
-                .Where(g => g.PlayerRoleGames.Any(prg => prg.PlayerId == playerId))
-                .Include(g => g.Storyteller)
-                .OrderByDescending(g => g.DatePlayed)
-                .ThenBy(g => g.Storyteller.Name)
-                .ToList()
-                .Select(g => new GameEntities(g))
-                .ToList();
+                .Where(g => g.PlayerRoleGames.Any(prg => prg.PlayerId == playerId));
 
-            return games;
+            var result = FillDbSetGamesByParamId(games);
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByRoleId/{roleId}")]
+        public ActionResult<List<GameEntities>> GetGamesByRoleId(long roleId)
+        {
+            var games = _db.Games
+                .Where(g => g.PlayerRoleGames.Any(prg => prg.RoleId == roleId));
+
+            var result = FillDbSetGamesByParamId(games);
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByEditionId/{editionId}")]
+        public ActionResult<List<GameEntities>> GetGamesByEditionId(long editionId)
+        {
+            var games = _db.Games
+                .Where(g => g.EditionId == editionId);
+
+            var result = FillDbSetGamesByParamId(games);
+            return result;
         }
 
         [AllowAnonymous]

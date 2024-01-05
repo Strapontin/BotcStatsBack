@@ -41,13 +41,14 @@ namespace BotcRoles.Controllers
 
             var allPlayerRoleGames = _db.PlayerRoleGames
                 .Include(prg => prg.Game)
+                .Include(prg => prg.Player)
                 .ToList()
                 .GroupBy(prg => prg.RoleId);
 
             var roles = _db.Roles
                 .Where(p => !p.IsHidden && characterTypes.Contains((int)p.CharacterType))
                 .ToList()
-                .Select(r => new RoleEntities(r, allPlayerRoleGames.FirstOrDefault(prg => prg.Key== r.RoleId)?.ToList()))
+                .Select(r => new RoleEntities(r, allPlayerRoleGames.FirstOrDefault(prg => prg.Key == r.RoleId)?.ToList()))
                 .ToList()
                 .OrderBy(r => r.CharacterType)
                 .ThenBy(r => r.Name.ToLowerRemoveDiacritics())
@@ -61,7 +62,11 @@ namespace BotcRoles.Controllers
         [Route("{roleId}")]
         public ActionResult<RoleEntities> GetRoleById(long roleId)
         {
-            var prgRole = _db.PlayerRoleGames.Where(prg => prg.RoleId == roleId).ToList();
+            var prgRole = _db.PlayerRoleGames
+                .Where(prg => prg.RoleId == roleId)
+                .Include(prg => prg.Game)
+                .Include(prg => prg.Player)
+                .ToList();
 
             var role = _db.Roles
                 .Where(r => r.RoleId == roleId)

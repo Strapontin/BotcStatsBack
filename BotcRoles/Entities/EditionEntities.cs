@@ -16,6 +16,24 @@ namespace BotcRoles.Entities
             this.TimesPlayed = gamesWithThisEdition.Count;
             this.TimesGoodWon = gamesWithThisEdition.Count(g => g.WinningAlignment == Enums.Alignment.Good);
             this.TimesEvilWon = gamesWithThisEdition.Count(g => g.WinningAlignment == Enums.Alignment.Evil);
+
+            var playersWhoPlayedEdition = gamesWithThisEdition
+                .SelectMany(g => g.PlayerRoleGames)
+                .GroupBy(prg => prg.Player);
+            this.PlayersWhoPlayedEdition = new();
+
+            foreach (var player in playersWhoPlayedEdition)
+            {
+                player.Key.PlayerRoleGames = null;
+
+                this.PlayersWhoPlayedEdition.Add(new Entities.PlayersWhoPlayedEdition()
+                {
+                    Player = new PlayerEntities(player.Key),
+                    TimesPlayedEdition = player.Count(),
+                    TimesWon = player.Count(prg => prg.Game.WinningAlignment == prg.FinalAlignment),
+                    TimesLost = player.Count(prg => prg.Game.WinningAlignment != prg.FinalAlignment),
+                });
+            }
         }
 
 
@@ -26,5 +44,15 @@ namespace BotcRoles.Entities
         public int TimesPlayed { get; set; }
         public int TimesGoodWon { get; set; }
         public int TimesEvilWon { get; set; }
+
+        public List<PlayersWhoPlayedEdition> PlayersWhoPlayedEdition { get; set; }
+    }
+
+    public class PlayersWhoPlayedEdition
+    {
+        public PlayerEntities Player { get; set; }
+        public int TimesPlayedEdition { get; set; }
+        public int TimesWon { get; set; }
+        public int TimesLost { get; set; }
     }
 }

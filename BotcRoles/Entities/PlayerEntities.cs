@@ -36,11 +36,14 @@ namespace BotcRoles.Entities
             this.NbGamesGoodWon = gamesGood.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Good);
             this.NbGamesEvilWon = gamesEvil.Count(prg => prg.Game.WinningAlignment == Enums.Alignment.Evil);
 
+            var playerRoleGames = player.PlayerRoleGames
+                .GroupBy(prg => prg.RoleId);
+
             this.TimesPlayedRole = player.PlayerRoleGames
                 //.Where(prg => prg.PlayerId == this.Id)
                 //.Include(prg => prg.Role).ToList()
                 .GroupBy(prg => prg.Role)
-                .Select(r => new RoleEntities(r.Key, player.PlayerRoleGames))
+                .Select(r => new RoleEntities(r.Key, playerRoleGames.FirstOrDefault(prg => prg.Key == r.Key.RoleId).ToList()))
                 .OrderByDescending(re => re.TimesPlayedByPlayer)
                 .ThenByDescending(re => re.TimesWonByPlayer)
                 .ThenBy(re => re.CharacterType)

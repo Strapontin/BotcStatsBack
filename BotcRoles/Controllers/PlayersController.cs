@@ -31,11 +31,10 @@ namespace BotcRoles.Controllers
                 .Where(p => !p.IsHidden)
                 .Include(p => p.PlayerRoleGames)
                     .ThenInclude(prg => prg.Game)
+                .Include(p => p.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Role)
                 .ToList()
                 .Select(p => new PlayerEntities(p))
-                //.ToList()
-                //.OrderBy(p => p.Name.ToLowerRemoveDiacritics())
-                //.ThenBy(p => p.Pseudo.ToLowerRemoveDiacritics())
                 .ToList();
             return players;
         }

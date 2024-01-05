@@ -28,6 +28,8 @@ namespace BotcRoles.Controllers
         public ActionResult<IEnumerable<EditionEntities>> GetEditions()
         {
             var allGames = _db.Games
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
                 .ToList()
                 .GroupBy(g => g.EditionId);
 
@@ -49,12 +51,18 @@ namespace BotcRoles.Controllers
         [Route("{editionId}")]
         public ActionResult<EditionEntities> GetEditionById(long editionId)
         {
+            var gamesWithThisEdition = _db.Games
+                .Where(g => g.EditionId == editionId)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
+                .ToList();
+
             var edition = _db.Editions
                 .Where(m => m.EditionId == editionId)
                 .Include(m => m.RolesEdition)
                     .ThenInclude(rm => rm.Role)
                 .ToList()
-                .Select(m => new EditionEntities(m))
+                .Select(m => new EditionEntities(m, gamesWithThisEdition))
                 .FirstOrDefault();
 
             return edition == null ? NotFound() : edition;
