@@ -32,6 +32,8 @@ namespace BotcRoles.Controllers
                 .Include(g => g.Edition)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Role)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
                 .ToList();
 
             var games = allGames
