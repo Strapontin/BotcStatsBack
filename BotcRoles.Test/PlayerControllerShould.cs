@@ -135,10 +135,11 @@ namespace BotcRoles.Test
             Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
 
             Assert.AreEqual(0, PlayerHelper.GetPlayers(modelContext).Count());
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
-        public void Delete_Player_In_PlayerRoleGameOr_StoryTeller_Sets_Hidden()
+        public void Delete_Player_In_PlayerRoleGameOr_Storyteller_Sets_Hidden()
         {
             // Arrange
             string fileName = DBHelper.GetCurrentMethodName();
@@ -161,6 +162,7 @@ namespace BotcRoles.Test
             Assert.AreEqual(0, PlayerHelper.GetPlayers(modelContext).Count());
             Assert.AreEqual(2, modelContext.Players.Count());
             Assert.IsTrue(modelContext.Players.All(p => p.IsHidden));
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
     }
 }

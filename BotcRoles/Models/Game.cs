@@ -11,10 +11,10 @@ namespace BotcRoles.Models
     {
         public Game() { }
 
-        public Game(Edition edition, Player storyTeller, DateTime datePlayed, string notes, Alignment winningAlignment, DateTime? dateCreated = null)
+        public Game(Edition edition, Player storyteller, DateTime datePlayed, string notes, Alignment winningAlignment, DateTime? dateCreated = null)
         {
             Edition = edition;
-            StoryTeller = storyTeller;
+            Storyteller = storyteller;
             DateCreated = dateCreated ?? DateTime.Now;
             DatePlayed = datePlayed;
             Notes = notes;
@@ -28,8 +28,8 @@ namespace BotcRoles.Models
         public Edition Edition { get; set; }
 
 
-        public long StoryTellerId { get; set; }
-        public Player StoryTeller { get; set; }
+        public long StorytellerId { get; set; }
+        public Player Storyteller { get; set; }
 
         public DateTime DateCreated { get; set; }
         public DateTime DatePlayed { get; set; }
@@ -57,9 +57,9 @@ namespace BotcRoles.Models
                 .HasForeignKey(g => g.EditionId);
 
             builder
-                .HasOne(g => g.StoryTeller)
+                .HasOne(g => g.Storyteller)
                 .WithMany(p => p.GamesStoryTelling)
-                .HasForeignKey(g => g.StoryTellerId);
+                .HasForeignKey(g => g.StorytellerId);
 
             builder
                 .Property(p => p.IsHidden)

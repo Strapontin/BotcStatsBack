@@ -61,7 +61,7 @@ namespace BotcRoles.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("StoryTellerId")
+                    b.Property<long>("StorytellerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("WinningAlignment")
@@ -71,7 +71,7 @@ namespace BotcRoles.Migrations
 
                     b.HasIndex("EditionId");
 
-                    b.HasIndex("StoryTellerId");
+                    b.HasIndex("StorytellerId");
 
                     b.ToTable("Games");
                 });
@@ -182,15 +182,15 @@ namespace BotcRoles.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BotcRoles.Models.Player", "StoryTeller")
+                    b.HasOne("BotcRoles.Models.Player", "Storyteller")
                         .WithMany("GamesStoryTelling")
-                        .HasForeignKey("StoryTellerId")
+                        .HasForeignKey("StorytellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Edition");
 
-                    b.Navigation("StoryTeller");
+                    b.Navigation("Storyteller");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.PlayerRoleGame", b =>

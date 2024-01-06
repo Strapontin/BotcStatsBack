@@ -14,7 +14,7 @@ namespace BotcRoles.Test.HelperMethods
 {
     public static class GameHelper
     {
-        public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storyTellerId, DateTime? datePlayed,
+        public static IActionResult PostGame(ModelContext modelContext, long? editionId, long? storytellerId, DateTime? datePlayed,
             Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, List<long> demonBluffsId, string notes = null)
         {
             GamesController gamesController = new(null!, modelContext);
@@ -22,7 +22,7 @@ namespace BotcRoles.Test.HelperMethods
             var data = new
             {
                 editionId,
-                storyTellerId,
+                storytellerId,
                 datePlayed,
                 notes,
                 winningAlignment,
@@ -34,7 +34,7 @@ namespace BotcRoles.Test.HelperMethods
             return res;
         }
 
-        public static IActionResult UpdateGame(ModelContext modelContext, long? gameId, long? editionId, long? storyTellerId, DateTime? datePlayed,
+        public static IActionResult UpdateGame(ModelContext modelContext, long? gameId, long? editionId, long? storytellerId, DateTime? datePlayed,
             Alignment? winningAlignment, List<PlayerIdRoleId> playersIdRolesId, List<long> demonBluffsId, string notes = null)
         {
             GamesController gamesController = new(null!, modelContext);
@@ -43,7 +43,7 @@ namespace BotcRoles.Test.HelperMethods
             {
                 gameId,
                 editionId,
-                storyTellerId,
+                storytellerId,
                 datePlayed,
                 notes,
                 winningAlignment,

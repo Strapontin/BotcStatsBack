@@ -151,7 +151,7 @@ namespace BotcRoles.Migrations
                 oldType: "INTEGER");
 
             migrationBuilder.AlterColumn<long>(
-                name: "StoryTellerId",
+                name: "StorytellerId",
                 table: "Games",
                 type: "bigint",
                 nullable: false,
@@ -394,7 +394,7 @@ namespace BotcRoles.Migrations
                 oldType: "integer");
 
             migrationBuilder.AlterColumn<int>(
-                name: "StoryTellerId",
+                name: "StorytellerId",
                 table: "Games",
                 type: "INTEGER",
                 nullable: false,
