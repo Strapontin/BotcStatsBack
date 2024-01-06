@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "IsStoryTeller")]
+    [Authorize(Policy = "IsStoryteller")]
     [ApiController]
     [Route("[controller]")]
     public class GamesController : ControllerBase
@@ -27,12 +27,17 @@ namespace BotcRoles.Controllers
         [Route("")]
         public ActionResult<IEnumerable<GameEntities>> GetGames()
         {
-            var games = _db.Games
-                .Include(g => g.StoryTeller)
-                .OrderByDescending(g => g.DatePlayed)
-                .ThenBy(g => g.StoryTeller.Name)
-                .ToList()
-                .Select(g => new GameEntities(_db, g))
+            var allGames = _db.Games
+                .Include(g => g.Storyteller)
+                .Include(g => g.Edition)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Role)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
+                .ToList();
+
+            var games = allGames
+                .Select(g => new GameEntities(g, allGames))
                 .ToList();
 
             return games;
@@ -48,7 +53,7 @@ namespace BotcRoles.Controllers
                 .Include(g => g.Edition)
                     .ThenInclude(e => e.RolesEdition)
                         .ThenInclude(re => re.Role)
-                .Include(g => g.StoryTeller)
+                .Include(g => g.Storyteller)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Player)
                 .Include(g => g.PlayerRoleGames)
@@ -56,10 +61,25 @@ namespace BotcRoles.Controllers
                 .Include(g => g.DemonBluffs)
                     .ThenInclude(demonBluff => demonBluff.Role)
                 .ToList()
-                .Select(g => new GameEntities(_db, g))
+                .Select(g => new GameEntities(g))
                 .FirstOrDefault();
 
             return game == null ? NotFound() : game;
+        }
+
+        private List<GameEntities> FillDbSetGamesByParamId(IQueryable<Game> games)
+        {
+            return games
+                .Include(g => g.Storyteller)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Role)
+                .Include(g => g.PlayerRoleGames)
+                    .ThenInclude(prg => prg.Player)
+                .OrderByDescending(g => g.DatePlayed)
+                .ThenBy(g => g.Storyteller.Name)
+                .ToList()
+                .Select(g => new GameEntities(g))
+                .ToList();
         }
 
         [AllowAnonymous]
@@ -68,31 +88,50 @@ namespace BotcRoles.Controllers
         public ActionResult<List<GameEntities>> GetGamesByPlayerId(long playerId)
         {
             var games = _db.Games
-                .Where(g => g.PlayerRoleGames.Any(prg => prg.PlayerId == playerId))
-                .Include(g => g.StoryTeller)
-                .OrderByDescending(g => g.DatePlayed)
-                .ThenBy(g => g.StoryTeller.Name)
-                .ToList()
-                .Select(g => new GameEntities(_db, g))
-                .ToList();
+                .Where(g => g.PlayerRoleGames.Any(prg => prg.PlayerId == playerId));
 
-            return games;
+            var result = FillDbSetGamesByParamId(games);
+            return result;
         }
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("ByStoryTellerId/{storytellerId}")]
+        [Route("ByRoleId/{roleId}")]
+        public ActionResult<List<GameEntities>> GetGamesByRoleId(long roleId)
+        {
+            var games = _db.Games
+                .Where(g => g.PlayerRoleGames.Any(prg => prg.RoleId == roleId));
+
+            var result = FillDbSetGamesByParamId(games);
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByEditionId/{editionId}")]
+        public ActionResult<List<GameEntities>> GetGamesByEditionId(long editionId)
+        {
+            var games = _db.Games
+                .Where(g => g.EditionId == editionId);
+
+            var result = FillDbSetGamesByParamId(games);
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ByStorytellerId/{storytellerId}")]
         public ActionResult<List<GameEntities>> GetGamesByStorytellerId(long storytellerId)
         {
             var games = _db.Games
-                .Where(g => g.StoryTellerId == storytellerId)
-                .Include(g => g.StoryTeller)
+                .Where(g => g.StorytellerId == storytellerId)
+                .Include(g => g.Storyteller)
                 .Include(g => g.PlayerRoleGames)
                 .Include(g => g.Edition)
                 .OrderByDescending(g => g.DatePlayed)
-                .ThenBy(g => g.StoryTeller.Name)
+                .ThenBy(g => g.Storyteller.Name)
                 .ToList()
-                .Select(g => new GameEntities(_db, g))
+                .Select(g => new GameEntities(g))
                 .ToList();
 
             return games;
@@ -149,7 +188,7 @@ namespace BotcRoles.Controllers
                 }
 
                 game.Edition = gameTemp.Edition;
-                game.StoryTeller = gameTemp.StoryTeller;
+                game.Storyteller = gameTemp.Storyteller;
                 game.DatePlayed = gameTemp.DatePlayed;
                 game.Notes = gameTemp.Notes;
                 game.WinningAlignment = gameTemp.WinningAlignment;
@@ -205,15 +244,15 @@ namespace BotcRoles.Controllers
                 return null;
             }
 
-            if (!long.TryParse(data["storyTellerId"]?.ToString(), out long storyTellerId))
+            if (!long.TryParse(data["storytellerId"]?.ToString(), out long storytellerId))
             {
                 error = $"Une partie doit avoir un conteur.";
                 return null;
             }
-            var storyTeller = _db.Players.FirstOrDefault(e => e.PlayerId == storyTellerId);
-            if (storyTeller == null)
+            var storyteller = _db.Players.FirstOrDefault(e => e.PlayerId == storytellerId);
+            if (storyteller == null)
             {
-                error = $"Le conteur avec l'id '{storyTellerId}' n'a pas été trouvé";
+                error = $"Le conteur avec l'id '{storytellerId}' n'a pas été trouvé";
                 return null;
             }
 
@@ -285,7 +324,7 @@ namespace BotcRoles.Controllers
             }
 
 
-            Game game = new(edition, storyTeller, datePlayed, notes, winningAlignment)
+            Game game = new(edition, storyteller, datePlayed, notes, winningAlignment)
             {
                 PlayerRoleGames = playersRoles,
                 DemonBluffs = demonBluffs,

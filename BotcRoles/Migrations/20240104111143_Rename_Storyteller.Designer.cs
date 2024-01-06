@@ -5,29 +5,57 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace BotcRoles.Migrations
 {
     [DbContext(typeof(ModelContext))]
-    [Migration("20230518123943_Column_Games_DatePlayed")]
-    partial class Column_Games_DatePlayed
+    [Migration("20240104111143_Rename_Storyteller")]
+    partial class Rename_Storyteller
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BotcRoles.Models.DemonBluff", b =>
+                {
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GameId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("RoleId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("RoleId", "GameId")
+                        .IsUnique();
+
+                    b.ToTable("DemonBluffs");
+                });
 
             modelBuilder.Entity("BotcRoles.Models.Edition", b =>
                 {
                     b.Property<long>("EditionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("EditionId"));
+
+                    b.Property<int>("IsHidden")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("EditionId");
 
@@ -41,25 +69,32 @@ namespace BotcRoles.Migrations
                 {
                     b.Property<long>("GameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TEXT");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("GameId"));
 
-                    b.Property<DateTime>("DatePlayed")
-                        .HasColumnType("TEXT");
+                    b.Property<string>("DateCreated")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DatePlayed")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<long>("EditionId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("IsHidden")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<long>("StorytellerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("WinningAlignment")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("GameId");
 
@@ -74,14 +109,19 @@ namespace BotcRoles.Migrations
                 {
                     b.Property<long>("PlayerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("PlayerId"));
+
+                    b.Property<int>("IsHidden")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Pseudo")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("PlayerId");
 
@@ -95,19 +135,21 @@ namespace BotcRoles.Migrations
                 {
                     b.Property<long>("PlayerRoleGameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("PlayerRoleGameId"));
 
                     b.Property<int>("FinalAlignment")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<long>("GameId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.HasKey("PlayerRoleGameId");
 
@@ -124,17 +166,19 @@ namespace BotcRoles.Migrations
                 {
                     b.Property<long>("RoleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("RoleId"));
 
                     b.Property<int>("CharacterType")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
-                    b.Property<int>("DefaultAlignment")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("IsHidden")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("RoleId");
 
@@ -147,10 +191,10 @@ namespace BotcRoles.Migrations
             modelBuilder.Entity("BotcRoles.Models.RoleEdition", b =>
                 {
                     b.Property<long>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("EditionId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.HasKey("RoleId", "EditionId");
 
@@ -160,6 +204,25 @@ namespace BotcRoles.Migrations
                         .IsUnique();
 
                     b.ToTable("RolesEdition");
+                });
+
+            modelBuilder.Entity("BotcRoles.Models.DemonBluff", b =>
+                {
+                    b.HasOne("BotcRoles.Models.Game", "Game")
+                        .WithMany("DemonBluffs")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BotcRoles.Models.Role", "Role")
+                        .WithMany("DemonBluffs")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
@@ -234,6 +297,8 @@ namespace BotcRoles.Migrations
 
             modelBuilder.Entity("BotcRoles.Models.Game", b =>
                 {
+                    b.Navigation("DemonBluffs");
+
                     b.Navigation("PlayerRoleGames");
                 });
 
@@ -246,6 +311,8 @@ namespace BotcRoles.Migrations
 
             modelBuilder.Entity("BotcRoles.Models.Role", b =>
                 {
+                    b.Navigation("DemonBluffs");
+
                     b.Navigation("PlayerRoleGames");
 
                     b.Navigation("RolesEdition");

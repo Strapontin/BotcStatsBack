@@ -8,7 +8,7 @@ using BotcRoles.Helper;
 
 namespace BotcRoles.Controllers
 {
-    [Authorize(Policy = "IsStoryTeller")]
+    [Authorize(Policy = "IsStoryteller")]
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
@@ -24,7 +24,7 @@ namespace BotcRoles.Controllers
 
         [HttpGet]
         [Route("")]
-        public bool UserHasStoryTellerRights()
+        public bool UserHasStorytellerRights()
         {
             return true;
         }

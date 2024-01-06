@@ -4,10 +4,10 @@ namespace BotcRoles.Entities
 {
     public class PlayerRoleEntities
     {
-        public PlayerRoleEntities(Models.ModelContext db, Models.PlayerRoleGame playerRoleGame)
+        public PlayerRoleEntities(Models.PlayerRoleGame playerRoleGame)
         {
-            this.Player = new PlayerEntities(db, playerRoleGame.Player);
-            this.Role = new RoleEntities(db, playerRoleGame.Role);
+            this.Player = new PlayerEntities(playerRoleGame.Player);
+            this.Role = new RoleEntities(playerRoleGame.Role);
             this.FinalAlignment = playerRoleGame.FinalAlignment;
         }
 

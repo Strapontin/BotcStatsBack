@@ -5,26 +5,26 @@ using System.Text.Json;
 
 namespace BotcRoles.AuthorizationHandlers
 {
-    public class IsStoryTellerRequirement : IAuthorizationRequirement
+    public class IsStorytellerRequirement : IAuthorizationRequirement
     {
-        public IsStoryTellerRequirement() { }
+        public IsStorytellerRequirement() { }
     }
 
 
-    public class IsStoryTellerAuthorizationHandler : AuthorizationHandler<IsStoryTellerRequirement>
+    public class IsStorytellerAuthorizationHandler : AuthorizationHandler<IsStorytellerRequirement>
     {
         const string _tbaServerId = "765137571608920074";
 
-        const string _storyTellerRoleId = "797739056406069279";
+        const string _storytellerRoleId = "797739056406069279";
         const string _staffTBARoleId = "895968259201982484";
         const string _neoConteurRoleId = "1082696028404318370";
 
-        //string[] authorizedRolesId = new string[] { _storyTellerRoleId };
-        string[] authorizedRolesId = new string[] { _storyTellerRoleId, _staffTBARoleId, _neoConteurRoleId };
+        //string[] authorizedRolesId = new string[] { _storytellerRoleId };
+        string[] authorizedRolesId = new string[] { _storytellerRoleId, _staffTBARoleId, _neoConteurRoleId };
 
-        List<BearerStoryTeller> _bearerIsStoryTeller = new();
+        List<BearerStoryteller> _bearerIsStoryteller = new();
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsStoryTellerRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsStorytellerRequirement requirement)
         {
             string? bearer = (context.Resource as DefaultHttpContext).Request?.Headers[HeaderNames.Authorization].FirstOrDefault();
 
@@ -35,20 +35,20 @@ namespace BotcRoles.AuthorizationHandlers
             }
 
             List<string> bearerExpired = new();
-            foreach (var b in _bearerIsStoryTeller)
+            foreach (var b in _bearerIsStoryteller)
             {
                 if (DateTime.Now.Subtract(b.DateChecked).TotalMinutes >= 10)
                 {
                     bearerExpired.Add(b.Bearer);
                 }
             }
-            _bearerIsStoryTeller.RemoveAll(b => bearerExpired.Contains(b.Bearer));
+            _bearerIsStoryteller.RemoveAll(b => bearerExpired.Contains(b.Bearer));
 
             // If the user has already authenticated 
-            if (_bearerIsStoryTeller.Any(b => b.Bearer == bearer))
+            if (_bearerIsStoryteller.Any(b => b.Bearer == bearer))
             {
                 // If user has the rights
-                if (_bearerIsStoryTeller.Find(b => b.Bearer == bearer).IsStoryTeller)
+                if (_bearerIsStoryteller.Find(b => b.Bearer == bearer).IsStoryteller)
                 {
                     context.Succeed(requirement);
                 }
@@ -60,7 +60,7 @@ namespace BotcRoles.AuthorizationHandlers
             }
             else
             {
-                bool isUserStoryTeller = false;
+                bool isUserStoryteller = false;
 
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get,
                     $"https://discord.com/api/users/@me/guilds/{_tbaServerId}/member")
@@ -78,7 +78,7 @@ namespace BotcRoles.AuthorizationHandlers
                         Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                     {
                         context.Succeed(requirement);
-                        _bearerIsStoryTeller.Add(new(bearer, true, DateTime.Now));
+                        _bearerIsStoryteller.Add(new(bearer, true, DateTime.Now));
                         return;
                     }
 
@@ -88,13 +88,13 @@ namespace BotcRoles.AuthorizationHandlers
 
                     if (userGuildDetails == null || userGuildDetails.user == null)
                     {
-                        isUserStoryTeller = false;
+                        isUserStoryteller = false;
                         context.Fail();
                     }
-                    //else if (userGuildDetails.roles.Contains(_storyTellerRoleId))
+                    //else if (userGuildDetails.roles.Contains(_storytellerRoleId))
                     else if (userGuildDetails.roles.Any(r => authorizedRolesId.Contains(r)))
                     {
-                        isUserStoryTeller = true;
+                        isUserStoryteller = true;
                         context.Succeed(requirement);
                     }
                     else
@@ -107,23 +107,23 @@ namespace BotcRoles.AuthorizationHandlers
                     context.Fail();
                 }
 
-                _bearerIsStoryTeller.Add(new(bearer, isUserStoryTeller, DateTime.Now));
+                _bearerIsStoryteller.Add(new(bearer, isUserStoryteller, DateTime.Now));
                 return;
             }
         }
 
 
-        private class BearerStoryTeller
+        private class BearerStoryteller
         {
-            public BearerStoryTeller(string bearer, bool isStoryTeller, DateTime datechecked)
+            public BearerStoryteller(string bearer, bool isStoryteller, DateTime datechecked)
             {
                 Bearer = bearer;
-                IsStoryTeller = isStoryTeller;
+                IsStoryteller = isStoryteller;
                 DateChecked = datechecked;
             }
 
             public string Bearer { get; set; }
-            public bool IsStoryTeller { get; set; }
+            public bool IsStoryteller { get; set; }
             public DateTime DateChecked { get; set; }
         }
 

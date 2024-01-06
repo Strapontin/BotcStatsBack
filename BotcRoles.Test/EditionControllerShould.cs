@@ -227,6 +227,7 @@ namespace BotcRoles.Test
             Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
 
             Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).Count());
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
@@ -247,6 +248,7 @@ namespace BotcRoles.Test
             Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).Count());
             Assert.AreEqual(countEditions, modelContext.Editions.Count());
             Assert.IsTrue(modelContext.Editions.All(p => p.IsHidden));
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
     }
 }

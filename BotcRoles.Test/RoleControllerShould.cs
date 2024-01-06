@@ -145,6 +145,7 @@ namespace BotcRoles.Test
             Assert.AreEqual(StatusCodes.Status202Accepted, ((ObjectResult)res).StatusCode);
 
             Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
@@ -171,6 +172,7 @@ namespace BotcRoles.Test
 
             Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
             Assert.AreEqual(0, EditionHelper.GetEditions(modelContext).First().Roles.Count());
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
 
         [Test]
@@ -196,6 +198,7 @@ namespace BotcRoles.Test
             Assert.AreEqual(0, RoleHelper.GetRoles(modelContext).Count());
             Assert.AreEqual(1, modelContext.Roles.Count());
             Assert.IsTrue(modelContext.Roles.All(p => p.IsHidden));
+            DBHelper.DeleteCreatedDatabase(modelContext);
         }
     }
 }
