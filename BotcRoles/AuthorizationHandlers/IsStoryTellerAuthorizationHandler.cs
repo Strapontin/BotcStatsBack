@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
@@ -23,6 +22,11 @@ namespace BotcRoles.AuthorizationHandlers
         string[] authorizedRolesId = new string[] { _storytellerRoleId, _staffTBARoleId, _neoConteurRoleId };
 
         List<BearerStoryteller> _bearerIsStoryteller = new();
+
+        public string GetDiscordUsernameByBearer(string bearer)
+        {
+            return _bearerIsStoryteller.FirstOrDefault(s => s.Bearer == bearer)?.Username;
+        }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsStorytellerRequirement requirement)
         {
@@ -61,6 +65,7 @@ namespace BotcRoles.AuthorizationHandlers
             else
             {
                 bool isUserStoryteller = false;
+                string? username = "";
 
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get,
                     $"https://discord.com/api/users/@me/guilds/{_tbaServerId}/member")
@@ -73,18 +78,19 @@ namespace BotcRoles.AuthorizationHandlers
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Serializing User Data : '{contentStream}'");
+                    var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(contentStream);
+                    username = userGuildDetails.user.username;
+
                     // If we're on the recette, the user doesn't have to be a storyteller
                     if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Recette" ||
                         Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                     {
                         context.Succeed(requirement);
-                        _bearerIsStoryteller.Add(new(bearer, true, DateTime.Now));
+                        _bearerIsStoryteller.Add(new(bearer, true, DateTime.Now, username));
                         return;
                     }
-
-                    var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Serializing User Data : '{contentStream}'");
-                    var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(contentStream);
 
                     if (userGuildDetails == null || userGuildDetails.user == null)
                     {
@@ -107,7 +113,7 @@ namespace BotcRoles.AuthorizationHandlers
                     context.Fail();
                 }
 
-                _bearerIsStoryteller.Add(new(bearer, isUserStoryteller, DateTime.Now));
+                _bearerIsStoryteller.Add(new(bearer, isUserStoryteller, DateTime.Now, username));
                 return;
             }
         }
@@ -115,16 +121,18 @@ namespace BotcRoles.AuthorizationHandlers
 
         private class BearerStoryteller
         {
-            public BearerStoryteller(string bearer, bool isStoryteller, DateTime datechecked)
+            public BearerStoryteller(string bearer, bool isStoryteller, DateTime datechecked, string username)
             {
                 Bearer = bearer;
                 IsStoryteller = isStoryteller;
                 DateChecked = datechecked;
+                Username = username;
             }
 
             public string Bearer { get; set; }
             public bool IsStoryteller { get; set; }
             public DateTime DateChecked { get; set; }
+            public string Username { get; set; }
         }
 
         private class UserGuildDetails

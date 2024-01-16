@@ -1,11 +1,12 @@
 using BotcRoles.Entities;
 using BotcRoles.Enums;
 using BotcRoles.Helper;
-using Microsoft.AspNetCore.Authorization;
+using BotcRoles.Misc;
 using BotcRoles.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace BotcRoles.Controllers
 {
@@ -16,11 +17,13 @@ namespace BotcRoles.Controllers
     {
         private readonly ILogger<RolesController> _logger;
         private readonly ModelContext _db;
+        private readonly IAuthorizationHandler _isStorytellerAuthorizationHandler;
 
-        public RolesController(ILogger<RolesController> logger, ModelContext db)
+        public RolesController(ILogger<RolesController> logger, ModelContext db, IAuthorizationHandler isStorytellerAuthorizationHandler)
         {
             _logger = logger;
             _db = db;
+            _isStorytellerAuthorizationHandler = isStorytellerAuthorizationHandler;
         }
 
         [AllowAnonymous]
@@ -92,6 +95,13 @@ namespace BotcRoles.Controllers
                 _db.Add(role);
                 _db.SaveChanges();
 
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Create,
+                    UpdateHistoryType.Role,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newRole: role));
+
                 return Created("", null);
             }
             catch (Exception ex)
@@ -124,9 +134,22 @@ namespace BotcRoles.Controllers
                     return BadRequest(error);
                 }
 
+                var oldRole = new Role()
+                {
+                    Name = role.Name,
+                    CharacterType = role.CharacterType,
+                };
+
                 role.Name = tempRole.Name;
                 role.CharacterType = tempRole.CharacterType;
                 _db.SaveChanges();
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Update,
+                    UpdateHistoryType.Role,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newRole: role, oldRole: oldRole));
 
                 return Created("", null);
             }
@@ -147,16 +170,25 @@ namespace BotcRoles.Controllers
                     return NotFound();
                 }
 
+                var role = _db.Roles.First(p => p.RoleId == roleId);
+
                 if (_db.PlayerRoleGames.Any(prg => prg.RoleId == roleId))
                 {
-                    _db.Roles.First(p => p.RoleId == roleId).IsHidden = true;
+                    role.IsHidden = true;
                     _db.SaveChanges();
                 }
                 else
                 {
-                    _db.Roles.Remove(_db.Roles.First(g => g.RoleId == roleId));
+                    _db.Roles.Remove(role);
                     _db.SaveChanges();
                 }
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Delete,
+                    UpdateHistoryType.Role,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newRole: role));
 
                 return Accepted();
             }

@@ -1,10 +1,12 @@
 using BotcRoles.Entities;
 using BotcRoles.Enums;
+using BotcRoles.Misc;
 using BotcRoles.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace BotcRoles.Controllers
 {
@@ -15,11 +17,13 @@ namespace BotcRoles.Controllers
     {
         private readonly ILogger<GamesController> _logger;
         private readonly ModelContext _db;
+        private readonly IAuthorizationHandler _isStorytellerAuthorizationHandler;
 
-        public GamesController(ILogger<GamesController> logger, ModelContext db)
+        public GamesController(ILogger<GamesController> logger, ModelContext db, IAuthorizationHandler isStorytellerAuthorizationHandler)
         {
             _logger = logger;
             _db = db;
+            _isStorytellerAuthorizationHandler = isStorytellerAuthorizationHandler;
         }
 
         [AllowAnonymous]
@@ -155,6 +159,13 @@ namespace BotcRoles.Controllers
                 _db.Add(game);
                 _db.SaveChanges();
 
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Create,
+                    UpdateHistoryType.Game,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newGame: game));
+
                 return Created("", null);
             }
             catch (Exception ex)
@@ -173,7 +184,16 @@ namespace BotcRoles.Controllers
                 {
                     return BadRequest($"Aucun id de partie trouvé.");
                 }
-                var game = _db.Games.FirstOrDefault(g => g.GameId == gameId);
+                var game = _db.Games
+                    .Where(g => g.GameId == gameId)
+                    .Include(g => g.Edition)
+                    .Include(g => g.PlayerRoleGames)
+                        .ThenInclude(prg => prg.Player)
+                    .Include(g => g.PlayerRoleGames)
+                        .ThenInclude(prg => prg.Role)
+                    .Include(g => g.DemonBluffs)
+                        .ThenInclude(db => db.Role)
+                    .FirstOrDefault();
 
                 if (game == null)
                 {
@@ -186,6 +206,17 @@ namespace BotcRoles.Controllers
                 {
                     return BadRequest(error);
                 }
+
+                var oldGame = new Game()
+                {
+                    Edition = game.Edition,
+                    Storyteller = game.Storyteller,
+                    DatePlayed = game.DatePlayed,
+                    Notes = game.Notes,
+                    WinningAlignment = game.WinningAlignment,
+                    PlayerRoleGames = new(game.PlayerRoleGames),
+                    DemonBluffs = new(game.DemonBluffs),
+                };
 
                 game.Edition = gameTemp.Edition;
                 game.Storyteller = gameTemp.Storyteller;
@@ -202,6 +233,13 @@ namespace BotcRoles.Controllers
 
                 _db.SaveChanges();
 
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Update,
+                    UpdateHistoryType.Game,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newGame: game, oldGame: oldGame));
+
                 return Created("", null);
             }
             catch (Exception ex)
@@ -216,8 +254,21 @@ namespace BotcRoles.Controllers
         {
             try
             {
-                _db.Games.Remove(_db.Games.First(g => g.GameId == gameId));
+                var game = _db.Games
+                    .Where(g => g.GameId == gameId)
+                    .Include(g => g.Storyteller)
+                    .First();
+
+                _db.Games.Remove(game);
                 _db.SaveChanges();
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Delete,
+                    UpdateHistoryType.Game,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newGame: game));
+
                 return Accepted();
             }
             catch (Exception ex)

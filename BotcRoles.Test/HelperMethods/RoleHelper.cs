@@ -4,11 +4,6 @@ using BotcRoles.Enums;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotcRoles.Test.HelperMethods
 {
@@ -16,7 +11,10 @@ namespace BotcRoles.Test.HelperMethods
     {
         public static IActionResult AddRole(ModelContext modelContext, string roleName, CharacterType? characterType)
         {
-            RolesController roleController = new(null!, modelContext);
+            RolesController roleController = new(null!, modelContext, DBHelper.GetIsStorytellerAuthorizationHandler())
+            {
+                ControllerContext = new ControllerContext(DBHelper.GetActionContext())
+            };
 
             JObject rolePost = JObject.FromObject(new { roleName, characterType });
 
@@ -26,21 +24,24 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IEnumerable<RoleEntities> GetRoles(ModelContext modelContext)
         {
-            RolesController roleController = new(null!, modelContext);
+            RolesController roleController = new(null!, modelContext, null);
 
             return roleController.GetRoles(null).Value;
         }
 
         public static RoleEntities GetRoleById(ModelContext modelContext, long id)
         {
-            RolesController roleController = new(null!, modelContext);
+            RolesController roleController = new(null!, modelContext, null);
 
             return roleController.GetRoleById(id).Value;
         }
 
         internal static IActionResult UpdateRole(ModelContext modelContext, long roleId, string roleName, CharacterType characterType)
         {
-            RolesController rolesController = new(null!, modelContext);
+            RolesController rolesController = new(null!, modelContext, DBHelper.GetIsStorytellerAuthorizationHandler())
+            {
+                ControllerContext = new ControllerContext(DBHelper.GetActionContext())
+            };
 
             var data = new
             {
@@ -55,7 +56,10 @@ namespace BotcRoles.Test.HelperMethods
 
         public static IActionResult DeleteRole(ModelContext modelContext, long roleId)
         {
-            RolesController rolesController = new(null!, modelContext);
+            RolesController rolesController = new(null!, modelContext, DBHelper.GetIsStorytellerAuthorizationHandler())
+            {
+                ControllerContext = new ControllerContext(DBHelper.GetActionContext())
+            };
             var res = rolesController.DeleteRole(roleId);
 
             return res;
