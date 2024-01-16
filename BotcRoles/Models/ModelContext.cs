@@ -11,6 +11,7 @@ namespace BotcRoles.Models
         public DbSet<Edition> Editions { get; set; }
         public DbSet<RoleEdition> RolesEdition { get; set; }
         public DbSet<DemonBluff> DemonBluffs { get; set; }
+        public DbSet<UpdateHistory> UpdateHistories { get; set; }
 
 
         public string DbPath { get; }
@@ -76,6 +77,7 @@ namespace BotcRoles.Models
             modelBuilder.ApplyConfiguration(new RoleEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RoleEditionEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DemonBluffEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UpdateHistoryEntityTypeConfiguration());
         }
 
         DateTime _dtCreated1 = DateTime.Now;

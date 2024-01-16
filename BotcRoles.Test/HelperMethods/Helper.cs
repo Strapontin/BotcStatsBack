@@ -1,12 +1,12 @@
-﻿using BotcRoles.Models;
+﻿using BotcRoles.AuthorizationHandlers;
+using BotcRoles.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+using Moq;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotcRoles.Test.HelperMethods
 {
@@ -42,6 +42,27 @@ namespace BotcRoles.Test.HelperMethods
             ModelContext modelContext = new(new DbContextOptions<ModelContext>(), config, initData);
 
             return modelContext;
+        }
+
+        public static IAuthorizationHandler GetIsStorytellerAuthorizationHandler()
+        {
+            IAuthorizationHandler authorizationHandler = new IsStorytellerAuthorizationHandler();
+            return authorizationHandler;
+        }
+
+        public static ActionContext GetActionContext()
+        {
+            var actionContext = new ActionContext();
+            var httpContext = new Mock<HttpContext>();
+            var httpRequest = new Mock<HttpRequest>();
+
+            httpRequest.SetupGet(x => x.Headers).Returns(new HeaderDictionary() { { "Authorization", "" } });
+            httpContext.SetupGet(x => x.Request).Returns(httpRequest.Object);
+            actionContext.HttpContext = httpContext.Object;
+            actionContext.RouteData = new Microsoft.AspNetCore.Routing.RouteData();
+            actionContext.ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor();
+
+            return actionContext;
         }
 
         public static void DeleteCreatedDatabase(ModelContext modelContext)

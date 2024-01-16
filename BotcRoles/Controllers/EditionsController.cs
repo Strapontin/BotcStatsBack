@@ -1,10 +1,12 @@
-using BotcRoles.Models;
 using BotcRoles.Entities;
+using BotcRoles.Helper;
+using BotcRoles.Misc;
+using BotcRoles.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using BotcRoles.Helper;
+using System.Data;
 
 namespace BotcRoles.Controllers
 {
@@ -15,11 +17,13 @@ namespace BotcRoles.Controllers
     {
         private readonly ILogger<EditionsController> _logger;
         private readonly ModelContext _db;
+        private readonly IAuthorizationHandler _isStorytellerAuthorizationHandler;
 
-        public EditionsController(ILogger<EditionsController> logger, ModelContext db)
+        public EditionsController(ILogger<EditionsController> logger, ModelContext db, IAuthorizationHandler isStorytellerAuthorizationHandler)
         {
             _logger = logger;
             _db = db;
+            _isStorytellerAuthorizationHandler = isStorytellerAuthorizationHandler;
         }
 
         [AllowAnonymous]
@@ -84,6 +88,13 @@ namespace BotcRoles.Controllers
                 _db.Add(edition);
                 _db.SaveChanges();
 
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Create,
+                    UpdateHistoryType.Edition,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newEdition: edition));
+
                 return Created("", null);
             }
             catch (Exception ex)
@@ -102,7 +113,11 @@ namespace BotcRoles.Controllers
                 {
                     return BadRequest($"Aucun id de module trouvé.");
                 }
-                var edition = _db.Editions.FirstOrDefault(e => e.EditionId == editionId);
+                var edition = _db.Editions
+                    .Where(e => e.EditionId == editionId)
+                    .Include(e => e.RolesEdition)
+                        .ThenInclude(re => re.Role)
+                    .FirstOrDefault();
 
                 if (edition == null)
                 {
@@ -116,6 +131,12 @@ namespace BotcRoles.Controllers
                     return BadRequest(error);
                 }
 
+                var oldEdition = new Edition()
+                {
+                    Name = edition.Name,
+                    RolesEdition = new(edition.RolesEdition)
+                };
+
                 edition.Name = editionTemp.Name;
 
                 _db.RemoveRange(_db.RolesEdition.Where(re => re.EditionId == edition.EditionId));
@@ -124,6 +145,13 @@ namespace BotcRoles.Controllers
                 edition.RolesEdition = editionTemp.RolesEdition;
 
                 _db.SaveChanges();
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Update,
+                    UpdateHistoryType.Edition,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newEdition: edition, oldEdition: oldEdition));
 
                 return Created("", null);
             }
@@ -144,16 +172,25 @@ namespace BotcRoles.Controllers
                     return NotFound();
                 }
 
+                var edition = _db.Editions.First(p => p.EditionId == editionId);
+
                 if (_db.Games.Any(g => g.EditionId == editionId))
                 {
-                    _db.Editions.First(p => p.EditionId == editionId).IsHidden = true;
+                    edition.IsHidden = true;
                     _db.SaveChanges();
                 }
                 else
                 {
-                    _db.Editions.Remove(_db.Editions.First(g => g.EditionId == editionId));
+                    _db.Editions.Remove(edition);
                     _db.SaveChanges();
                 }
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Delete,
+                    UpdateHistoryType.Edition,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(newEdition: edition));
 
                 return Accepted();
             }

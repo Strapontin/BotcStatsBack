@@ -1,5 +1,6 @@
 using BotcRoles.Entities;
 using BotcRoles.Helper;
+using BotcRoles.Misc;
 using BotcRoles.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace BotcRoles.Controllers
     {
         private readonly ILogger<PlayersController> _logger;
         private readonly ModelContext _db;
+        private readonly IAuthorizationHandler _isStorytellerAuthorizationHandler;
 
-        public PlayersController(ILogger<PlayersController> logger, ModelContext db)
+        public PlayersController(ILogger<PlayersController> logger, ModelContext db, IAuthorizationHandler isStorytellerAuthorizationHandler)
         {
             _logger = logger;
             _db = db;
+            _isStorytellerAuthorizationHandler = isStorytellerAuthorizationHandler;
         }
 
         [AllowAnonymous]
@@ -72,6 +75,14 @@ namespace BotcRoles.Controllers
                 _db.Add(player);
                 _db.SaveChanges();
 
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Create,
+                    UpdateHistoryType.Player,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(player));
+
+
                 return Created("", null);
             }
             catch (Exception ex)
@@ -104,9 +115,22 @@ namespace BotcRoles.Controllers
                     return BadRequest(error);
                 }
 
+                var oldPlayer = new Player()
+                {
+                    Name = player.Name,
+                    Pseudo = player.Pseudo
+                };
+
                 player.Name = playerTemp.Name;
                 player.Pseudo = playerTemp.Pseudo;
                 _db.SaveChanges();
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Update,
+                    UpdateHistoryType.Player,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(player, oldPlayer));
 
                 return Created("", null);
             }
@@ -127,17 +151,26 @@ namespace BotcRoles.Controllers
                     return NotFound();
                 }
 
+                var player = _db.Players.First(p => p.PlayerId == playerId);
+
                 if (_db.PlayerRoleGames.Any(prg => prg.PlayerId == playerId) ||
                     _db.Games.Any(g => g.StorytellerId == playerId))
                 {
-                    _db.Players.First(p => p.PlayerId == playerId).IsHidden = true;
+                    player.IsHidden = true;
                     _db.SaveChanges();
                 }
                 else
                 {
-                    _db.Players.Remove(_db.Players.First(g => g.PlayerId == playerId));
+                    _db.Players.Remove(player);
                     _db.SaveChanges();
                 }
+
+                Misc.UpdateHistory.AddUpdateHistory(_db,
+                    UpdateHistoryAction.Delete,
+                    UpdateHistoryType.Player,
+                    _isStorytellerAuthorizationHandler,
+                    Request.Headers,
+                    new ObjectUpdateHistory(player));
 
                 return Accepted();
             }
