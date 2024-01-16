@@ -99,7 +99,7 @@ namespace BotcRoles.Misc
                     textToUpdate = $"[{username}] - Suppression {objectType} '{objectName}'{(isHidden ? " isHidden" : "")}.";
                     break;
                 case UpdateHistoryAction.Update:
-                    textToUpdate = GetUpdateHistoryDifferences(updateHistoryType, objectUpdateHistory, $"[{username}] - Modifications {objectType} '{objectName}' :");
+                    textToUpdate = GetUpdateHistoryDifferences(updateHistoryType, objectUpdateHistory, $"[{username}] - Modification(s) {objectType} '{objectName}' :");
                     break;
             }
 
@@ -142,13 +142,13 @@ namespace BotcRoles.Misc
                     rolesDeleted.RemoveAll(r => objectUpdateHistory.NewEdition.RolesEdition.Any(o => o.RoleId == r.RoleId));
                     if (rolesDeleted.Any())
                     {
-                        result += $"\nRôles supprimés : {string.Join(", ", rolesDeleted.Select(r => r.Role.Name))}";
+                        result += $"\nRôles supprimé(s) : {string.Join(", ", rolesDeleted.Select(r => r.Role.Name))}";
                     }
                     var rolesAdded = new List<RoleEdition>(objectUpdateHistory.NewEdition.RolesEdition);
                     rolesAdded.RemoveAll(r => objectUpdateHistory.OldEdition.RolesEdition.Any(o => o.RoleId == r.RoleId));
                     if (rolesAdded.Any())
                     {
-                        result += $"\nRôles ajoutés : {string.Join(", ", rolesAdded.Select(r => r.Role.Name))}";
+                        result += $"\nRôles ajouté(s) : {string.Join(", ", rolesAdded.Select(r => r.Role.Name))}";
                     }
                     break;
 
@@ -168,26 +168,26 @@ namespace BotcRoles.Misc
                     prgDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.PlayerRoleGames.Any(prg => prg.PlayerId == prgA.PlayerId && prg.RoleId == prgA.RoleId));
                     if (prgDeleted.Any())
                     {
-                        result += $"\nJoueur/rôle supprimés : {string.Join(", ", prgDeleted.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
+                        result += $"\nJoueur/rôle supprimé(s) : {string.Join(", ", prgDeleted.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
                     }
                     var prgAdded = new List<PlayerRoleGame>(objectUpdateHistory.NewGame.PlayerRoleGames);
                     prgAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.PlayerRoleGames.Any(prg => prg.PlayerId == prgA.PlayerId && prg.RoleId == prgA.RoleId));
                     if (prgAdded.Any())
                     {
-                        result += $"\nJoueur/rôle ajoutés : {string.Join(", ", prgAdded.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
+                        result += $"\nJoueur/rôle ajouté(s) : {string.Join(", ", prgAdded.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
                     }
 
                     var demonBluffDeleted = new List<DemonBluff>(objectUpdateHistory.OldGame.DemonBluffs);
                     demonBluffDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.DemonBluffs.Any(db => db.RoleId == prgA.RoleId));
                     if (demonBluffDeleted.Any())
                     {
-                        result += $"\nDemon bluff supprimés : {string.Join(", ", demonBluffDeleted.Select(db => db.Role.Name))}";
+                        result += $"\nDemon bluff supprimé(s) : {string.Join(", ", demonBluffDeleted.Select(db => db.Role.Name))}";
                     }
                     var demonBluffAdded = new List<DemonBluff>(objectUpdateHistory.NewGame.DemonBluffs);
                     demonBluffAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.DemonBluffs.Any(db => db.RoleId == prgA.RoleId));
                     if (demonBluffAdded.Any())
                     {
-                        result += $"\nDemon bluff ajoutés : {string.Join(", ", demonBluffAdded.Select(db => db.Role.Name))}";
+                        result += $"\nDemon bluff ajouté(s) : {string.Join(", ", demonBluffAdded.Select(db => db.Role.Name))}";
                     }
                     break;
             }
