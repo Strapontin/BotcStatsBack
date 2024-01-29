@@ -64,6 +64,30 @@ namespace BotcRoles.AuthorizationHandlers
             }
             else
             {
+                var httpClient = new HttpClient();
+
+                // If we're on the recette, the user only needs to have a Discord account
+                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Recette" ||
+                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+                {
+                    var httpRequestDiscordAccount = new HttpRequestMessage(HttpMethod.Get,
+                        $"https://discord.com/api/users/@me")
+                    {
+                        Headers = { { HeaderNames.Authorization, bearer } }
+                    };
+                    var httpResponseDiscordAccount = await httpClient.SendAsync(httpRequestDiscordAccount);
+
+                    if (httpResponseDiscordAccount.IsSuccessStatusCode)
+                    {
+                        var contentStream = await httpResponseDiscordAccount.Content.ReadAsStringAsync();
+                        var discordUser = JsonSerializer.Deserialize<DiscordUser>(contentStream);
+
+                        context.Succeed(requirement);
+                        _bearerIsStoryteller.Add(new(bearer, true, DateTime.Now, discordUser.username));
+                    }
+                    return;
+                }
+
                 bool isUserStoryteller = false;
                 string? username = "";
 
@@ -73,7 +97,6 @@ namespace BotcRoles.AuthorizationHandlers
                     Headers = { { HeaderNames.Authorization, bearer } }
                 };
 
-                var httpClient = new HttpClient();
                 var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
@@ -82,15 +105,6 @@ namespace BotcRoles.AuthorizationHandlers
                     Console.WriteLine($"Serializing User Data : '{contentStream}'");
                     var userGuildDetails = JsonSerializer.Deserialize<UserGuildDetails>(contentStream);
                     username = userGuildDetails.user.username;
-
-                    // If we're on the recette, the user doesn't have to be a storyteller
-                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Recette" ||
-                        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-                    {
-                        context.Succeed(requirement);
-                        _bearerIsStoryteller.Add(new(bearer, true, DateTime.Now, username));
-                        return;
-                    }
 
                     if (userGuildDetails == null || userGuildDetails.user == null)
                     {
