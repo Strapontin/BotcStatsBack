@@ -38,6 +38,8 @@ namespace BotcRoles.Controllers
                     .ThenInclude(prg => prg.Role)
                 .ToList()
                 .Select(p => new PlayerEntities(p))
+                .OrderByDescending(p => p.NbGamesPlayed)
+                .ThenByDescending(p => p.NbGamesWon)
                 .ToList();
             return players;
         }

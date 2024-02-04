@@ -33,6 +33,8 @@ namespace BotcRoles.Controllers
         {
             var allGames = _db.Games
                 .Include(g => g.Storyteller)
+                .OrderBy(g => g.DatePlayed)
+                .ThenBy(g => g.Storyteller.Name)
                 .Include(g => g.Edition)
                 .Include(g => g.PlayerRoleGames)
                     .ThenInclude(prg => prg.Role)
