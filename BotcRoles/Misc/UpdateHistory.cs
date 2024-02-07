@@ -70,7 +70,7 @@ namespace BotcRoles.Misc
             {
                 case UpdateHistoryType.Player:
                     objectType = "du joueur";
-                    objectName = PlayerHelper.GetPlayerFullName(objectUpdateHistory.NewPlayer);
+                    objectName = objectUpdateHistory.NewPlayer.GetFullName();
                     isHidden = objectUpdateHistory.NewPlayer.IsHidden;
                     break;
                 case UpdateHistoryType.Role:
@@ -85,7 +85,7 @@ namespace BotcRoles.Misc
                     break;
                 case UpdateHistoryType.Game:
                     objectType = "de la partie du";
-                    objectName = objectUpdateHistory.NewGame.DatePlayed.ToString("dd/MM/yyyy") + " contée par " + PlayerHelper.GetPlayerFullName(objectUpdateHistory.NewGame.Storyteller);
+                    objectName = objectUpdateHistory.NewGame.DatePlayed.ToString("dd/MM/yyyy") + " contée par " + objectUpdateHistory.NewGame.Storyteller.GetFullName();
                     isHidden = objectUpdateHistory.NewGame.IsHidden;
                     break;
             }
@@ -139,23 +139,23 @@ namespace BotcRoles.Misc
                     result += GetTextIfDifference(objectUpdateHistory.OldEdition.Name, objectUpdateHistory.NewEdition.Name, "\nNom changé de '{0}' en '{1}'");
 
                     var rolesDeleted = new List<RoleEdition>(objectUpdateHistory.OldEdition.RolesEdition);
-                    rolesDeleted.RemoveAll(r => objectUpdateHistory.NewEdition.RolesEdition.Any(o => o.RoleId == r.RoleId));
+                    rolesDeleted.RemoveAll(r => objectUpdateHistory.NewEdition.RolesEdition.Any(o => o.Equals(r)));
                     if (rolesDeleted.Any())
                     {
-                        result += $"\nRôles supprimé(s) : {string.Join(", ", rolesDeleted.Select(r => r.Role.Name))}";
+                        result += $"\nRôles supprimé(s) : \n\t{string.Join("\n\t", rolesDeleted.Select(r => r.Role.Name))}";
                     }
                     var rolesAdded = new List<RoleEdition>(objectUpdateHistory.NewEdition.RolesEdition);
-                    rolesAdded.RemoveAll(r => objectUpdateHistory.OldEdition.RolesEdition.Any(o => o.RoleId == r.RoleId));
+                    rolesAdded.RemoveAll(r => objectUpdateHistory.OldEdition.RolesEdition.Any(o => o.Equals(r)));
                     if (rolesAdded.Any())
                     {
-                        result += $"\nRôles ajouté(s) : {string.Join(", ", rolesAdded.Select(r => r.Role.Name))}";
+                        result += $"\nRôles ajouté(s) : \n\t{string.Join("\n\t", rolesAdded.Select(r => r.Role.Name))}";
                     }
                     break;
 
                 case UpdateHistoryType.Game:
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Edition.Name, objectUpdateHistory.NewGame.Edition.Name, 
+                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Edition.Name, objectUpdateHistory.NewGame.Edition.Name,
                         "\nModule changé de '{0}' vers '{1}'");
-                    result += GetTextIfDifference(PlayerHelper.GetPlayerFullName(objectUpdateHistory.OldGame.Storyteller), PlayerHelper.GetPlayerFullName(objectUpdateHistory.NewGame.Storyteller),
+                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Storyteller.GetFullName(), objectUpdateHistory.NewGame.Storyteller.GetFullName(),
                         "\nModule changé de '{0}' vers '{1}'");
                     result += GetTextIfDifference(objectUpdateHistory.OldGame.DatePlayed.ToString("dd/MM/yyyy"), objectUpdateHistory.NewGame.DatePlayed.ToString("dd/MM/yyyy"),
                         "\nDate changé de '{0}' vers '{1}'");
@@ -165,29 +165,29 @@ namespace BotcRoles.Misc
                         "\nAlignement gagnant changé de '{0}' vers '{1}'");
 
                     var prgDeleted = new List<PlayerRoleGame>(objectUpdateHistory.OldGame.PlayerRoleGames);
-                    prgDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.PlayerRoleGames.Any(prg => prg.PlayerId == prgA.PlayerId && prg.RoleId == prgA.RoleId));
+                    prgDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
                     if (prgDeleted.Any())
                     {
-                        result += $"\nJoueur/rôle supprimé(s) : {string.Join(", ", prgDeleted.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
+                        result += $"\nJoueur/rôle supprimé(s) : \n\t{string.Join("\n\t", prgDeleted.Select(prgA => $"{prgA.Player.GetFullName()}/{prgA.Role.Name} ({prgA.FinalAlignment.ToText()})"))}";
                     }
                     var prgAdded = new List<PlayerRoleGame>(objectUpdateHistory.NewGame.PlayerRoleGames);
-                    prgAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.PlayerRoleGames.Any(prg => prg.PlayerId == prgA.PlayerId && prg.RoleId == prgA.RoleId));
+                    prgAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
                     if (prgAdded.Any())
                     {
-                        result += $"\nJoueur/rôle ajouté(s) : {string.Join(", ", prgAdded.Select(prgA => $"{PlayerHelper.GetPlayerFullName(prgA.Player)}/{prgA.Role.Name}"))}";
+                        result += $"\nJoueur/rôle ajouté(s) : \n\t{string.Join("\n\t", prgAdded.Select(prgA => $"{prgA.Player.GetFullName()}/{prgA.Role.Name} ({prgA.FinalAlignment.ToText()})"))}";
                     }
 
                     var demonBluffDeleted = new List<DemonBluff>(objectUpdateHistory.OldGame.DemonBluffs);
-                    demonBluffDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.DemonBluffs.Any(db => db.RoleId == prgA.RoleId));
+                    demonBluffDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.DemonBluffs.Any(db => db.Equals(prgA)));
                     if (demonBluffDeleted.Any())
                     {
-                        result += $"\nDemon bluff supprimé(s) : {string.Join(", ", demonBluffDeleted.Select(db => db.Role.Name))}";
+                        result += $"\nDemon bluff supprimé(s) : \n\t{string.Join("\n\t", demonBluffDeleted.Select(db => db.Role.Name))}";
                     }
                     var demonBluffAdded = new List<DemonBluff>(objectUpdateHistory.NewGame.DemonBluffs);
-                    demonBluffAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.DemonBluffs.Any(db => db.RoleId == prgA.RoleId));
+                    demonBluffAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.DemonBluffs.Any(db => db.Equals(prgA)));
                     if (demonBluffAdded.Any())
                     {
-                        result += $"\nDemon bluff ajouté(s) : {string.Join(", ", demonBluffAdded.Select(db => db.Role.Name))}";
+                        result += $"\nDemon bluff ajouté(s) : \n\t{string.Join("\n\t", demonBluffAdded.Select(db => db.Role.Name))}";
                     }
                     break;
             }
@@ -208,7 +208,7 @@ namespace BotcRoles.Misc
         {
             if (oldObject != newObject)
             {
-                return string.Format(textToFormat, CharacterTypeHelper.GetCharacterTypeName(oldObject), CharacterTypeHelper.GetCharacterTypeName(newObject));
+                return string.Format(textToFormat, oldObject.ToText(), newObject.ToText());
             }
             return "";
         }
@@ -217,7 +217,7 @@ namespace BotcRoles.Misc
         {
             if (oldObject != newObject)
             {
-                return string.Format(textToFormat, AlignmentHelper.GetAlignmentName(oldObject), AlignmentHelper.GetAlignmentName(newObject));
+                return string.Format(textToFormat, oldObject.ToText(), newObject.ToText());
             }
             return "";
         }

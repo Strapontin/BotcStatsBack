@@ -4,7 +4,7 @@ namespace BotcRoles.Helper
 {
     public static class CharacterTypeHelper
     {
-        public static string GetCharacterTypeName(CharacterType characterType)
+        public static string ToText(this CharacterType characterType)
         {
             return characterType == CharacterType.Townsfolk ? "Villageois" :
                 characterType == CharacterType.Outsider ? "Etranger" :

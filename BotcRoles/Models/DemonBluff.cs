@@ -22,6 +22,22 @@ namespace BotcRoles.Models
 
         public long GameId { get; set; }
         public Game Game { get; set; }
+
+        public override bool Equals(object? demonBluff)
+        {
+            if (demonBluff == null || !this.GetType().Equals(demonBluff.GetType()))
+                return false;
+
+            var db = (DemonBluff)demonBluff;
+            return db.RoleId == this.RoleId &&
+                db.GameId == this.GameId;
+        }
+
+        public override int GetHashCode()
+        {
+            return RoleId.GetHashCode() ^
+                GameId.GetHashCode();
+        }
     }
 
 
@@ -32,7 +48,7 @@ namespace BotcRoles.Models
         {
             builder
                 .HasKey(demonBluff => new { demonBluff.RoleId, demonBluff.GameId });
-            
+
             builder
                 .HasOne(demonBluff => demonBluff.Role)
                 .WithMany(r => r.DemonBluffs)
