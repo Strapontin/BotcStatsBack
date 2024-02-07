@@ -30,8 +30,27 @@ namespace BotcRoles.Models
         public Game Game { get; set; }
 
         public Alignment FinalAlignment { get; set; }
-    }
 
+        public override bool Equals(object? playerRoleGame)
+        {
+            if (playerRoleGame == null || !this.GetType().Equals(playerRoleGame.GetType()))
+                return false;
+
+            var prg = (PlayerRoleGame)playerRoleGame;
+            return prg.PlayerId == this.PlayerId &&
+                prg.RoleId == this.RoleId &&
+                prg.GameId == this.GameId &&
+                prg.FinalAlignment == this.FinalAlignment;
+        }
+
+        public override int GetHashCode()
+        {
+            return PlayerId.GetHashCode() ^
+                RoleId.GetHashCode() ^
+                GameId.GetHashCode() ^
+                FinalAlignment.GetHashCode();
+        }
+    }
 
 
     public class PlayerRoleGameEntityTypeConfiguration : IEntityTypeConfiguration<PlayerRoleGame>

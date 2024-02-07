@@ -22,6 +22,23 @@ namespace BotcRoles.Models
 
         public long EditionId { get; set; }
         public Edition Edition { get; set; }
+
+        public override bool Equals(object? roleEdition)
+        {
+            if (roleEdition == null || !this.GetType().Equals(roleEdition.GetType()))
+                return false;
+
+            var re = (RoleEdition)roleEdition;
+            return re.RoleId == this.RoleId &&
+                re.EditionId == this.EditionId;
+        }
+
+        public override int GetHashCode()
+        {
+            return
+                RoleId.GetHashCode() ^
+                EditionId.GetHashCode();
+        }
     }
 
 
