@@ -23,6 +23,7 @@ namespace BotcRoles.Models
         public long? RoleId { get; set; }
         public long? EditionId { get; set; }
         public long? GameId { get; set; }
+        public long? GameDraftId { get; set; }
     }
 
 

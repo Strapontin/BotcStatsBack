@@ -166,7 +166,10 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Game,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newGame: game));
+                    new ObjectUpdateHistory(game));
+
+                // if a gameDraft has the same properties then we delete it
+                FindAndDeleteGameDraftFromGameCreated(game);
 
                 return Created("", null);
             }
@@ -240,7 +243,7 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Game,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newGame: game, oldGame: oldGame));
+                    new ObjectUpdateHistory(game, oldGame));
 
                 return Created("", null);
             }
@@ -269,7 +272,7 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Game,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newGame: game));
+                    new ObjectUpdateHistory(game));
 
                 return Accepted();
             }
@@ -384,6 +387,27 @@ namespace BotcRoles.Controllers
             };
 
             return game;
+        }
+
+        private void FindAndDeleteGameDraftFromGameCreated(Game game)
+        {
+            var gameDraft = _db.GamesDraft
+                .Include(g => g.Storyteller)
+                .FirstOrDefault(g => g.EditionId == game.EditionId &&
+            g.StorytellerId == game.StorytellerId &&
+            g.DatePlayed == game.DatePlayed);
+
+            if (gameDraft == null) return;
+
+            _db.Remove(gameDraft);
+            _db.SaveChanges();
+
+            Misc.UpdateHistory.AddUpdateHistory(_db,
+                UpdateHistoryAction.Delete,
+                UpdateHistoryType.GameDraft,
+                _isStorytellerAuthorizationHandler,
+                Request.Headers,
+                new ObjectUpdateHistory(gameDraft));
         }
 
         #endregion

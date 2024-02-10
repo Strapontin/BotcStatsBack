@@ -93,7 +93,7 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Edition,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newEdition: edition));
+                    new ObjectUpdateHistory(edition));
 
                 return Created("", null);
             }
@@ -151,7 +151,7 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Edition,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newEdition: edition, oldEdition: oldEdition));
+                    new ObjectUpdateHistory(edition, oldEdition));
 
                 return Created("", null);
             }
@@ -190,7 +190,7 @@ namespace BotcRoles.Controllers
                     UpdateHistoryType.Edition,
                     _isStorytellerAuthorizationHandler,
                     Request.Headers,
-                    new ObjectUpdateHistory(newEdition: edition));
+                    new ObjectUpdateHistory(edition));
 
                 return Accepted();
             }

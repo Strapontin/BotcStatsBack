@@ -8,6 +8,7 @@ namespace BotcRoles.Models
         public DbSet<PlayerRoleGame> PlayerRoleGames { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Game> Games { get; set; }
+        public DbSet<GameDraft> GamesDraft { get; set; }
         public DbSet<Edition> Editions { get; set; }
         public DbSet<RoleEdition> RolesEdition { get; set; }
         public DbSet<DemonBluff> DemonBluffs { get; set; }
@@ -47,13 +48,13 @@ namespace BotcRoles.Models
                 EnvironmentBuild == EnvironmentBuild.Recette)
             {
                 DbPath = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+                this.Database.Migrate();
             }
             else if (EnvironmentBuild == EnvironmentBuild.Development)
             {
                 DbPath = "Host=localhost; Database=botc_stats_db; Username=postgres; Password=postgres;";
             }
 
-            this.Database.Migrate();
 
             if (initData)
             {
@@ -71,6 +72,7 @@ namespace BotcRoles.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new GameEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new GameDraftEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new EditionEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PlayerEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PlayerRoleGameEntityTypeConfiguration());
