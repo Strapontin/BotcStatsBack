@@ -24,6 +24,7 @@ namespace BotcRoles.Models
 
         public List<PlayerRoleGame> PlayerRoleGames { get; set; }
         public List<Game> GamesStoryTelling { get; set; }
+        public List<GameDraft> GamesDraftStoryTelling { get; set; }
     }
 
 

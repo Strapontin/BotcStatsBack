@@ -22,6 +22,7 @@ namespace BotcRoles.Models
 
         public List<RoleEdition> RolesEdition { get; set; }
         public List<Game> Games { get; set; }
+        public List<GameDraft> GamesDraft { get; set; }
     }
 
 

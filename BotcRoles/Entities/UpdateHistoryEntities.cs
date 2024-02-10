@@ -16,6 +16,7 @@ namespace BotcRoles.Entities
             this.RoleId = updateHistory.RoleId;
             this.EditionId = updateHistory.EditionId;
             this.GameId = updateHistory.GameId;
+            this.GameDraftId = updateHistory.GameDraftId;
 
             this.Date = updateHistory.Date;
             this.Text = updateHistory.UpdateDetails;
@@ -27,6 +28,7 @@ namespace BotcRoles.Entities
         public long? RoleId { get; set; }
         public long? EditionId { get; set; }
         public long? GameId { get; set; }
+        public long? GameDraftId { get; set; }
 
         public DateTime Date { get; set; }
         public string Text { get; set; }

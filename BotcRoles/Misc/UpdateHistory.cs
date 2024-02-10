@@ -13,39 +13,21 @@ namespace BotcRoles.Misc
 
     public enum UpdateHistoryType
     {
-        Player, Role, Edition, Game
+        Player, Role, Edition, Game, GameDraft
     }
 
     public class ObjectUpdateHistory
     {
         public ObjectUpdateHistory(
-            Player? newPlayer = null,
-            Player? oldPlayer = null,
-            Role? newRole = null,
-            Role? oldRole = null,
-            Edition? newEdition = null,
-            Edition? oldEdition = null,
-            Game? newGame = null,
-            Game? oldGame = null)
+            object newObject,
+            object oldObject = null)
         {
-            NewPlayer = newPlayer;
-            OldPlayer = oldPlayer;
-            NewRole = newRole;
-            OldRole = oldRole;
-            NewEdition = newEdition;
-            OldEdition = oldEdition;
-            NewGame = newGame;
-            OldGame = oldGame;
+            NewObject = newObject;
+            OldObject = oldObject;
         }
 
-        public Player? NewPlayer { get; set; }
-        public Player? OldPlayer { get; set; }
-        public Role? NewRole { get; set; }
-        public Role? OldRole { get; set; }
-        public Edition? NewEdition { get; set; }
-        public Edition? OldEdition { get; set; }
-        public Game? NewGame { get; set; }
-        public Game? OldGame { get; set; }
+        public object NewObject { get; set; }
+        public object OldObject { get; set; }
     }
 
     public static class UpdateHistory
@@ -61,6 +43,7 @@ namespace BotcRoles.Misc
             var bearer = header["Authorization"][0];
             var username = ((IsStorytellerAuthorizationHandler)authorizationHandler).GetDiscordUsernameByBearer(bearer);
 
+            long? id = null;
             string? textToUpdate = null;
             var objectType = "";
             var objectName = "";
@@ -69,25 +52,40 @@ namespace BotcRoles.Misc
             switch (updateHistoryType)
             {
                 case UpdateHistoryType.Player:
+                    Player player = (Player)objectUpdateHistory.NewObject;
+                    id = player.PlayerId;
                     objectType = "du joueur";
-                    objectName = objectUpdateHistory.NewPlayer.GetFullName();
-                    isHidden = objectUpdateHistory.NewPlayer.IsHidden;
+                    objectName = player.GetFullName();
+                    isHidden = player.IsHidden;
                     break;
                 case UpdateHistoryType.Role:
+                    Role role = (Role)objectUpdateHistory.NewObject;
+                    id = role.RoleId;
                     objectType = "du rôle";
-                    objectName = objectUpdateHistory.NewRole.Name;
-                    isHidden = objectUpdateHistory.NewRole.IsHidden;
+                    objectName = role.Name;
+                    isHidden = role.IsHidden;
                     break;
                 case UpdateHistoryType.Edition:
+                    Edition edition = (Edition)objectUpdateHistory.NewObject;
+                    id = edition.EditionId;
                     objectType = "du module";
-                    objectName = objectUpdateHistory.NewEdition.Name;
-                    isHidden = objectUpdateHistory.NewEdition.IsHidden;
+                    objectName = edition.Name;
+                    isHidden = edition.IsHidden;
                     break;
                 case UpdateHistoryType.Game:
+                    Game game = (Game)objectUpdateHistory.NewObject;
+                    id = game.GameId;
                     objectType = "de la partie du";
-                    objectName = objectUpdateHistory.NewGame.DatePlayed.ToString("dd/MM/yyyy") + " contée par " + objectUpdateHistory.NewGame.Storyteller.GetFullName();
-                    isHidden = objectUpdateHistory.NewGame.IsHidden;
+                    objectName = game.DatePlayed.ToString("dd/MM/yyyy") + " contée par " + game.Storyteller.GetFullName();
+                    isHidden = game.IsHidden;
                     break;
+                case UpdateHistoryType.GameDraft:
+                    GameDraft gameDraft = (GameDraft)objectUpdateHistory.NewObject;
+                    id = gameDraft.GameDraftId;
+                    objectType = "du rappel de partie du";
+                    objectName = gameDraft.DatePlayed.ToString("dd/MM/yyyy") + " contée par " + gameDraft.Storyteller.GetFullName();
+                    break;
+
             }
 
             switch (updateHistoryAction)
@@ -108,10 +106,11 @@ namespace BotcRoles.Misc
                 Models.UpdateHistory? updateHistory = new(textToUpdate)
                 {
                     Date = DateTime.Now,
-                    PlayerId = objectUpdateHistory.NewPlayer?.PlayerId,
-                    RoleId = objectUpdateHistory.NewRole?.RoleId,
-                    EditionId = objectUpdateHistory.NewEdition?.EditionId,
-                    GameId = objectUpdateHistory.NewGame?.GameId,
+                    PlayerId = updateHistoryType == UpdateHistoryType.Player ? id : null,
+                    RoleId = updateHistoryType == UpdateHistoryType.Role ? id : null,
+                    EditionId = updateHistoryType == UpdateHistoryType.Edition ? id : null,
+                    GameId = updateHistoryType == UpdateHistoryType.Game ? id : null,
+                    GameDraftId = updateHistoryType == UpdateHistoryType.GameDraft ? id : null,
                 };
 
                 db.Add(updateHistory);
@@ -126,26 +125,35 @@ namespace BotcRoles.Misc
             switch (updateHistoryType)
             {
                 case UpdateHistoryType.Player:
-                    result += GetTextIfDifference(objectUpdateHistory.OldPlayer.Name, objectUpdateHistory.NewPlayer.Name, "\nNom changé de '{0}' en '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldPlayer.Pseudo, objectUpdateHistory.NewPlayer.Pseudo, "\nPseudo changé de '{0}' en '{1}'");
+                    var oldPlayer = (Player)objectUpdateHistory.OldObject;
+                    var newPlayer = (Player)objectUpdateHistory.NewObject;
+
+                    result += GetTextIfDifference(oldPlayer.Name, newPlayer.Name, "\nNom changé de '{0}' en '{1}'");
+                    result += GetTextIfDifference(oldPlayer.Pseudo, newPlayer.Pseudo, "\nPseudo changé de '{0}' en '{1}'");
                     break;
 
                 case UpdateHistoryType.Role:
-                    result += GetTextIfDifference(objectUpdateHistory.OldRole.Name, objectUpdateHistory.NewRole.Name, "\nNom changé de '{0}' en '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldRole.CharacterType, objectUpdateHistory.NewRole.CharacterType, "\nNom changé de '{0}' en '{1}'");
+                    var oldRole = (Role)objectUpdateHistory.OldObject;
+                    var newRole = (Role)objectUpdateHistory.NewObject;
+
+                    result += GetTextIfDifference(oldRole.Name, newRole.Name, "\nNom changé de '{0}' en '{1}'");
+                    result += GetTextIfDifference(oldRole.CharacterType, newRole.CharacterType, "\nNom changé de '{0}' en '{1}'");
                     break;
 
                 case UpdateHistoryType.Edition:
-                    result += GetTextIfDifference(objectUpdateHistory.OldEdition.Name, objectUpdateHistory.NewEdition.Name, "\nNom changé de '{0}' en '{1}'");
+                    var oldEdition = (Edition)objectUpdateHistory.OldObject;
+                    var newEdition = (Edition)objectUpdateHistory.NewObject;
 
-                    var rolesDeleted = new List<RoleEdition>(objectUpdateHistory.OldEdition.RolesEdition);
-                    rolesDeleted.RemoveAll(r => objectUpdateHistory.NewEdition.RolesEdition.Any(o => o.Equals(r)));
+                    result += GetTextIfDifference(oldEdition.Name, newEdition.Name, "\nNom changé de '{0}' en '{1}'");
+
+                    var rolesDeleted = new List<RoleEdition>(oldEdition.RolesEdition);
+                    rolesDeleted.RemoveAll(r => newEdition.RolesEdition.Any(o => o.Equals(r)));
                     if (rolesDeleted.Any())
                     {
                         result += $"\nRôles supprimé(s) : \n\t{string.Join("\n\t", rolesDeleted.Select(r => r.Role.Name))}";
                     }
-                    var rolesAdded = new List<RoleEdition>(objectUpdateHistory.NewEdition.RolesEdition);
-                    rolesAdded.RemoveAll(r => objectUpdateHistory.OldEdition.RolesEdition.Any(o => o.Equals(r)));
+                    var rolesAdded = new List<RoleEdition>(newEdition.RolesEdition);
+                    rolesAdded.RemoveAll(r => oldEdition.RolesEdition.Any(o => o.Equals(r)));
                     if (rolesAdded.Any())
                     {
                         result += $"\nRôles ajouté(s) : \n\t{string.Join("\n\t", rolesAdded.Select(r => r.Role.Name))}";
@@ -153,42 +161,50 @@ namespace BotcRoles.Misc
                     break;
 
                 case UpdateHistoryType.Game:
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Edition.Name, objectUpdateHistory.NewGame.Edition.Name,
-                        "\nModule changé de '{0}' vers '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Storyteller.GetFullName(), objectUpdateHistory.NewGame.Storyteller.GetFullName(),
-                        "\nModule changé de '{0}' vers '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.DatePlayed.ToString("dd/MM/yyyy"), objectUpdateHistory.NewGame.DatePlayed.ToString("dd/MM/yyyy"),
-                        "\nDate changé de '{0}' vers '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.Notes, objectUpdateHistory.NewGame.Notes,
-                        "\nNotes changé de '{0}' vers '{1}'");
-                    result += GetTextIfDifference(objectUpdateHistory.OldGame.WinningAlignment, objectUpdateHistory.NewGame.WinningAlignment,
-                        "\nAlignement gagnant changé de '{0}' vers '{1}'");
+                    var oldGame = (Game)objectUpdateHistory.OldObject;
+                    var newGame = (Game)objectUpdateHistory.NewObject;
 
-                    var prgDeleted = new List<PlayerRoleGame>(objectUpdateHistory.OldGame.PlayerRoleGames);
-                    prgDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
+                    result += GetTextIfDifference(oldGame.Edition.Name, newGame.Edition.Name, "\nModule changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGame.Storyteller.GetFullName(), newGame.Storyteller.GetFullName(), "\nModule changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGame.DatePlayed.ToString("dd/MM/yyyy"), newGame.DatePlayed.ToString("dd/MM/yyyy"), "\nDate changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGame.Notes, newGame.Notes, "\nNotes changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGame.WinningAlignment, newGame.WinningAlignment, "\nAlignement gagnant changé de '{0}' vers '{1}'");
+
+                    var prgDeleted = new List<PlayerRoleGame>(oldGame.PlayerRoleGames);
+                    prgDeleted.RemoveAll(prgA => newGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
                     if (prgDeleted.Any())
                     {
                         result += $"\nJoueur/rôle supprimé(s) : \n\t{string.Join("\n\t", prgDeleted.Select(prgA => $"{prgA.Player.GetFullName()}/{prgA.Role.Name} ({prgA.FinalAlignment.ToText()})"))}";
                     }
-                    var prgAdded = new List<PlayerRoleGame>(objectUpdateHistory.NewGame.PlayerRoleGames);
-                    prgAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
+                    var prgAdded = new List<PlayerRoleGame>(newGame.PlayerRoleGames);
+                    prgAdded.RemoveAll(prgA => oldGame.PlayerRoleGames.Any(prg => prg.Equals(prgA)));
                     if (prgAdded.Any())
                     {
                         result += $"\nJoueur/rôle ajouté(s) : \n\t{string.Join("\n\t", prgAdded.Select(prgA => $"{prgA.Player.GetFullName()}/{prgA.Role.Name} ({prgA.FinalAlignment.ToText()})"))}";
                     }
 
-                    var demonBluffDeleted = new List<DemonBluff>(objectUpdateHistory.OldGame.DemonBluffs);
-                    demonBluffDeleted.RemoveAll(prgA => objectUpdateHistory.NewGame.DemonBluffs.Any(db => db.Equals(prgA)));
+                    var demonBluffDeleted = new List<DemonBluff>(oldGame.DemonBluffs);
+                    demonBluffDeleted.RemoveAll(prgA => newGame.DemonBluffs.Any(db => db.Equals(prgA)));
                     if (demonBluffDeleted.Any())
                     {
                         result += $"\nDemon bluff supprimé(s) : \n\t{string.Join("\n\t", demonBluffDeleted.Select(db => db.Role.Name))}";
                     }
-                    var demonBluffAdded = new List<DemonBluff>(objectUpdateHistory.NewGame.DemonBluffs);
-                    demonBluffAdded.RemoveAll(prgA => objectUpdateHistory.OldGame.DemonBluffs.Any(db => db.Equals(prgA)));
+                    var demonBluffAdded = new List<DemonBluff>(newGame.DemonBluffs);
+                    demonBluffAdded.RemoveAll(prgA => oldGame.DemonBluffs.Any(db => db.Equals(prgA)));
                     if (demonBluffAdded.Any())
                     {
                         result += $"\nDemon bluff ajouté(s) : \n\t{string.Join("\n\t", demonBluffAdded.Select(db => db.Role.Name))}";
                     }
+                    break;
+
+                case UpdateHistoryType.GameDraft:
+                    var oldGameDraft = (GameDraft)objectUpdateHistory.OldObject;
+                    var newGameDraft = (GameDraft)objectUpdateHistory.NewObject;
+
+                    result += GetTextIfDifference(oldGameDraft.Edition.Name, newGameDraft.Edition.Name, "\nModule changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGameDraft.Storyteller.GetFullName(), newGameDraft.Storyteller.GetFullName(), "\nModule changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGameDraft.DatePlayed.ToString("dd/MM/yyyy"), newGameDraft.DatePlayed.ToString("dd/MM/yyyy"), "\nDate changé de '{0}' vers '{1}'");
+                    result += GetTextIfDifference(oldGameDraft.Notes, newGameDraft.Notes, "\nNotes changé de '{0}' vers '{1}'");
                     break;
             }
 
