@@ -169,7 +169,7 @@ namespace BotcRoles.Controllers
             {
                 if (!_db.Editions.Any(p => p.EditionId == editionId))
                 {
-                    return NotFound();
+                    return NotFound($"Le module avec l'id '{editionId}' n'a pas été trouvé.");
                 }
 
                 var edition = _db.Editions.First(p => p.EditionId == editionId);
@@ -194,9 +194,9 @@ namespace BotcRoles.Controllers
 
                 return Accepted();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.InnerException);
+                return StatusCode(500, "Une erreur interne est survenue pendant la suppression du module.");
             }
         }
 
