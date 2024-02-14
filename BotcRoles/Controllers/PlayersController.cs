@@ -101,13 +101,13 @@ namespace BotcRoles.Controllers
             {
                 if (!long.TryParse(data["playerId"]?.ToString(), out long playerId))
                 {
-                    return BadRequest($"Aucun id de module trouvÈ.");
+                    return BadRequest($"Aucun id de module trouv√©.");
                 }
                 var player = _db.Players.FirstOrDefault(e => e.PlayerId == playerId);
 
                 if (player == null)
                 {
-                    return BadRequest($"Le joueur avec l'id {playerId} n'a pas ÈtÈ trouvÈ.");
+                    return BadRequest($"Le joueur avec l'id {playerId} n'a pas √©t√© trouv√©.");
                 }
 
                 var playerTemp = GetPlayerDataFromBody(data, out string error, player.Name);
@@ -150,7 +150,7 @@ namespace BotcRoles.Controllers
             {
                 if (!_db.Players.Any(p => p.PlayerId == playerId))
                 {
-                    return NotFound();
+                    return NotFound($"Le joueur avec l'id '{playerId}' n'a pas √©t√© trouv√©.");
                 }
 
                 var player = _db.Players.First(p => p.PlayerId == playerId);
@@ -176,9 +176,9 @@ namespace BotcRoles.Controllers
 
                 return Accepted();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.InnerException);
+                return StatusCode(500, "Une erreur interne est survenue pendant la suppression du joueur.");
             }
         }
 
@@ -202,7 +202,7 @@ namespace BotcRoles.Controllers
                 .Any(m => m.Name.ToLowerRemoveDiacritics() == name.ToLowerRemoveDiacritics() &&
                           (m.Pseudo.ToLowerRemoveDiacritics() == pseudo.ToLowerRemoveDiacritics())))
             {
-                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe dÈj‡.";
+                error = $"Un joueur avec le nom '{name}' et le pseudo '{pseudo}' existe d√©j√†.";
                 return null;
             }
 

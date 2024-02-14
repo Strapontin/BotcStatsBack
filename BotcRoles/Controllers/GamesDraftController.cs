@@ -11,7 +11,7 @@ namespace BotcRoles.Controllers
 {
     [Authorize(Policy = "IsStoryteller")]
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")] 
     public class GamesDraftController : ControllerBase
     {
         private readonly ILogger<GamesDraftController> _logger;
@@ -171,9 +171,9 @@ namespace BotcRoles.Controllers
 
                 return Accepted();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                return StatusCode(500, ex.InnerException);
+                return StatusCode(500, "Une erreur interne est survenue pendant la suppression de la partie de rappel.");
             }
         }
 
